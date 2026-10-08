@@ -37,7 +37,7 @@ head = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2e5bd6">
+<meta name="theme-color" content="#f7f7f4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MiniOS">
@@ -46,7 +46,7 @@ head = """<!doctype html>
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
-html { box-sizing: border-box; height: 100%; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); color-scheme: light; }
+html { box-sizing: border-box; height: 100%; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); color-scheme: light; background: #f7f7f4; }
 *, *::before, *::after { box-sizing: inherit; }
 body { margin: 0; font: 14px/1.4 system-ui, -apple-system, sans-serif; -webkit-text-size-adjust: 100%; }
 [hidden] { display: none !important; }
@@ -56,7 +56,16 @@ body { margin: 0; font: 14px/1.4 system-ui, -apple-system, sans-serif; -webkit-t
 """
 sw_reg = """<script>
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
+      .then(reg => reg.update()).catch(() => {});
+  });
+  // A new version took over: reload once so its code runs too
+  let reloaded = false;
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (hadController && !reloaded) { reloaded = true; location.reload(); }
+  });
 }
 </script>
 """
