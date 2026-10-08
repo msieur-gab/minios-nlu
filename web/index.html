@@ -71,6 +71,14 @@ mark.app { background: var(--slot-app); }
 .abstain { color: var(--warn); }
 .reply { align-self: flex-start; max-width: 88%; background: var(--agent); color: var(--agent-ink); padding: 8px 12px; border-radius: 16px 16px 16px 4px; overflow-wrap: anywhere; white-space: pre-line; }
 .why { margin-top: -2px; padding-left: 4px; }
+.typing { display: inline-flex; gap: 5px; align-items: center; padding: 13px 14px; }
+.typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: 0.55; }
+@media (prefers-reduced-motion: no-preference) {
+  .typing span { animation: hop 1s ease-in-out infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+}
+@keyframes hop { 0%, 60%, 100% { transform: translateY(0); opacity: 0.45; } 30% { transform: translateY(-5px); opacity: 0.9; } }
 .why > summary { display: inline-flex; align-items: center; gap: 6px; font: 11.5px var(--font-mono); color: var(--muted); cursor: pointer; padding: 4px 6px 4px 2px; border-radius: 6px; list-style: none; }
 .why > summary::-webkit-details-marker { display: none; }
 .why > summary::before { content: none; }
@@ -677,7 +685,7 @@ function row(label, html, cls = "") {
   return `<div class="row ${cls}"><span>${label}</span><span>${html}</span></div>`;
 }
 
-function renderTurn(text, out) {
+function renderAgent(el, text, out) {
   const r = out.trace[0].r;
   const alt = r.ranking.slice(1).map(([n, p]) => `${esc(n)} ${p.toFixed(2)}`).join(" · ");
   let t = row("intent", `<b>${esc(r.intent)}</b> <span class="conf">${r.confidence.toFixed(2)}</span> <span class="dim">· ${r.ms.toFixed(2)} ms</span>`);
@@ -688,14 +696,12 @@ function renderTurn(text, out) {
     else if (x.type === "state") t += row("state", esc(x.text), "state");
     else if (x.type === "abstain") t += row("skip", esc(x.text), "abstain");
   }
-  const el = document.createElement("section");
-  el.className = "turn";
   const kinds = out.trace.slice(1).map(x => x.type);
   const dot = kinds.includes("abstain") ? "skip" : kinds.includes("exec") ? "" : "ask";
   const icon = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  el.innerHTML = `<div class="cmd">${esc(text)}</div><div class="reply">${esc(out.reply)}</div>`
-    + `<details class="why"><summary aria-label="Show what the agent did">${icon}<span class="dot ${dot}"></span>${esc(r.intent)} ${r.confidence.toFixed(2)}</summary><div class="trace">${t}</div></details>`;
-  log.appendChild(el);
+  el.querySelector(".typing")?.remove();
+  el.insertAdjacentHTML("beforeend", `<div class="reply">${esc(out.reply)}</div>`
+    + `<details class="why"><summary aria-label="Show what the agent did">${icon}<span class="dot ${dot}"></span>${esc(r.intent)} ${r.confidence.toFixed(2)}</summary><div class="trace">${t}</div></details>`);
   const why = el.querySelector(".why");
   why.addEventListener("toggle", () => { if (why.open) why.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
   log.scrollTop = log.scrollHeight;
@@ -707,11 +713,29 @@ function updatePending() {
   if (p) $("pending").textContent = "waiting for " + p.need + " · " + p.intent + " · say cancel to drop it";
 }
 
-function send(text) {
+function renderUser(text, typing) {
+  const el = document.createElement("section");
+  el.className = "turn";
+  el.innerHTML = `<div class="cmd">${esc(text)}</div>`
+    + (typing ? `<div class="reply typing" aria-label="Agent is typing"><span></span><span></span><span></span></div>` : "");
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+  return el;
+}
+
+// The model answers in well under a millisecond; a short pause makes the exchange feel like a conversation.
+let busy = false;
+function send(text, instant = false) {
   text = text.trim();
-  if (!text) return;
-  renderTurn(text, agent.handle(text));
+  if (!text || busy) return false;
+  const out = agent.handle(text);
   updatePending();
+  if (instant) { renderAgent(renderUser(text, false), text, out); return true; }
+  busy = true;
+  const el = renderUser(text, true);
+  const pause = 450 + Math.min(out.reply.length * 6, 450) + Math.random() * 250;
+  setTimeout(() => { renderAgent(el, text, out); busy = false; }, pause);
+  return true;
 }
 
 const CHIPS = ["is the pi overheating?", "turn the volume up", "brightness 40%", "open budget.csv",
@@ -722,13 +746,12 @@ CHIPS.forEach((c, i) => $("chip" + i).addEventListener("click", () => send(c)));
 
 $("form").addEventListener("submit", e => {
   e.preventDefault();
-  send($("q").value);
-  $("q").value = "";
+  if (send($("q").value)) $("q").value = "";
 });
 $("reset").addEventListener("click", () => { log.innerHTML = ""; agent.reset(); updatePending(); $("q").focus(); });
 
 // Two example turns so the trace format is visible on first load
-["create a folder called holiday photos in pictures", "fire up firefox"].forEach(send);
+["create a folder called holiday photos in pictures", "fire up firefox"].forEach(t => send(t, true));
 const d = document.createElement("div");
 d.className = "divider";
 d.textContent = "examples above · your turn";
