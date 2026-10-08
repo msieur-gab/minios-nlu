@@ -31,7 +31,7 @@ print("web/index.html %.0f KB  (accuracy %s%%, slot F1 %s, n=%s)" % (len(page) /
 
 # PWA build: full document with manifest, icons and service worker
 import hashlib
-version = hashlib.sha1(page.encode()).hexdigest()[:10]
+version = hashlib.sha1((page + open("pwa/manifest.webmanifest").read() + open("pwa/sw.template.js").read()).encode()).hexdigest()[:10]
 head = """<!doctype html>
 <html lang="en">
 <head>
