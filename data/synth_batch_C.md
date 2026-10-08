@@ -1,0 +1,490 @@
+<!-- batch C (external generator, 2026-10-08), cleaned by clean_batches.py -->
+
+## intent: greet
+- hello there
+- hi
+- hey system
+- good morning
+- good afternoon
+- greetings
+- what is up
+- yo
+- heya
+- hiya
+- hello
+- good evening
+- hey
+- sup
+- wake up
+- top of the morning
+- hello computer
+- hi bot
+- hey minios
+- good to see you
+- morning
+- evening
+- afternoon
+- howdy
+- hola
+- salute
+- welcome back
+- hey buddy
+- hiii
+- heyy
+- hi man
+- hello friend
+- hey dude
+- yoohoo
+- anybody home
+- system online
+- start listening
+- a very good morning
+- hey there
+- allo
+
+## intent: thanks
+- thank you
+- thanks
+- thx
+- appreciate it
+- thanks a lot
+- ty
+- perfect thanks
+- exactly what i needed
+- good job
+- well done
+- brilliant thank you
+- cheers
+- nice one
+- awesome thanks
+- sweet thx
+- you rock
+- thank you so much
+- thanks bot
+- great work
+- many thanks
+- thanks buddy
+- cool thanks
+- much appreciated
+- i owe you one
+- thanks for that
+- very helpful
+- good boy
+- good bot
+- tyvm
+- ok thanks
+- fine thank you
+- amazing job
+- perfect
+- that is all thanks
+- super thanks
+- nicely done
+- right on thanks
+- lovely thanks
+- thank u
+- thnks
+
+## intent: help
+- help
+- i need help
+- what can you do
+- list commands
+- show me the manual
+- how does this work
+- help me please
+- i am stuck
+- what are my options
+- give me instructions
+- hlp
+- wtf do i do
+- can you assist me
+- what commands are available
+- show help menu
+- i don't know what to do
+- print usage
+- list capabilities
+- what do you do
+- guide me
+- need some assistance
+- how to use this
+- give me a hint
+- what is the syntax
+- show me what you got
+- i require guidance
+- help screen
+- open the manual
+- explain how to use
+- what are you capable of
+- teach me
+- tell me what to type
+- is there a help file
+- command list please
+- what now
+- i'm lost
+- display commands
+- options
+- man page
+- usage please
+
+## intent: affirm
+- yes
+- yeah
+- yep
+- y
+- sure
+- do it
+- go ahead
+- ok
+- okay
+- absolutely
+- fine
+- proceed
+- confirm
+- why not
+- sounds good
+- affirmative
+- right on
+- correct
+- that is right
+- indeed
+- let's do it
+- make it so
+- yes please
+- totally
+- alright
+- k
+- kk
+- you got it
+- of course
+- for sure
+- perfectly fine
+- yep go ahead
+- confirm action
+- execute that
+- run it
+- sure thing
+- aye
+- okie dokie
+- definitely
+- yessir
+
+## intent: deny
+- no
+- nope
+- n
+- cancel
+- stop
+- never mind
+- don't do it
+- abort
+- nay
+- negative
+- wait no
+- cancel that
+- nvm
+- hold on no
+- false
+- incorrect
+- do not proceed
+- absolutely not
+- no thanks
+- no way
+- stop that
+- stop right there
+- forget it
+- scratch that
+- disregard
+- not right now
+- nah
+- hell no
+- quit
+- drop it
+- i changed my mind
+- please cancel
+- stop action
+- don't
+- undo
+- back out
+- abandon
+- reject
+- nope nope nope
+
+## intent: out_of_scope
+- delete the report file
+- remove that folder
+- rename the picture
+- move my documents to backup
+- copy this over there
+- close the window please
+- search for my budget spreadsheet
+- list all directory contents
+- change directory to home
+- zip these files up
+- extract the archive now
+- can you delete my history
+- rename to something else
+- move this to trash
+- empty the recycle bin
+- copy everything
+- close the active app
+- find the image i saved yesterday
+- ls dash la
+- pwd
+- cd into documents
+- unrar that package
+- change permissions on the script
+- chmod 777 everything
+- remove all files in downloads
+- delete the entire system
+- format the c drive
+- securely wipe the disk
+- close all applications
+- kill the browser process
+- search google for cats
+- list running tasks
+- zip the project folder
+- archive these logs
+- move the mouse cursor
+- double click the icon
+- right click on desktop
+- drag and drop the folder
+- delete this garbage
+- rename my dog's photo
+- turn off the wifi
+- disable bluetooth right now
+- shut the front door
+- open the bedroom window
+- turn on airplane mode
+- lower the thermostat
+- close the living room blinds
+- mute the microwave
+- restart the wifi router
+- switch off the kitchen lights
+- dim the smart bulbs
+- turn the heating up
+- enable do not disturb mode
+- open the garage
+- lock the backdoor
+- turn on the tv
+- pair my headphones
+- disconnect bluetooth speaker
+- enable tethering
+- turn off cellular data
+- activate the alarm system
+- turn the oven on to 350
+- preheat the stove
+- shut the fridge door
+- open the blinds in my room
+- turn off the fan
+- turn on the AC
+- start the vacuum cleaner
+- stop the washing machine
+- pause the dryer
+- turn off the water heater
+- dim the hallway lights
+- change the rgb to red
+- reconnect the network
+- reset the modem
+- open the smart lock
+- close the sunroof
+- turn off the engine
+- what does reboot mean
+- what is a markdown file
+- how much ram do i need for gaming
+- define cpu architecture
+- explain what an ip address is
+- what is the difference between ssd and hdd
+- how does wifi work
+- what does json stand for
+- teach me python
+- how to write a shell script
+- what is linux
+- tell me about operating systems
+- how do i build a pc
+- what is cloud computing
+- explain virtual memory
+- what is a graphics card for
+- how to compile c code
+- what does chmod do
+- why is my internet so slow
+- what is ping
+- describe a mother board
+- what is open source software
+- how do databases work
+- what is machine learning
+- define artificial intelligence
+- what is a boolean
+- how to format a usb drive
+- what does formatting do
+- what is an executable file
+- how do i use terminal
+- what is bash
+- explain file systems
+- what is root access
+- how to become a sysadmin
+- define computer network
+- what is the volume of a box
+- what's the temperature in paris today
+- my laptop has no space inside
+- keeping an open mind
+- the volume of water is too high
+- her voice lacks volume
+- a file of people waiting
+- folder of paper in my bag
+- screen the candidates
+- the movie was screened last night
+- shut your mouth
+- sleep on the problem
+- power through the pain
+- running out of power
+- he has a lot of power
+- restarting the negotiation
+- the network of friends
+- my memory is terrible today
+- what a beautiful memory
+- the disk in my spine hurts
+- throwing a flying disk
+- check your temperature when you are sick
+- the political climate and temperature
+- give me some space
+- traveling to outer space
+- a window of opportunity
+- the terminal stage of illness
+- waiting at the bus terminal
+- console the crying child
+- playing on my video game console
+- shell on the beach
+- turtle shell
+- i have a bright future
+- dim witted
+- loud colors
+- quiet personality
+- mute the strings on the guitar
+- blind in one eye
+- play some music
+- open spotify and play rock
+- send an email to my boss
+- what is on my calendar for today
+- set a timer for 10 minutes
+- remind me to buy milk later
+- open netflix on the tv
+- call mom on speaker
+- read my new messages
+- text john that i will be late
+- check my spam folder in gmail
+- what is the weather like
+- will it rain tomorrow
+- order a pizza
+- add eggs to my shopping list
+- open youtube and search for cats
+- skip this song
+- pause the video
+- rewind ten seconds
+- who won the football game
+- what is the stock price of apple
+- read the news
+- summarize today's headlines
+- tell me a joke
+- flip a coin
+- roll a dice
+- start a stopwatch
+- wake me up at 7 am
+- what time is it in tokyo
+- translate hello to spanish
+- how many ounces in a cup
+- what is 15 percent of 80
+- directions to the nearest gas station
+- how long is the drive to work
+- book a flight to new york
+- find a good restaurant near me
+- show me pictures of dogs
+- tweet about my lunch
+- open instagram
+- delete my facebook account
+- 123456
+- asdfghjkl
+- qwerty
+- test test test
+- blah blah blah
+- testing one two three
+- beep boop
+- i am tired
+- what is the meaning of life
+- are you conscious
+- do you like pizza
+- who is your creator
+- this is a random sentence
+- colorless green ideas sleep furiously
+- the quick brown fox jumps over the lazy dog
+- a b c d e f g
+- just typing gibberish
+- nothing to see here
+- why is the sky blue
+- how deep is the ocean
+- do aliens exist
+- i love you
+- i hate you
+- you are stupid
+- you are very smart
+- tell me a secret
+- sing a song
+- beatbox for me
+- can you dance
+- what is your favorite color
+- do you have a name
+- how old are you
+- where do you live
+- are you human
+- i want to play a game
+- let's play chess
+- tick tack toe
+- rock paper scissors
+- guess what number i am thinking of
+- tell me a story
+- once upon a time
+- knock knock
+- who is there
+- random text input
+- do a barrel roll
+- up up down down left right
+- hack the mainframe
+- sudo make me a sandwich
+- use the force
+- beam me up
+- live long and prosper
+- i am your father
+- delete system 32
+- what happens if i type this
+- error 404
+- blue screen of death
+- kernel panic
+- out of cheese error
+- xyzzy
+- plugh
+- hello world
+- lorem ipsum dolor sit amet
+- testing the microphone
+- is this thing on
+- check one two
+- microphone check
+- can anybody hear me
+- shout into the void
+- echo echo echo
+- potato
+- banana
+- apple pie
+- ice cream is good
+- the cat sat on the mat
+- looking out the window
+- listening to the rain
+- typing on my keyboard
+- clicking the mouse
+- staring at the monitor
+- sitting in my chair
+- drinking coffee
+- eating a sandwich
+- taking a break
+- working hard
+- hardly working
+- what a long day
+- time flies

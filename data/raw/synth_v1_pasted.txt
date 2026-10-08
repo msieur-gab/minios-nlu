@@ -1,0 +1,304 @@
+intent: create_folder
+​make a folder called reports 2023 in documents
+​create directory new_project here
+​new folder photos on desktop
+​pls make a folder taxes in downloads
+​create a folder
+​new dir test-123 in the current folder
+​make folder "Q4 budgets" in shared
+​create folder vacation pics
+​add a folder named assets to workspace
+​make directory src in this directory
+​need a new folder called temp
+​create a directory backups in my home
+​in music create folder jazz
+​can you make a folder called recipes on the desktop
+​new folder school work
+​folder misc here pls
+​create folder called "Client A" in projects
+​make me a folder drafts
+​add folder css in public
+​in downloads make a folder installers
+​create dir logs
+​new folder named funny memes in pictures
+​make directory bin here
+​create a new folder
+​make a private folder in documents
+​intent: create_file
+​make a text file called notes
+​create index.html in public
+​new python script named scraper on desktop
+​create data.csv in downloads
+​make file readme.md
+​new plain text file todo here
+​create a json file called config in app
+​add style.css to assets
+​make a file
+​new md file called "meeting notes" in documents
+​create main.js here
+​make javascript file app in src
+​create a yaml file named docker-compose
+​empty txt file ideas on desktop
+​new file test.py in scripts
+​make csv file finances 24
+​in documents create html file about
+​create log.txt in the current folder
+​make markdown file changelog
+​create a python file
+​new file globals.css in styles
+​create settings.json in this directory
+​make empty file dummy.txt
+​touch server.js here
+​create text file "Chapter 1" in book
+​intent: open_file
+​open budget.csv from downloads
+​open my documents folder
+​launch index.html
+​open the invoices folder on my desktop
+​open notes.md
+​can you open pictures
+​open vacation folder from home
+​open main.py here
+​show me the projects folder
+​open readme.txt in this directory
+​open taxes 2022 from documents
+​open file config.yaml
+​let me see downloads
+​open "summer trip" folder on desktop
+​open data.json in workspace
+​go to music
+​open the scripts directory
+​open presentation.pdf
+​open folder old stuff in archives
+​open log.txt from system
+​open desktop
+​load app.js
+​open directory src
+​open the file "draft final" in documents
+​open home
+​intent: open_app
+​open the web browser
+​launch terminal
+​open settings
+​can you open firefox
+​start the calculator
+​open file manager
+​launch chromium
+​open console
+​start text editor
+​run shell
+​open the browser
+​bring up files
+​open command line
+​i need the calculator
+​open notepad
+​start file explorer
+​launch settings
+​open editor
+​open terminal pls
+​start web browser
+​open the chromium app
+​launch firefox browser
+​open file manager now
+​start console
+​open calculator
+​intent: adjust_volume
+​turn the volume up
+​mute
+​set volume to 40%
+​make it louder
+​decrease volume to 10
+​unmute the sound
+​volume max
+​turn it down
+​change volume to half
+​volume up
+​lower the volume
+​it's too loud
+​volume 0
+​increase volume
+​mute audio
+​make it quieter
+​unmute please
+​set volume 100 percent
+​raise volume to 75
+​i can't hear anything
+​volume down a bit
+​mute the speaker
+​audio to 20
+​turn the sound up
+​volume 50%
+​intent: adjust_brightness
+​increase the brightness
+​dim the screen
+​brightness 60 percent
+​screen is too bright
+​half brightness
+​turn down the brightness
+​raise brightness to max
+​make the screen brighter
+​brightness 100
+​lower screen brightness
+​it's too dark
+​set brightness to 30%
+​dim the monitor
+​brightness up
+​change brightness to minimum
+​turn screen up
+​brightness down
+​screen brighter please
+​put brightness at 75
+​decrease display brightness
+​max brightness
+​make it darker
+​screen brightness 20
+​increase display to 80%
+​dim it
+​intent: system_status
+​how is the cpu
+​check disk space
+​what is the temperature
+​show me ram usage
+​what's my ip address
+​check uptime
+​how's the system doing?
+​performance stats
+​is the pi overheating?
+​much memory is free?
+​network status
+​tell me the cpu load
+​check storage
+​what is the temp
+​disk usage pls
+​system health
+​how long has it been running
+​get ip
+​ram available
+​check temperature of cpu
+​show uptime
+​storage space left
+​current performance
+​network info
+​system status
+​intent: power
+​shut down the pi
+​restart
+​put it to sleep
+​power off
+​please reboot
+​shut down
+​turn off the device
+​go to sleep
+​restart system
+​halt
+​power down now
+​suspend
+​reboot it
+​turn off
+​sleep mode
+​intent: greet
+​hello
+​hi
+​hey there
+​good morning
+​greetings
+​hi bot
+​hello agent
+​yo
+​good evening
+​hey
+​intent: thanks
+​thank you
+​thanks
+​thx
+​thanks a lot
+​appreciate it
+​thank u
+​cheers
+​thanks so much
+​perfect thanks
+​ok thanks
+​intent: help
+​what can you do
+​help
+​how does this work
+​help me
+​what are your commands
+​list commands
+​i need help
+​what can i say
+​options
+​show help
+​intent: affirm
+​yes
+​ok
+​go ahead
+​yup
+​sure
+​yeah
+​do it
+​sounds good
+​okay
+​yes please
+​intent: deny
+​no
+​cancel
+​never mind
+​stop
+​nope
+​don't do that
+​abort
+​nvm
+​nah
+​cancel that
+​intent: out_of_scope
+​delete the folder called reports
+​remove index.html
+​rename notes.txt to old_notes.txt
+​move pictures to documents
+​copy the file
+​close the web browser
+​search for budget.csv
+​list files in downloads
+​change directory to desktop
+​zip the projects folder
+​turn off the wifi
+​turn on bluetooth
+​shut the door
+​open the window
+​what does reboot mean
+​what is a markdown file
+​how much RAM do I need for gaming
+​the volume of a box
+​the temperature in Paris
+​my laptop has no space
+​open youtube
+​play some music
+​check my email
+​set a timer for 10 minutes
+​add an event to my calendar
+​what's the weather like
+​delete all files
+​search google for cats
+​copy budget to usb
+​change background wallpaper
+​what time is it
+​order pizza
+​rename folder
+​remove directory
+​move file to trash
+​open the garage
+​close the window
+​turn down the lights in the room
+​pause the video
+​play next song
+​how do i open a file
+​the storage unit is full
+​delete my history
+​who are you
+​where am i
+​change user
+​login to network
+​format the drive
+​uninstall firefox
+​update the system

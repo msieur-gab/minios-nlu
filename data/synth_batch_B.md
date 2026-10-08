@@ -1,0 +1,543 @@
+<!-- batch B (external generator, 2026-10-08), cleaned by clean_batches.py -->
+
+## intent: adjust_volume
+- turn the volume [up](direction)
+- turn the volume [down](direction)
+- turn it [up](direction) please
+- turn it [down](direction) a bit
+- can you turn it [up](direction)
+- could you set volume to [50%](level)
+- would you mind making it [louder](direction)
+- is it possible to [mute](direction) the sound
+- can i get the audio at [max](level)
+- i need the sound [quieter](direction)
+- my ears are bleeding
+- i can't hear a thing
+- the music is way too loud
+- it's too quiet in here
+- people are trying to sleep
+- [max](level) volume please
+- [mute](direction) it now
+- [half](level) volume is fine
+- [down](direction) with the volume
+- [up](direction) the sound
+- trn vol [up](direction)
+- mak it [louder](direction) pls
+- volum to [30](level)
+- [mute](direction) th system
+- snd [down](direction) thx
+- set the audio to [40%](level)
+- change sound to [100](level)
+- adjust volume to [25 percent](level)
+- put the speakers on [max](level)
+- switch volume to [0](level)
+- make it [quieter](direction)
+- make the audio [louder](direction)
+- make sound [down](direction)
+- make it [up](direction)
+- make speakers [mute](direction)
+- how about volume at [60%](level)
+- let's try [half](level) volume
+- maybe set it to [10%](level)
+- give me [full](level) sound
+- i want volume at [80](level)
+- could we get it [louder](direction)
+- can the sound go [down](direction)
+- would you [mute](direction) the audio
+- please [unmute](direction) the speakers
+- just [decrease](direction) the volume
+- it is deafening
+- my head hurts from the noise
+- barely audible
+- speaking of sound, it's too loud
+- hush now
+- [100%](level) sound output
+- [zero](level) volume please
+- [unmute](direction) this
+- [decrease](direction) the audio
+- [increase](direction) the volume level
+- audo [up](direction)
+- vlm to [50](level)
+- quietr pls
+- [unmute](direction) ths
+- mak snd [max](level)
+- please raise the sound to [70%](level)
+- drop the audio to [20%](level)
+- bump the volume to [90](level)
+- lower the speakers to [15 percent](level)
+- boost sound to [maximum](level)
+- [raise](direction) it a little
+- [lower](direction) it down
+- [increase](direction) it some more
+- [decrease](direction) it please
+- [mute](direction) the output
+- i'd like it [louder](direction)
+- i prefer it [quieter](direction)
+- i need it [muted](direction)
+- i require [max](level) volume
+- i want the audio [unmuted](direction)
+- can you [increase](direction) audio
+- could you [decrease](direction) sound
+- would you mind [muting](direction)
+- is it possible to [unmute](direction)
+- can we have [half](level) volume
+- too much noise
+- i'm trying to concentrate
+- blast the music
+- whisper quiet please
+- silence is golden
+- [75%](level) is the target volume
+- [minimum](level) audio required
+- [louder](direction) is better
+- [quieter](direction) please
+- [unmute](direction) the device
+- vol [dwn](direction)
+- snd to [max](level)
+- mut it
+- [up](direction) th vol
+- [10%](level) snd
+- i want to change volume to [35%](level)
+- need to adjust audio to [45](level)
+- have to set sound to [55 percent](level)
+- got to put volume at [65%](level)
+- let us make the audio [75](level)
+- can we go [up](direction) on volume
+- should we go [down](direction) a bit
+- may i have it [louder](direction)
+- could i get it [quieter](direction)
+- can someone [mute](direction) this
+- the speakers are blowing out
+- crank it up
+- turn that racket off
+- [30](level) on the volume
+- [99%](level) audio level
+- [raise](direction) the decibels
+- [lower](direction) the noise
+- [mute](direction) all sounds
+- incrase vol
+- decrse snd
+- [unmute](direction) pls
+- vol [20](level)
+- sound [up](direction)
+- put the volume [up](direction)
+- put the sound [down](direction)
+- bring the audio [up](direction)
+- bring it [down](direction)
+- set it [up](direction)
+- do you mind setting volume to [85%](level)
+- are you able to [mute](direction)
+- can you make the sound [100%](level)
+- is there a way to [unmute](direction)
+- could you just [decrease](direction) it
+- it's blasting my eardrums
+- i cannot hear the dialogue
+- turn the noise off
+- we need more sound
+- we need less sound
+- [50](level) should be the volume
+- [max](level) it out
+- [unmute](direction) the pc
+- [down](direction) to ten
+- vol [0](level)
+- aud [max](level)
+- snd [mut](direction)
+- [unmut](direction) now
+- [up](direction) it
+
+## intent: adjust_brightness
+- [increase](direction) the brightness
+- [decrease](direction) the screen
+- turn brightness [up](direction)
+- turn the screen [down](direction)
+- make it [brighter](direction)
+- can you [dim](direction) the screen
+- could you set brightness to [50%](level)
+- would you mind making it [brighter](direction)
+- is it possible to [increase](direction) the backlight
+- can i get the display at [max](level)
+- the screen is blinding me
+- i can't see the text
+- it's too dark in here
+- the glare is terrible
+- my eyes are hurting
+- [max](level) brightness please
+- [half](level) screen brightness
+- [down](direction) with the brightness
+- [up](direction) the display
+- [60 percent](level) brightness now
+- brghtnes [up](direction)
+- mak it [dimmer](direction) pls
+- screen to [30](level)
+- [dim](direction) th screen
+- disp [down](direction) thx
+- set the display to [40%](level)
+- change backlight to [100](level)
+- adjust brightness to [25 percent](level)
+- put the screen on [max](level)
+- switch display to [minimum](level)
+- make the screen [dimmer](direction)
+- make the display [brighter](direction)
+- make brightness [down](direction)
+- make monitor [dim](direction)
+- how about brightness at [60%](level)
+- let's try [half](level) display
+- give me [full](level) brightness
+- i want the screen at [80](level)
+- could we get it [brighter](direction)
+- can the screen go [down](direction)
+- would you [dim](direction) the display
+- please [increase](direction) the brightness
+- just [decrease](direction) the backlight
+- it is way too bright
+- i am squinting
+- barely visible
+- speaking of screens, it's too dark
+- turn off the sun
+- [100%](level) screen output
+- [zero](level) brightness please
+- [dim](direction) this
+- [decrease](direction) the display
+- [increase](direction) the screen level
+- scrrn [up](direction)
+- brgt to [50](level)
+- dimmr pls
+- [increase](direction) ths
+- mak disp [max](level)
+- please raise the brightness to [70%](level)
+- drop the screen to [20%](level)
+- bump the display to [90](level)
+- lower the backlight to [15 percent](level)
+- boost brightness to [maximum](level)
+- [dim](direction) the output
+- i'd like it [brighter](direction)
+- i prefer it [dimmer](direction)
+- i need it [dimmed](direction)
+- i require [max](level) brightness
+- i want the screen [increased](direction)
+- can you [increase](direction) display
+- could you [decrease](direction) backlight
+- would you mind [dimming](direction)
+- is it possible to [brighten](direction)
+- can we have [half](level) brightness
+- too much light
+- i'm working in the dark
+- save some battery
+- i need sunglasses
+- [75%](level) is the target brightness
+- [minimum](level) display required
+- [brighter](direction) is better
+- [dimmer](direction) please
+- [increase](direction) the monitor
+- brgt [dwn](direction)
+- disp to [max](level)
+- dim it
+- [up](direction) th scrn
+- [10%](level) disp
+- i want to change brightness to [35%](level)
+- need to adjust display to [45](level)
+- have to set screen to [55 percent](level)
+- got to put backlight at [65%](level)
+- let us make the brightness [75](level)
+- can we go [up](direction) on screen
+- may i have it [brighter](direction)
+- could i get it [dimmer](direction)
+- can someone [dim](direction) this
+- the monitor is burning my retinas
+- [30](level) on the brightness
+- [99%](level) screen level
+- [raise](direction) the nits
+- [dim](direction) all screens
+- incrase brgt
+- decrse scrn
+- [dimmer](direction) pls
+- disp [20](level)
+- put the brightness [up](direction)
+- put the screen [down](direction)
+- bring the display [up](direction)
+- do you mind setting brightness to [85%](level)
+- are you able to [dim](direction)
+- can you make the screen [100%](level)
+- is there a way to [brighten](direction)
+- it's glaring at me
+- i cannot see the picture
+- [50](level) should be the brightness
+- brg [0](level)
+- scrn [max](level)
+- disp [dim](direction)
+- [brighter](direction) now
+
+## intent: system_status
+- how is the [cpu](metric) doing
+- check the [memory](metric)
+- what is the [temperature](metric)
+- show me [disk space](metric)
+- give me the [uptime](metric)
+- can you check the [ram](metric)
+- could you show me [network](metric) status
+- would you mind reporting [performance](metric)
+- is it possible to see [ip address](metric)
+- can i get the [cpu](metric) load
+- how's the system doing?
+- is the pi overheating?
+- what's going on with this thing?
+- are we running out of space?
+- why is it so slow?
+- [disk space](metric) report please
+- [temperature](metric) check now
+- [ram](metric) usage is what i need
+- [ip address](metric) show it
+- [uptime](metric) status
+- hw is [cpu](metric)
+- chk [memry](metric) pls
+- wht is [temp](metric)
+- shw [disk](metric)
+- gve [uptime](metric)
+- tell me the [cpu](metric) usage
+- display the [memory](metric) stats
+- print the [temperature](metric)
+- fetch [disk space](metric) info
+- read the [uptime](metric)
+- i want to see [ram](metric)
+- i need the [network](metric)
+- let's check [performance](metric)
+- show the [ip address](metric)
+- query the [cpu](metric)
+- how about the [ram](metric)
+- what about [disk space](metric)
+- let's look at [temperature](metric)
+- maybe show [uptime](metric)
+- give me [performance](metric) metrics
+- could we get [network](metric) info
+- can the [cpu](metric) be checked
+- would you check [memory](metric)
+- please report [temperature](metric)
+- just show [disk space](metric)
+- is everything okay?
+- running hot today
+- taking forever to load
+- feels laggy
+- check vitals
+- [cpu](metric) load please
+- [ram](metric) total
+- [temperature](metric) of the board
+- [network](metric) speed
+- [uptime](metric) in hours
+- shw [ram](metric)
+- [temp](metric) pls
+- get [ip](metric)
+- read [cpu](metric)
+- info on [disk](metric)
+- retrieve [cpu](metric) data
+- pull [memory](metric) details
+- extract [temperature](metric) log
+- find [disk space](metric) left
+- gather [uptime](metric) info
+- what is the current [ram](metric)
+- tell me current [network](metric)
+- report current [performance](metric)
+- display current [ip address](metric)
+- what is my [cpu](metric)
+- can you report [ram](metric)
+- could you fetch [network](metric)
+- would you mind checking [performance](metric)
+- is it possible to get [ip address](metric)
+- can we see [cpu](metric)
+- too much lag
+- the fan is loud
+- is it online?
+- check connection
+- [network](metric) status is what i want
+- [performance](metric) check
+- [ip address](metric) please
+- [cpu](metric) levels
+- [ram](metric) check
+- chck [cpu](metric)
+- [disk](metric) spc
+- wht [temp](metric)
+- [mem](metric) usage
+- sys [uptime](metric)
+- i want to monitor [cpu](metric)
+- need to observe [memory](metric)
+- have to watch [temperature](metric)
+- got to track [disk space](metric)
+- let us view [uptime](metric)
+- can we monitor [ram](metric)
+- should we observe [network](metric)
+- may i track [performance](metric)
+- could i get [ip address](metric)
+- can someone check [cpu](metric)
+- it crashed again
+- memory leak?
+- throttling hard
+- need more storage
+- connection dropped
+- [cpu](metric) info
+- [memory](metric) dump
+- [temperature](metric) reading
+- [disk space](metric) check
+- [uptime](metric) please
+- whts [cpu](metric)
+- [tmp](metric) check
+- get [ip addr](metric)
+- read [perf](metric)
+- look at [cpu](metric)
+- glance at [memory](metric)
+- inspect [temperature](metric)
+- analyze [disk space](metric)
+- review [uptime](metric)
+- do you mind showing [ram](metric)
+- are you able to fetch [network](metric)
+- can you display [performance](metric)
+- is there a way to see [ip address](metric)
+- could you just give [cpu](metric)
+- it's burning up
+- full drive
+- zero bytes left
+- offline
+- slow ping
+- [ram](metric) is what i need
+- [disk](metric) please
+- [temp](metric) now
+- [uptime](metric) check
+- [cpu](metric) fast
+- chk [net](metric)
+- info [ip](metric)
+- [perf](metric) pls
+- sys [mem](metric)
+- [tmp](metric) now
+
+## intent: power
+- [shut down](power_action) the pi
+- [restart](power_action) the system
+- put it to [sleep](power_action)
+- [power off](power_action) now
+- please [shut down](power_action)
+- can you [restart](power_action) it
+- could you put the device to [sleep](power_action)
+- would you mind to [power off](power_action)
+- is it possible to [shut down](power_action)
+- can i get a [restart](power_action)
+- goodnight
+- i'm done for the day
+- turn this thing off
+- [shut down](power_action) is what i want
+- [restart](power_action) immediately
+- [sleep](power_action) mode please
+- [power off](power_action) this device
+- [shut down](power_action) everything
+- sht dwn pls
+- restrat now
+- slep mode
+- pwr off
+- turn of
+- execute [shut down](power_action)
+- perform [restart](power_action)
+- enter [sleep](power_action)
+- trigger [power off](power_action)
+- initiate [shut down](power_action)
+- i want to [restart](power_action)
+- i need it to [sleep](power_action)
+- let's [power off](power_action)
+- time to [shut down](power_action)
+- going to [restart](power_action)
+- how about a [sleep](power_action)
+- let's try a [power off](power_action)
+- maybe [shut down](power_action)
+- give me a [restart](power_action)
+- i want a [sleep](power_action)
+- could we get a [power off](power_action)
+- can the system [shut down](power_action)
+- would you [restart](power_action) the pc
+- please enter [sleep](power_action)
+- just [power off](power_action)
+- rebooting is needed
+- it needs a break
+- cut the juice
+- pull the plug
+- go to bed
+- [restart](power_action) the board
+- [sleep](power_action) now
+- [power off](power_action) the pi
+- [shut down](power_action) the os
+- [restart](power_action) please
+- sht down
+- rstart it
+- go slep
+- pw off
+- command [shut down](power_action)
+- run [restart](power_action)
+- activate [sleep](power_action)
+- start [power off](power_action)
+- do a [shut down](power_action)
+- please [restart](power_action) today
+- just [sleep](power_action) for a bit
+- kindly [power off](power_action)
+- quickly [shut down](power_action)
+- safely [restart](power_action)
+- can you [sleep](power_action)
+- could you [power off](power_action)
+- would you mind [shutting down](power_action)
+- is it possible to [restart](power_action)
+- can we have a [sleep](power_action)
+- power cycle
+- hard reset
+- switch off
+- time for rest
+- [power off](power_action) the system
+- [shut down](power_action) the machine
+- [restart](power_action) the computer
+- [sleep](power_action) the device
+- [power off](power_action) all
+- sht dwn it
+- restrt pls
+- slepp
+- poer off
+- shut dwn
+- i want to invoke [shut down](power_action)
+- need to trigger [restart](power_action)
+- have to start [sleep](power_action)
+- got to execute [power off](power_action)
+- let us [shut down](power_action)
+- can we [restart](power_action)
+- should we [sleep](power_action)
+- may i [power off](power_action)
+- could i get a [shut down](power_action)
+- can someone [restart](power_action)
+- system halt
+- drop power
+- enter standby
+- kill power
+- taking a nap
+- [shut down](power_action) gracefully
+- [restart](power_action) completely
+- [sleep](power_action) deeply
+- [power off](power_action) safely
+- [shut down](power_action) immediately
+- sht dwn now
+- rebot
+- g 2 sleep
+- pwr down
+- shut it
+- proceed to [shut down](power_action)
+- get ready to [restart](power_action)
+- prepare for [sleep](power_action)
+- time for [power off](power_action)
+- it is time to [shut down](power_action)
+- do you mind doing a [restart](power_action)
+- are you able to [sleep](power_action)
+- can you do a [power off](power_action)
+- is there a way to [shut down](power_action)
+- could you just [restart](power_action)
+- power down
+- halt
+- standby
+- reboot
+- turn it off
+- [sleep](power_action) is what i need
+- [power off](power_action) please
+- [shut down](power_action) now
+- [restart](power_action) the box
+- [sleep](power_action) fast
+- sht dw
+- re strt
+- sleeeep

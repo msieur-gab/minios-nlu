@@ -1,0 +1,797 @@
+## intent: create_folder
+- can you make a folder called [reports](name) in [documents](location)
+- could you create the [taxes 2023](name) directory for me
+- i need a new folder for [receipts](name)
+- would you mind adding a [vacation pics](name) dir
+- is it possible to make a folder named "[old stuff](name)"
+- can i get a new directory on the [desktop](location)
+- please create [invoices](name) in my [downloads](location) folder
+- could we spin up a folder called [test_env](name)
+- do me a favor and make the [work](name) directory
+- hey can you create a folder for [school projects](name)
+- i have nowhere to put these, make a folder called [misc](name)
+- this desktop is a mess, create a [temp](name) folder
+- my files need organizing, make a [sort](name) directory
+- where can i put this? just make a [dump](name) folder
+- i need to store some things, add a [storage](name) dir
+- too much clutter, create a folder named [archive](name)
+- i'm starting a new task, make a [project alpha](name) directory
+- let's clean up, create [old](name) in [documents](location)
+- i need a clean workspace, make a [new folder](name)
+- gotta save these images somewhere, add a [photos](name) dir
+- crete flder [stuff](name)
+- mk dir [code](name) in [desktop](location)
+- pls make a flder called [notes](name)
+- crteate directory [personal](name)
+- new foler [random](name) here
+- add a foldr named "[my things](name)"
+- cn you make dir [work](name)
+- i nned a folder called [data](name)
+- make fldr [backup](name)
+- creet folder [temp](name)
+- [documents](location) needs a new folder called [letters](name)
+- [finances](name) is the folder i want you to create
+- on my [desktop](location), make a directory called [shortcuts](name)
+- [downloads](location) should have a [software](name) folder, make it
+- a folder named [memes](name), create it please
+- [music](location) needs a [mixtapes](name) directory
+- [2024 plans](name), make a folder for that
+- in [home](location), create the [scripts](name) folder
+- [my project](name) is the dir you should create
+- here in this directory, [assets](name) should be created
+- make a folder named [Q1](name)
+- create a directory called [Q2](name)
+- new folder [Q3](name) please
+- add a dir named [Q4](name)
+- i'd like a folder called [annual](name)
+- generate a directory [budget](name)
+- setup a folder called [expenses](name)
+- build a directory named [revenue](name)
+- initialize a folder [logs](name)
+- construct a dir called [cache](name)
+- make the [thumbnails](name) folder
+- create [cache_files](name) directory
+- new dir [temp_data](name)
+- add folder [user_data](name)
+- put a folder called [system](name) here
+- establish a directory named [config](name)
+- i require a folder [settings](name)
+- just make a folder called [bin](name)
+- give me a directory named [lib](name)
+- i want a folder called [src](name)
+- make a folder called [public](name) in [web](location)
+- create a directory named [private](name) in [home](location)
+- new folder [assets](name) in [project](location)
+- add a dir called [css](name) in [static](location)
+- i'd like a folder [js](name) in [static](location)
+- generate a directory [images](name) on [desktop](location)
+- setup a folder named [icons](name) in [downloads](location)
+- build a directory [fonts](name) in [resources](location)
+- initialize a folder [audio](name) in [media](location)
+- construct a dir [video](name) in [media](location)
+- can you make a directory called [test1](name)
+- could you create folder [test2](name)
+- i need a new dir named [test3](name)
+- would you mind adding folder [test4](name)
+- is it possible to make dir [test5](name)
+- can i get a new folder called [test6](name)
+- please create directory [test7](name)
+- could we spin up folder [test8](name)
+- do me a favor and make dir [test9](name)
+- hey can you create folder [test10](name)
+- i have nowhere to put these, make dir [mess](name)
+- this desktop is a mess, create folder [junk](name)
+- my files need organizing, make dir [sort_me](name)
+- where can i put this? just make folder [unsorted](name)
+- i need to store some things, add dir [keep](name)
+- too much clutter, create folder [toss](name)
+- i'm starting a new task, make dir [new_task](name)
+- let's clean up, create folder [cleanup](name)
+- i need a clean workspace, make dir [fresh](name)
+- gotta save these images somewhere, add folder [pics](name)
+- crete dir [stuff2](name)
+- mk folder [code2](name)
+- pls make a dir called [notes2](name)
+- crteate folder [personal2](name)
+- new foler [random2](name)
+- add a dir named "[my things 2](name)"
+- cn you make folder [work2](name)
+- i nned a dir called [data2](name)
+- make fldr [backup2](name)
+- creet dir [temp2](name)
+- [documents](location) needs a new dir called [letters2](name)
+- [finances2](name) is the dir i want you to create
+- on my [desktop](location), make a folder called [shortcuts2](name)
+- [downloads](location) should have a [software2](name) dir, make it
+- a dir named [memes2](name), create it please
+- [music](location) needs a [mixtapes2](name) folder
+- [2024 plans v2](name), make a dir for that
+- in [home](location), create the [scripts2](name) dir
+- [my project 2](name) is the folder you should create
+- here in this directory, [assets2](name) should be created as a folder
+- make a folder named [Jan](name)
+- create a directory called [Feb](name)
+- new folder [Mar](name) please
+- add a dir named [Apr](name)
+- i'd like a folder called [May](name)
+- generate a directory [Jun](name)
+- setup a folder called [Jul](name)
+- build a directory named [Aug](name)
+- initialize a folder [Sep](name)
+- construct a dir called [Oct](name)
+- make the [Nov](name) folder
+- create [Dec](name) directory
+- new dir [Winter](name)
+- add folder [Spring](name)
+- put a folder called [Summer](name) here
+- establish a directory named [Fall](name)
+- i require a folder [Autumn](name)
+- just make a folder called [Season](name)
+- give me a directory named [Year](name)
+- i want a folder called [Decade](name)
+- make a folder called [Monday](name) in [Schedule](location)
+- create a directory named [Tuesday](name) in [Schedule](location)
+- new folder [Wednesday](name) in [Schedule](location)
+- add a dir called [Thursday](name) in [Schedule](location)
+- i'd like a folder [Friday](name) in [Schedule](location)
+- generate a directory [Saturday](name) on [Weekend](location)
+- setup a folder named [Sunday](name) in [Weekend](location)
+- build a directory [Morning](name) in [Day](location)
+- initialize a folder [Afternoon](name) in [Day](location)
+- construct a dir [Evening](name) in [Day](location)
+- can you make a directory called [Night](name)
+- could you create folder [Midnight](name)
+- i need a new dir named [Noon](name)
+- would you mind adding folder [Dawn](name)
+- is it possible to make dir [Dusk](name)
+- can i get a new folder called [Sunrise](name)
+- please create directory [Sunset](name)
+- could we spin up folder [Twilight](name)
+- do me a favor and make dir [Daylight](name)
+- hey can you create folder [Starlight](name)
+- i have nowhere to put these, make dir [Moonlight](name)
+- this desktop is a mess, create folder [Sunlight](name)
+- my files need organizing, make dir [Ray](name)
+- where can i put this? just make folder [Beam](name)
+- i need to store some things, add dir [Flash](name)
+- too much clutter, create folder [Glow](name)
+- i'm starting a new task, make dir [Spark](name)
+- let's clean up, create folder [Flame](name)
+- i need a clean workspace, make dir [Fire](name)
+- gotta save these images somewhere, add folder [Heat](name)
+- crete dir [Cold](name)
+- mk folder [Warm](name)
+- pls make a dir called [Cool](name)
+- crteate folder [Freezing](name)
+- new foler [Boiling](name)
+- add a dir named "[Luke Warm](name)"
+- cn you make folder [Chilly](name)
+- i nned a dir called [Breezy](name)
+- make fldr [Windy](name)
+- creet dir [Stormy](name)
+- [Weather](location) needs a new dir called [Rain](name)
+- [Snow](name) is the dir i want you to create
+- on my [desktop](location), make a folder called [Hail](name)
+- [downloads](location) should have a [Sleet](name) dir, make it
+- a dir named [Fog](name), create it please
+- [music](location) needs a [Mist](name) folder
+- [Cloudy](name), make a dir for that
+- in [home](location), create the [Sunny](name) dir
+- [Clear](name) is the folder you should create
+- here in this directory, [Overcast](name) should be created as a folder
+- make a folder named [Dog](name)
+- create a directory called [Cat](name)
+- new folder [Bird](name) please
+- add a dir named [Fish](name)
+- i'd like a folder called [Mouse](name)
+- generate a directory [Rat](name)
+- setup a folder called [Cow](name)
+- build a directory named [Pig](name)
+- initialize a folder [Horse](name)
+- construct a dir called [Sheep](name)
+- make the [Goat](name) folder
+- create [Chicken](name) directory
+- new dir [Duck](name)
+- add folder [Goose](name)
+- put a folder called [Turkey](name) here
+- establish a directory named [Lion](name)
+- i require a folder [Tiger](name)
+- just make a folder called [Bear](name)
+- give me a directory named [Wolf](name)
+- i want a folder called [Fox](name)
+- make a folder called [Deer](name) in [Forest](location)
+- create a directory named [Elk](name) in [Forest](location)
+- new folder [Moose](name) in [Forest](location)
+- add a dir called [Rabbit](name) in [Forest](location)
+- i'd like a folder [Hare](name) in [Forest](location)
+- generate a directory [Squirrel](name) on [Tree](location)
+- setup a folder named [Chipmunk](name) in [Tree](location)
+- build a directory [Raccoon](name) in [Trash](location)
+- initialize a folder [Possum](name) in [Trash](location)
+- construct a dir [Skunk](name) in [Trash](location)
+- can you make a directory called [Whale](name)
+- could you create folder [Shark](name)
+- i need a new dir named [Dolphin](name)
+- would you mind adding folder [Seal](name)
+- is it possible to make dir [Walrus](name)
+- can i get a new folder called [Penguin](name)
+- please create directory [Polar Bear](name)
+- could we spin up folder [Arctic](name)
+- do me a favor and make dir [Antarctic](name)
+- hey can you create folder [Glacier](name)
+- i have nowhere to put these, make dir [Ice](name)
+- this desktop is a mess, create folder [Snowman](name)
+- my files need organizing, make dir [Igloo](name)
+- where can i put this? just make folder [Frost](name)
+- i need to store some things, add dir [Winter](name)
+- too much clutter, create folder [Cold](name)
+- i'm starting a new task, make dir [Chill](name)
+- let's clean up, create folder [Shiver](name)
+- i need a clean workspace, make dir [Freeze](name)
+- gotta save these images somewhere, add folder [Melt](name)
+- crete dir [Thaw](name)
+- mk folder [Slush](name)
+- pls make a dir called [Puddle](name)
+- crteate folder [Drop](name)
+- new foler [Drip](name)
+- add a dir named "[Splash](name)"
+- cn you make folder [Wave](name)
+- i nned a dir called [Ripple](name)
+- make fldr [Tide](name)
+- creet dir [Current](name)
+- [Ocean](location) needs a new dir called [Sea](name)
+- [Lake](name) is the dir i want you to create
+- on my [desktop](location), make a folder called [River](name)
+- [downloads](location) should have a [Stream](name) dir, make it
+- a dir named [Creek](name), create it please
+- [music](location) needs a [Pond](name) folder
+- [Pool](name), make a dir for that
+- in [home](location), create the [Bath](name) dir
+- [Shower](name) is the folder you should create
+- here in this directory, [Sink](name) should be created as a folder
+
+## intent: create_file
+- can you make a [text](file_type) file called [notes.txt](name)
+- could you create the [script.py](name) [python](file_type) file for me
+- i need a new [markdown](file_type) file for [readme.md](name)
+- would you mind adding a [data.csv](name) [csv](file_type) file
+- is it possible to make a file named "[config.json](name)"
+- can i get a new [html](file_type) document on the [desktop](location)
+- please create [styles.css](name) in my [downloads](location) folder
+- could we spin up a [yaml](file_type) file called [docker-compose.yml](name)
+- do me a favor and make the [main.js](name) [javascript](file_type) file
+- hey can you create a file for [meeting_notes.txt](name)
+- i have an idea to write down, make a file called [idea.md](name)
+- this project needs a starting point, create an [index.html](name)
+- my code needs organizing, make a [utils.py](name) file
+- where can i type this? just make a [draft.txt](name) file
+- i need to log some errors, add a [error.log](name) file
+- too much output, create a [json](file_type) file named [dump.json](name)
+- i'm starting a new script, make a [run.sh](name) file
+- let's document this, create [docs.md](name) in [documents](location)
+- i need a blank canvas, make a [blank.txt](name)
+- gotta save these numbers somewhere, add a [stats.csv](name) file
+- crete fl [test.txt](name)
+- mk file [app.js](name) in [desktop](location)
+- pls make a doc called [plan.md](name)
+- crteate file [user.json](name)
+- new fle [style.css](name) here
+- add a fil named "[todo list.txt](name)"
+- cn you make document [index.html](name)
+- i nned a file called [data.yaml](name)
+- make fl [script.js](name)
+- creet file [temp.txt](name)
+- [documents](location) needs a new file called [letter.docx](name)
+- [budget.csv](name) is the file i want you to create
+- on my [desktop](location), make a file called [shortcut.lnk](name)
+- [downloads](location) should have a [setup.exe](name) file, make it
+- a [markdown](file_type) file named [readme.md](name), create it please
+- [music](location) needs a [playlist.m3u](name) file
+- [2024_goals.txt](name), make a file for that
+- in [home](location), create the [bashrc](name) file
+- [my_script.py](name) is the file you should create
+- here in this directory, [assets.zip](name) should be created
+- make a file named [Jan.txt](name)
+- create a document called [Feb.md](name)
+- new [csv](file_type) file [Mar.csv](name) please
+- add a file named [Apr.json](name)
+- i'd like a [python](file_type) file called [May.py](name)
+- generate a [html](file_type) document [Jun.html](name)
+- setup a file called [Jul.yaml](name)
+- build a [javascript](file_type) file named [Aug.js](name)
+- initialize a [css](file_type) file [Sep.css](name)
+- construct a [plain text](file_type) file called [Oct.txt](name)
+- make the [Nov.md](name) file
+- create [Dec.csv](name) document
+- new file [Winter.json](name)
+- add [python](file_type) script [Spring.py](name)
+- put a [html](file_type) file called [Summer.html](name) here
+- establish a [yaml](file_type) file named [Fall.yaml](name)
+- i require a [javascript](file_type) file [Autumn.js](name)
+- just make a [css](file_type) file called [Season.css](name)
+- give me a [text](file_type) file named [Year.txt](name)
+- i want a [markdown](file_type) file called [Decade.md](name)
+- make a [csv](file_type) file called [Monday.csv](name) in [Schedule](location)
+- create a [json](file_type) file named [Tuesday.json](name) in [Schedule](location)
+- new [python](file_type) script [Wednesday.py](name) in [Schedule](location)
+- add a [html](file_type) file called [Thursday.html](name) in [Schedule](location)
+- i'd like a [yaml](file_type) file [Friday.yaml](name) in [Schedule](location)
+- generate a [javascript](file_type) file [Saturday.js](name) on [Weekend](location)
+- setup a [css](file_type) file named [Sunday.css](name) in [Weekend](location)
+- build a [text](file_type) file [Morning.txt](name) in [Day](location)
+- initialize a [markdown](file_type) file [Afternoon.md](name) in [Day](location)
+- construct a [csv](file_type) file [Evening.csv](name) in [Day](location)
+- can you make a [json](file_type) file called [Night.json](name)
+- could you create [python](file_type) script [Midnight.py](name)
+- i need a new [html](file_type) file named [Noon.html](name)
+- would you mind adding [yaml](file_type) file [Dawn.yaml](name)
+- is it possible to make [javascript](file_type) file [Dusk.js](name)
+- can i get a new [css](file_type) file called [Sunrise.css](name)
+- please create [text](file_type) file [Sunset.txt](name)
+- could we spin up [markdown](file_type) file [Twilight.md](name)
+- do me a favor and make [csv](file_type) file [Daylight.csv](name)
+- hey can you create [json](file_type) file [Starlight.json](name)
+- i have nowhere to put these notes, make [python](file_type) script [Moonlight.py](name)
+- this code is a mess, create [html](file_type) file [Sunlight.html](name)
+- my data needs organizing, make [yaml](file_type) file [Ray.yaml](name)
+- where can i write this? just make [javascript](file_type) file [Beam.js](name)
+- i need to script some things, add [css](file_type) file [Flash.css](name)
+- too much styling, create [text](file_type) file [Glow.txt](name)
+- i'm starting a new markdown, make [markdown](file_type) file [Spark.md](name)
+- let's log this, create [csv](file_type) file [Flame.csv](name)
+- i need a clean config, make [json](file_type) file [Fire.json](name)
+- gotta save these variables, add [python](file_type) script [Heat.py](name)
+- crete [html](file_type) file [Cold.html](name)
+- mk [yaml](file_type) file [Warm.yaml](name)
+- pls make a [javascript](file_type) file called [Cool.js](name)
+- crteate [css](file_type) file [Freezing.css](name)
+- new [text](file_type) foler [Boiling.txt](name)
+- add a [markdown](file_type) dir named "[Luke Warm.md](name)"
+- cn you make [csv](file_type) folder [Chilly.csv](name)
+- i nned a [json](file_type) dir called [Breezy.json](name)
+- make [python](file_type) fldr [Windy.py](name)
+- creet [html](file_type) dir [Stormy.html](name)
+- [Weather](location) needs a new [yaml](file_type) file called [Rain.yaml](name)
+- [Snow.js](name) is the [javascript](file_type) file i want you to create
+- on my [desktop](location), make a [css](file_type) file called [Hail.css](name)
+- [downloads](location) should have a [text](file_type) file [Sleet.txt](name), make it
+- a [markdown](file_type) file named [Fog.md](name), create it please
+- [music](location) needs a [csv](file_type) file [Mist.csv](name)
+- [Cloudy.json](name), make a [json](file_type) file for that
+- in [home](location), create the [python](file_type) script [Sunny.py](name)
+- [Clear.html](name) is the [html](file_type) file you should create
+- here in this directory, [Overcast.yaml](name) should be created as a [yaml](file_type) file
+- make a [javascript](file_type) file named [Dog.js](name)
+- create a [css](file_type) file called [Cat.css](name)
+- new [text](file_type) file [Bird.txt](name) please
+- add a [markdown](file_type) file named [Fish.md](name)
+- i'd like a [csv](file_type) file called [Mouse.csv](name)
+- generate a [json](file_type) file [Rat.json](name)
+- setup a [python](file_type) script called [Cow.py](name)
+- build a [html](file_type) file named [Pig.html](name)
+- initialize a [yaml](file_type) file [Horse.yaml](name)
+- construct a [javascript](file_type) file called [Sheep.js](name)
+- make the [css](file_type) file [Goat.css](name)
+- create [text](file_type) file [Chicken.txt](name)
+- new [markdown](file_type) file [Duck.md](name)
+- add [csv](file_type) file [Goose.csv](name)
+- put a [json](file_type) file called [Turkey.json](name) here
+- establish a [python](file_type) script named [Lion.py](name)
+- i require a [html](file_type) file [Tiger.html](name)
+- just make a [yaml](file_type) file called [Bear.yaml](name)
+- give me a [javascript](file_type) file named [Wolf.js](name)
+- i want a [css](file_type) file called [Fox.css](name)
+- make a [text](file_type) file called [Deer.txt](name) in [Forest](location)
+- create a [markdown](file_type) file named [Elk.md](name) in [Forest](location)
+- new [csv](file_type) file [Moose.csv](name) in [Forest](location)
+- add a [json](file_type) file called [Rabbit.json](name) in [Forest](location)
+- i'd like a [python](file_type) script [Hare.py](name) in [Forest](location)
+- generate a [html](file_type) file [Squirrel.html](name) on [Tree](location)
+- setup a [yaml](file_type) file named [Chipmunk.yaml](name) in [Tree](location)
+- build a [javascript](file_type) file [Raccoon.js](name) in [Trash](location)
+- initialize a [css](file_type) file [Possum.css](name) in [Trash](location)
+- construct a [text](file_type) file [Skunk.txt](name) in [Trash](location)
+- can you make a [markdown](file_type) file called [Whale.md](name)
+- could you create [csv](file_type) file [Shark.csv](name)
+- i need a new [json](file_type) file named [Dolphin.json](name)
+- would you mind adding [python](file_type) script [Seal.py](name)
+- is it possible to make [html](file_type) file [Walrus.html](name)
+- can i get a new [yaml](file_type) file called [Penguin.yaml](name)
+- please create [javascript](file_type) file [Polar Bear.js](name)
+- could we spin up [css](file_type) file [Arctic.css](name)
+- do me a favor and make [text](file_type) file [Antarctic.txt](name)
+- hey can you create [markdown](file_type) file [Glacier.md](name)
+- i have nowhere to write, make [csv](file_type) file [Ice.csv](name)
+- this text is a mess, create [json](file_type) file [Snowman.json](name)
+- my scripts need organizing, make [python](file_type) script [Igloo.py](name)
+- where can i put this code? just make [html](file_type) file [Frost.html](name)
+- i need to config some things, add [yaml](file_type) file [Winter.yaml](name)
+- too much javascript, create [javascript](file_type) file [Cold.js](name)
+- i'm starting a new style, make [css](file_type) file [Chill.css](name)
+- let's document this fast, create [text](file_type) file [Shiver.txt](name)
+- i need a clean markdown, make [markdown](file_type) file [Freeze.md](name)
+- gotta save these values, add [csv](file_type) file [Melt.csv](name)
+- crete [json](file_type) file [Thaw.json](name)
+- mk [python](file_type) file [Slush.py](name)
+- pls make a [html](file_type) file called [Puddle.html](name)
+- crteate [yaml](file_type) file [Drop.yaml](name)
+- new [javascript](file_type) foler [Drip.js](name)
+- add a [css](file_type) dir named "[Splash.css](name)"
+- cn you make [text](file_type) folder [Wave.txt](name)
+- i nned a [markdown](file_type) dir called [Ripple.md](name)
+- make [csv](file_type) fldr [Tide.csv](name)
+- creet [json](file_type) dir [Current.json](name)
+- [Ocean](location) needs a new [python](file_type) file called [Sea.py](name)
+- [Lake.html](name) is the [html](file_type) file i want you to create
+- on my [desktop](location), make a [yaml](file_type) file called [River.yaml](name)
+- [downloads](location) should have a [javascript](file_type) file [Stream.js](name), make it
+- a [css](file_type) file named [Creek.css](name), create it please
+- [music](location) needs a [text](file_type) file [Pond.txt](name)
+- [Pool.md](name), make a [markdown](file_type) file for that
+- in [home](location), create the [csv](file_type) file [Bath.csv](name)
+- [Shower.json](name) is the [json](file_type) file you should create
+- here in this directory, [Sink.py](name) should be created as a [python](file_type) file
+
+## intent: open_file
+- can you open the file called [report.pdf](name) in [documents](location)
+- could you load up the [finances.xlsx](name) spreadsheet for me
+- i need to look at [notes.md](name) right now
+- would you mind bringing up [vacation.jpg](name)
+- is it possible to view the file named "[old_plan.txt](name)"
+- can i get the [budget.csv](name) document on the [desktop](location) opened
+- please launch [styles.css](name) from my [downloads](location) folder
+- could we open the [docker-compose.yml](name) configuration
+- do me a favor and show the [main.js](name) script
+- hey can you open up the file for [meeting_notes.txt](name)
+- i have to read something, open the file called [idea.md](name)
+- this project needs checking, open [index.html](name)
+- my code is broken, open the [utils.py](name) file
+- where is my draft? just open [draft.txt](name)
+- i need to check for errors, read the [error.log](name) file
+- i want to see the output, open [dump.json](name)
+- i'm ready to edit, open the [run.sh](name) file
+- let's review this, open [docs.md](name) from [documents](location)
+- i need to write more, open [blank.txt](name)
+- gotta check those numbers, view the [stats.csv](name) file
+- opn fl [test.txt](name)
+- open file [app.js](name) in [desktop](location)
+- pls open the doc called [plan.md](name)
+- openn file [user.json](name)
+- run fle [style.css](name) here
+- open the fil named "[todo list.txt](name)"
+- cn you open document [index.html](name)
+- i nned to open [data.yaml](name)
+- read fl [script.js](name)
+- vi file [temp.txt](name)
+- [documents](location) has a file called [letter.docx](name), open it
+- [budget.csv](name) is the file i want you to open
+- on my [desktop](location), open the file called [shortcut.lnk](name)
+- [downloads](location) has a [setup.exe](name) file, open it
+- a file named [readme.md](name), open it please
+- [music](location) has a [playlist.m3u](name) file, load it
+- [2024_goals.txt](name), open that file
+- in [home](location), open the [bashrc](name) file
+- [my_script.py](name) is the file you should open
+- here in this directory, [assets.zip](name) should be opened
+- open the file named [Jan.txt](name)
+- open the document called [Feb.md](name)
+- view [Mar.csv](name) please
+- read a file named [Apr.json](name)
+- i'd like to open [May.py](name)
+- view the document [Jun.html](name)
+- open a file called [Jul.yaml](name)
+- read the file named [Aug.js](name)
+- open the file [Sep.css](name)
+- view the file called [Oct.txt](name)
+- open the [Nov.md](name) file
+- view [Dec.csv](name) document
+- open file [Winter.json](name)
+- read script [Spring.py](name)
+- open the file called [Summer.html](name) here
+- view the file named [Fall.yaml](name)
+- i require to see [Autumn.js](name)
+- just open the file called [Season.css](name)
+- give me the file named [Year.txt](name)
+- i want to read [Decade.md](name)
+- open the file called [Monday.csv](name) in [Schedule](location)
+- view the file named [Tuesday.json](name) in [Schedule](location)
+- open script [Wednesday.py](name) in [Schedule](location)
+- read the file called [Thursday.html](name) in [Schedule](location)
+- i'd like to open [Friday.yaml](name) in [Schedule](location)
+- view the file [Saturday.js](name) on [Weekend](location)
+- open the file named [Sunday.css](name) in [Weekend](location)
+- read the file [Morning.txt](name) in [Day](location)
+- open the file [Afternoon.md](name) in [Day](location)
+- view the file [Evening.csv](name) in [Day](location)
+- can you open the file called [Night.json](name)
+- could you read script [Midnight.py](name)
+- i need to view the file named [Noon.html](name)
+- would you mind opening file [Dawn.yaml](name)
+- is it possible to view file [Dusk.js](name)
+- can i get the file called [Sunrise.css](name) opened
+- please open the file [Sunset.txt](name)
+- could we read file [Twilight.md](name)
+- do me a favor and view file [Daylight.csv](name)
+- hey can you open file [Starlight.json](name)
+- i have to read these notes, open script [Moonlight.py](name)
+- this code is a mess, open file [Sunlight.html](name)
+- my data needs checking, view file [Ray.yaml](name)
+- where is this written? just open file [Beam.js](name)
+- i need to review this script, read file [Flash.css](name)
+- too much styling, open file [Glow.txt](name)
+- i'm starting a new read, view file [Spark.md](name)
+- let's check this log, open file [Flame.csv](name)
+- i need to see the config, view file [Fire.json](name)
+- gotta check these variables, read script [Heat.py](name)
+- opn file [Cold.html](name)
+- open file [Warm.yaml](name)
+- pls open the file called [Cool.js](name)
+- openn file [Freezing.css](name)
+- view foler [Boiling.txt](name)
+- read the dir named "[Luke Warm.md](name)"
+- cn you open folder [Chilly.csv](name)
+- i nned to view dir called [Breezy.json](name)
+- open fldr [Windy.py](name)
+- view dir [Stormy.html](name)
+- [Weather](location) has a file called [Rain.yaml](name), open it
+- [Snow.js](name) is the file i want you to open
+- on my [desktop](location), open the file called [Hail.css](name)
+- [downloads](location) has a file [Sleet.txt](name), open it
+- a file named [Fog.md](name), open it please
+- [music](location) has a file [Mist.csv](name), load it
+- [Cloudy.json](name), open that file
+- in [home](location), open the script [Sunny.py](name)
+- [Clear.html](name) is the file you should open
+- here in this directory, [Overcast.yaml](name) should be opened
+- open the file named [Dog.js](name)
+- view the file called [Cat.css](name)
+- open file [Bird.txt](name) please
+- read a file named [Fish.md](name)
+- i'd like to open [Mouse.csv](name)
+- view the file [Rat.json](name)
+- open a script called [Cow.py](name)
+- read the file named [Pig.html](name)
+- open the file [Horse.yaml](name)
+- view the file called [Sheep.js](name)
+- open the file [Goat.css](name)
+- view [Chicken.txt](name) document
+- open file [Duck.md](name)
+- read file [Goose.csv](name)
+- open the file called [Turkey.json](name) here
+- view the script named [Lion.py](name)
+- i require to see [Tiger.html](name)
+- just open the file called [Bear.yaml](name)
+- give me the file named [Wolf.js](name)
+- i want to read [Fox.css](name)
+- open the file called [Deer.txt](name) in [Forest](location)
+- view the file named [Elk.md](name) in [Forest](location)
+- open file [Moose.csv](name) in [Forest](location)
+- read the file called [Rabbit.json](name) in [Forest](location)
+- i'd like to open script [Hare.py](name) in [Forest](location)
+- view the file [Squirrel.html](name) on [Tree](location)
+- open the file named [Chipmunk.yaml](name) in [Tree](location)
+- read the file [Raccoon.js](name) in [Trash](location)
+- open the file [Possum.css](name) in [Trash](location)
+- view the file [Skunk.txt](name) in [Trash](location)
+- can you open the file called [Whale.md](name)
+- could you read file [Shark.csv](name)
+- i need to view the file named [Dolphin.json](name)
+- would you mind opening script [Seal.py](name)
+- is it possible to view file [Walrus.html](name)
+- can i get the file called [Penguin.yaml](name) opened
+- please open the file [Polar Bear.js](name)
+- could we read file [Arctic.css](name)
+- do me a favor and view file [Antarctic.txt](name)
+- hey can you open file [Glacier.md](name)
+- i have to read this text, open file [Ice.csv](name)
+- this text is a mess, open file [Snowman.json](name)
+- my scripts need checking, view script [Igloo.py](name)
+- where is this code? just open file [Frost.html](name)
+- i need to review this config, read file [Winter.yaml](name)
+- too much javascript, open file [Cold.js](name)
+- i'm ready to review style, view file [Chill.css](name)
+- let's read this fast, open file [Shiver.txt](name)
+- i need to check the markdown, view file [Freeze.md](name)
+- gotta verify these values, read file [Melt.csv](name)
+- opn file [Thaw.json](name)
+- open file [Slush.py](name)
+- pls open the file called [Puddle.html](name)
+- openn file [Drop.yaml](name)
+- view foler [Drip.js](name)
+- read the dir named "[Splash.css](name)"
+- cn you open folder [Wave.txt](name)
+- i nned to view dir called [Ripple.md](name)
+- open fldr [Tide.csv](name)
+- view dir [Current.json](name)
+- [Ocean](location) has a file called [Sea.py](name), open it
+- [Lake.html](name) is the file i want you to open
+- on my [desktop](location), open the file called [River.yaml](name)
+- [downloads](location) has a file [Stream.js](name), open it
+- a file named [Creek.css](name), open it please
+- [music](location) has a file [Pond.txt](name), load it
+- [Pool.md](name), open that file
+- in [home](location), open the file [Bath.csv](name)
+- [Shower.json](name) is the file you should open
+- here in this directory, [Sink.py](name) should be opened
+
+## intent: open_app
+- can you boot up [firefox](app) for me
+- could you start the [calculator](app) please
+- i need to browse the web, open [browser](app)
+- would you mind launching [terminal](app)
+- is it possible to run [settings](app)
+- can i get the [file manager](app) opened up
+- please start [chromium](app) right now
+- could we open the [text editor](app) real quick
+- do me a favor and execute [console](app)
+- hey can you open the [command line](app)
+- i have to write code, launch [editor](app)
+- this screen needs a shell, start [shell](app)
+- my files are lost, open [files](app)
+- where is the config? open [settings](app)
+- i need to do math, start [calculator](app)
+- time to surf, open [web browser](app)
+- i'm ready to hack, launch [terminal](app)
+- let's browse some sites, open [firefox](app)
+- i need to edit text, start [notepad](app)
+- gotta check my folders, open [file explorer](app)
+- lanch [firefox](app)
+- star app [chromium](app)
+- pls open [browser](app)
+- openn [web browser](app)
+- run [terminal](app)
+- open the [console](app)
+- cn you open [shell](app)
+- i nned to open [command line](app)
+- start [file manager](app)
+- boot [files](app)
+- [firefox](app) is the app i want you to open
+- [chromium](app), open that app
+- [browser](app) should be launched
+- [web browser](app) needs to be started
+- [terminal](app), start it please
+- [console](app) is what i need open
+- [shell](app), boot it up
+- [command line](app) is the app to run
+- [file manager](app), execute it
+- [files](app) should be running
+- open the app named [file explorer](app)
+- view the application [text editor](app)
+- open app [editor](app) please
+- start the app named [notepad](app)
+- i'd like to run [calculator](app)
+- view the application [settings](app)
+- open an app called [firefox](app)
+- start the app named [chromium](app)
+- open the app [browser](app)
+- view the app called [web browser](app)
+- open the [terminal](app) app
+- view [console](app) application
+- open app [shell](app)
+- start application [command line](app)
+- open the app called [file manager](app) here
+- view the app named [files](app)
+- i require to see [file explorer](app)
+- just open the app called [text editor](app)
+- give me the app named [editor](app)
+- i want to run [notepad](app)
+- open the app called [calculator](app) right now
+- view the app named [settings](app) on screen
+- open application [firefox](app) please
+- start the app called [chromium](app) for me
+- i'd like to open [browser](app) app
+- view the app [web browser](app) now
+- open the app named [terminal](app) quickly
+- start the app [console](app) quickly
+- open the app [shell](app) fast
+- view the app [command line](app) fast
+- can you open the app called [file manager](app)
+- could you start application [files](app)
+- i need to view the app named [file explorer](app)
+- would you mind opening app [text editor](app)
+- is it possible to view app [editor](app)
+- can i get the app called [notepad](app) opened
+- please open the app [calculator](app)
+- could we start app [settings](app)
+- do me a favor and view app [firefox](app)
+- hey can you open app [chromium](app)
+- i have to use the web, open app [browser](app)
+- this is a test, open app [web browser](app)
+- my code needs running, view app [terminal](app)
+- where is the prompt? just open app [console](app)
+- i need to bash something, start app [shell](app)
+- too much gui, open app [command line](app)
+- i'm starting a file search, view app [file manager](app)
+- let's check these files, open app [files](app)
+- i need to see directories, view app [file explorer](app)
+- gotta check this text, start app [text editor](app)
+- opn app [editor](app)
+- open app [notepad](app)
+- pls open the app called [calculator](app)
+- openn app [settings](app)
+- view aapp [firefox](app)
+- start the ap named [chromium](app)
+- cn you open application [browser](app)
+- i nned to view app called [web browser](app)
+- open ap [terminal](app)
+- view app [console](app)
+- [shell](app) is the app i want you to open
+- [command line](app), open that app
+- [file manager](app) should be launched
+- [files](app) needs to be started
+- [file explorer](app), start it please
+- [text editor](app) is what i need open
+- [editor](app), boot it up
+- [notepad](app) is the app to run
+- [calculator](app), execute it
+- [settings](app) should be running
+- open the app named [firefox](app)
+- view the application [chromium](app)
+- open app [browser](app) please
+- start the app named [web browser](app)
+- i'd like to run [terminal](app)
+- view the application [console](app)
+- open an app called [shell](app)
+- start the app named [command line](app)
+- open the app [file manager](app)
+- view the app called [files](app)
+- open the [file explorer](app) app
+- view [text editor](app) application
+- open app [editor](app)
+- start application [notepad](app)
+- open the app called [calculator](app) here
+- view the app named [settings](app)
+- i require to see [firefox](app)
+- just open the app called [chromium](app)
+- give me the app named [browser](app)
+- i want to run [web browser](app)
+- open the app called [terminal](app) right now
+- view the app named [console](app) on screen
+- open application [shell](app) please
+- start the app called [command line](app) for me
+- i'd like to open [file manager](app) app
+- view the app [files](app) now
+- open the app named [file explorer](app) quickly
+- start the app [text editor](app) quickly
+- open the app [editor](app) fast
+- view the app [notepad](app) fast
+- can you open the app called [calculator](app)
+- could you start application [settings](app)
+- i need to view the app named [firefox](app)
+- would you mind opening app [chromium](app)
+- is it possible to view app [browser](app)
+- can i get the app called [web browser](app) opened
+- please open the app [terminal](app)
+- could we start app [console](app)
+- do me a favor and view app [shell](app)
+- hey can you open app [command line](app)
+- i have to organize, open app [file manager](app)
+- this disk is full, open app [files](app)
+- my folders need sorting, view app [file explorer](app)
+- where is this file? just open app [text editor](app)
+- i need to write code, start app [editor](app)
+- too much reading, open app [notepad](app)
+- i'm starting some math, view app [calculator](app)
+- let's configure this, open app [settings](app)
+- i need to see preferences, view app [settings](app)
+- gotta calculate this, start app [calculator](app)
+- opn app [firefox](app)
+- open app [chromium](app)
+- pls open the app called [browser](app)
+- openn app [web browser](app)
+- view aapp [terminal](app)
+- start the ap named [console](app)
+- cn you open application [shell](app)
+- i nned to view app called [command line](app)
+- open ap [file manager](app)
+- view app [files](app)
+- [file explorer](app) is the app i want you to open
+- [text editor](app), open that app
+- [editor](app) should be launched
+- [notepad](app) needs to be started
+- [calculator](app), start it please
+- [settings](app) is what i need open
+- [firefox](app), boot it up
+- [chromium](app) is the app to run
+- [browser](app), execute it
+- [web browser](app) should be running

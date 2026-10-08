@@ -1,0 +1,1162 @@
+[
+[
+"create_folder",
+"make a folder called reports 2023 in documents"
+],
+[
+"create_folder",
+"create directory new_project here"
+],
+[
+"create_folder",
+"new folder photos on desktop"
+],
+[
+"create_folder",
+"pls make a folder taxes in downloads"
+],
+[
+"create_folder",
+"create a folder"
+],
+[
+"create_folder",
+"new dir test-123 in the current folder"
+],
+[
+"create_folder",
+"make folder \"Q4 budgets\" in shared"
+],
+[
+"create_folder",
+"create folder vacation pics"
+],
+[
+"create_folder",
+"add a folder named assets to workspace"
+],
+[
+"create_folder",
+"make directory src in this directory"
+],
+[
+"create_folder",
+"need a new folder called temp"
+],
+[
+"create_folder",
+"create a directory backups in my home"
+],
+[
+"create_folder",
+"in music create folder jazz"
+],
+[
+"create_folder",
+"can you make a folder called recipes on the desktop"
+],
+[
+"create_folder",
+"new folder school work"
+],
+[
+"create_folder",
+"folder misc here pls"
+],
+[
+"create_folder",
+"create folder called \"Client A\" in projects"
+],
+[
+"create_folder",
+"make me a folder drafts"
+],
+[
+"create_folder",
+"add folder css in public"
+],
+[
+"create_folder",
+"in downloads make a folder installers"
+],
+[
+"create_folder",
+"create dir logs"
+],
+[
+"create_folder",
+"new folder named funny memes in pictures"
+],
+[
+"create_folder",
+"make directory bin here"
+],
+[
+"create_folder",
+"create a new folder"
+],
+[
+"create_folder",
+"make a private folder in documents"
+],
+[
+"create_file",
+"make a text file called notes"
+],
+[
+"create_file",
+"create index.html in public"
+],
+[
+"create_file",
+"new python script named scraper on desktop"
+],
+[
+"create_file",
+"create data.csv in downloads"
+],
+[
+"create_file",
+"make file readme.md"
+],
+[
+"create_file",
+"new plain text file todo here"
+],
+[
+"create_file",
+"create a json file called config in app"
+],
+[
+"create_file",
+"add style.css to assets"
+],
+[
+"create_file",
+"make a file"
+],
+[
+"create_file",
+"new md file called \"meeting notes\" in documents"
+],
+[
+"create_file",
+"create main.js here"
+],
+[
+"create_file",
+"make javascript file app in src"
+],
+[
+"create_file",
+"create a yaml file named docker-compose"
+],
+[
+"create_file",
+"empty txt file ideas on desktop"
+],
+[
+"create_file",
+"new file test.py in scripts"
+],
+[
+"create_file",
+"make csv file finances 24"
+],
+[
+"create_file",
+"in documents create html file about"
+],
+[
+"create_file",
+"create log.txt in the current folder"
+],
+[
+"create_file",
+"make markdown file changelog"
+],
+[
+"create_file",
+"create a python file"
+],
+[
+"create_file",
+"new file globals.css in styles"
+],
+[
+"create_file",
+"create settings.json in this directory"
+],
+[
+"create_file",
+"make empty file dummy.txt"
+],
+[
+"create_file",
+"touch server.js here"
+],
+[
+"create_file",
+"create text file \"Chapter 1\" in book"
+],
+[
+"open_file",
+"open budget.csv from downloads"
+],
+[
+"open_file",
+"open my documents folder"
+],
+[
+"open_file",
+"launch index.html"
+],
+[
+"open_file",
+"open the invoices folder on my desktop"
+],
+[
+"open_file",
+"open notes.md"
+],
+[
+"open_file",
+"can you open pictures"
+],
+[
+"open_file",
+"open vacation folder from home"
+],
+[
+"open_file",
+"open main.py here"
+],
+[
+"open_file",
+"show me the projects folder"
+],
+[
+"open_file",
+"open readme.txt in this directory"
+],
+[
+"open_file",
+"open taxes 2022 from documents"
+],
+[
+"open_file",
+"open file config.yaml"
+],
+[
+"open_file",
+"let me see downloads"
+],
+[
+"open_file",
+"open \"summer trip\" folder on desktop"
+],
+[
+"open_file",
+"open data.json in workspace"
+],
+[
+"open_file",
+"go to music"
+],
+[
+"open_file",
+"open the scripts directory"
+],
+[
+"open_file",
+"open presentation.pdf"
+],
+[
+"open_file",
+"open folder old stuff in archives"
+],
+[
+"open_file",
+"open log.txt from system"
+],
+[
+"open_file",
+"open desktop"
+],
+[
+"open_file",
+"load app.js"
+],
+[
+"open_file",
+"open directory src"
+],
+[
+"open_file",
+"open the file \"draft final\" in documents"
+],
+[
+"open_file",
+"open home"
+],
+[
+"open_app",
+"open the web browser"
+],
+[
+"open_app",
+"launch terminal"
+],
+[
+"open_app",
+"open settings"
+],
+[
+"open_app",
+"can you open firefox"
+],
+[
+"open_app",
+"start the calculator"
+],
+[
+"open_app",
+"open file manager"
+],
+[
+"open_app",
+"launch chromium"
+],
+[
+"open_app",
+"open console"
+],
+[
+"open_app",
+"start text editor"
+],
+[
+"open_app",
+"run shell"
+],
+[
+"open_app",
+"open the browser"
+],
+[
+"open_app",
+"bring up files"
+],
+[
+"open_app",
+"open command line"
+],
+[
+"open_app",
+"i need the calculator"
+],
+[
+"open_app",
+"open notepad"
+],
+[
+"open_app",
+"start file explorer"
+],
+[
+"open_app",
+"launch settings"
+],
+[
+"open_app",
+"open editor"
+],
+[
+"open_app",
+"open terminal pls"
+],
+[
+"open_app",
+"start web browser"
+],
+[
+"open_app",
+"open the chromium app"
+],
+[
+"open_app",
+"launch firefox browser"
+],
+[
+"open_app",
+"open file manager now"
+],
+[
+"open_app",
+"start console"
+],
+[
+"open_app",
+"open calculator"
+],
+[
+"adjust_volume",
+"turn the volume up"
+],
+[
+"adjust_volume",
+"mute"
+],
+[
+"adjust_volume",
+"set volume to 40%"
+],
+[
+"adjust_volume",
+"make it louder"
+],
+[
+"adjust_volume",
+"decrease volume to 10"
+],
+[
+"adjust_volume",
+"unmute the sound"
+],
+[
+"adjust_volume",
+"volume max"
+],
+[
+"adjust_volume",
+"turn it down"
+],
+[
+"adjust_volume",
+"change volume to half"
+],
+[
+"adjust_volume",
+"volume up"
+],
+[
+"adjust_volume",
+"lower the volume"
+],
+[
+"adjust_volume",
+"it's too loud"
+],
+[
+"adjust_volume",
+"volume 0"
+],
+[
+"adjust_volume",
+"increase volume"
+],
+[
+"adjust_volume",
+"mute audio"
+],
+[
+"adjust_volume",
+"make it quieter"
+],
+[
+"adjust_volume",
+"unmute please"
+],
+[
+"adjust_volume",
+"set volume 100 percent"
+],
+[
+"adjust_volume",
+"raise volume to 75"
+],
+[
+"adjust_volume",
+"i can't hear anything"
+],
+[
+"adjust_volume",
+"volume down a bit"
+],
+[
+"adjust_volume",
+"mute the speaker"
+],
+[
+"adjust_volume",
+"audio to 20"
+],
+[
+"adjust_volume",
+"turn the sound up"
+],
+[
+"adjust_volume",
+"volume 50%"
+],
+[
+"adjust_brightness",
+"increase the brightness"
+],
+[
+"adjust_brightness",
+"dim the screen"
+],
+[
+"adjust_brightness",
+"brightness 60 percent"
+],
+[
+"adjust_brightness",
+"screen is too bright"
+],
+[
+"adjust_brightness",
+"half brightness"
+],
+[
+"adjust_brightness",
+"turn down the brightness"
+],
+[
+"adjust_brightness",
+"raise brightness to max"
+],
+[
+"adjust_brightness",
+"make the screen brighter"
+],
+[
+"adjust_brightness",
+"brightness 100"
+],
+[
+"adjust_brightness",
+"lower screen brightness"
+],
+[
+"adjust_brightness",
+"it's too dark"
+],
+[
+"adjust_brightness",
+"set brightness to 30%"
+],
+[
+"adjust_brightness",
+"dim the monitor"
+],
+[
+"adjust_brightness",
+"brightness up"
+],
+[
+"adjust_brightness",
+"change brightness to minimum"
+],
+[
+"adjust_brightness",
+"turn screen up"
+],
+[
+"adjust_brightness",
+"brightness down"
+],
+[
+"adjust_brightness",
+"screen brighter please"
+],
+[
+"adjust_brightness",
+"put brightness at 75"
+],
+[
+"adjust_brightness",
+"decrease display brightness"
+],
+[
+"adjust_brightness",
+"max brightness"
+],
+[
+"adjust_brightness",
+"make it darker"
+],
+[
+"adjust_brightness",
+"screen brightness 20"
+],
+[
+"adjust_brightness",
+"increase display to 80%"
+],
+[
+"adjust_brightness",
+"dim it"
+],
+[
+"system_status",
+"how is the cpu"
+],
+[
+"system_status",
+"check disk space"
+],
+[
+"system_status",
+"what is the temperature"
+],
+[
+"system_status",
+"show me ram usage"
+],
+[
+"system_status",
+"what's my ip address"
+],
+[
+"system_status",
+"check uptime"
+],
+[
+"system_status",
+"how's the system doing?"
+],
+[
+"system_status",
+"performance stats"
+],
+[
+"system_status",
+"is the pi overheating?"
+],
+[
+"system_status",
+"much memory is free?"
+],
+[
+"system_status",
+"network status"
+],
+[
+"system_status",
+"tell me the cpu load"
+],
+[
+"system_status",
+"check storage"
+],
+[
+"system_status",
+"what is the temp"
+],
+[
+"system_status",
+"disk usage pls"
+],
+[
+"system_status",
+"system health"
+],
+[
+"system_status",
+"how long has it been running"
+],
+[
+"system_status",
+"get ip"
+],
+[
+"system_status",
+"ram available"
+],
+[
+"system_status",
+"check temperature of cpu"
+],
+[
+"system_status",
+"show uptime"
+],
+[
+"system_status",
+"storage space left"
+],
+[
+"system_status",
+"current performance"
+],
+[
+"system_status",
+"network info"
+],
+[
+"system_status",
+"system status"
+],
+[
+"power",
+"shut down the pi"
+],
+[
+"power",
+"restart"
+],
+[
+"power",
+"put it to sleep"
+],
+[
+"power",
+"power off"
+],
+[
+"power",
+"please reboot"
+],
+[
+"power",
+"shut down"
+],
+[
+"power",
+"turn off the device"
+],
+[
+"power",
+"go to sleep"
+],
+[
+"power",
+"restart system"
+],
+[
+"power",
+"halt"
+],
+[
+"power",
+"power down now"
+],
+[
+"power",
+"suspend"
+],
+[
+"power",
+"reboot it"
+],
+[
+"power",
+"turn off"
+],
+[
+"power",
+"sleep mode"
+],
+[
+"greet",
+"hello"
+],
+[
+"greet",
+"hi"
+],
+[
+"greet",
+"hey there"
+],
+[
+"greet",
+"good morning"
+],
+[
+"greet",
+"greetings"
+],
+[
+"greet",
+"hi bot"
+],
+[
+"greet",
+"hello agent"
+],
+[
+"greet",
+"yo"
+],
+[
+"greet",
+"good evening"
+],
+[
+"greet",
+"hey"
+],
+[
+"thanks",
+"thank you"
+],
+[
+"thanks",
+"thanks"
+],
+[
+"thanks",
+"thx"
+],
+[
+"thanks",
+"thanks a lot"
+],
+[
+"thanks",
+"appreciate it"
+],
+[
+"thanks",
+"thank u"
+],
+[
+"thanks",
+"cheers"
+],
+[
+"thanks",
+"thanks so much"
+],
+[
+"thanks",
+"perfect thanks"
+],
+[
+"thanks",
+"ok thanks"
+],
+[
+"help",
+"what can you do"
+],
+[
+"help",
+"help"
+],
+[
+"help",
+"how does this work"
+],
+[
+"help",
+"help me"
+],
+[
+"help",
+"what are your commands"
+],
+[
+"help",
+"list commands"
+],
+[
+"help",
+"i need help"
+],
+[
+"help",
+"what can i say"
+],
+[
+"help",
+"options"
+],
+[
+"help",
+"show help"
+],
+[
+"affirm",
+"yes"
+],
+[
+"affirm",
+"ok"
+],
+[
+"affirm",
+"go ahead"
+],
+[
+"affirm",
+"yup"
+],
+[
+"affirm",
+"sure"
+],
+[
+"affirm",
+"yeah"
+],
+[
+"affirm",
+"do it"
+],
+[
+"affirm",
+"sounds good"
+],
+[
+"affirm",
+"okay"
+],
+[
+"affirm",
+"yes please"
+],
+[
+"deny",
+"no"
+],
+[
+"deny",
+"cancel"
+],
+[
+"deny",
+"never mind"
+],
+[
+"deny",
+"stop"
+],
+[
+"deny",
+"nope"
+],
+[
+"deny",
+"don't do that"
+],
+[
+"deny",
+"abort"
+],
+[
+"deny",
+"nvm"
+],
+[
+"deny",
+"nah"
+],
+[
+"deny",
+"cancel that"
+],
+[
+"out_of_scope",
+"delete the folder called reports"
+],
+[
+"out_of_scope",
+"remove index.html"
+],
+[
+"out_of_scope",
+"rename notes.txt to old_notes.txt"
+],
+[
+"out_of_scope",
+"move pictures to documents"
+],
+[
+"out_of_scope",
+"copy the file"
+],
+[
+"out_of_scope",
+"close the web browser"
+],
+[
+"out_of_scope",
+"search for budget.csv"
+],
+[
+"out_of_scope",
+"list files in downloads"
+],
+[
+"out_of_scope",
+"change directory to desktop"
+],
+[
+"out_of_scope",
+"zip the projects folder"
+],
+[
+"out_of_scope",
+"turn off the wifi"
+],
+[
+"out_of_scope",
+"turn on bluetooth"
+],
+[
+"out_of_scope",
+"shut the door"
+],
+[
+"out_of_scope",
+"open the window"
+],
+[
+"out_of_scope",
+"what does reboot mean"
+],
+[
+"out_of_scope",
+"what is a markdown file"
+],
+[
+"out_of_scope",
+"how much RAM do I need for gaming"
+],
+[
+"out_of_scope",
+"the volume of a box"
+],
+[
+"out_of_scope",
+"the temperature in Paris"
+],
+[
+"out_of_scope",
+"my laptop has no space"
+],
+[
+"out_of_scope",
+"open youtube"
+],
+[
+"out_of_scope",
+"play some music"
+],
+[
+"out_of_scope",
+"check my email"
+],
+[
+"out_of_scope",
+"set a timer for 10 minutes"
+],
+[
+"out_of_scope",
+"add an event to my calendar"
+],
+[
+"out_of_scope",
+"what's the weather like"
+],
+[
+"out_of_scope",
+"delete all files"
+],
+[
+"out_of_scope",
+"search google for cats"
+],
+[
+"out_of_scope",
+"copy budget to usb"
+],
+[
+"out_of_scope",
+"change background wallpaper"
+],
+[
+"out_of_scope",
+"what time is it"
+],
+[
+"out_of_scope",
+"order pizza"
+],
+[
+"out_of_scope",
+"rename folder"
+],
+[
+"out_of_scope",
+"remove directory"
+],
+[
+"out_of_scope",
+"move file to trash"
+],
+[
+"out_of_scope",
+"open the garage"
+],
+[
+"out_of_scope",
+"close the window"
+],
+[
+"out_of_scope",
+"turn down the lights in the room"
+],
+[
+"out_of_scope",
+"pause the video"
+],
+[
+"out_of_scope",
+"play next song"
+],
+[
+"out_of_scope",
+"how do i open a file"
+],
+[
+"out_of_scope",
+"the storage unit is full"
+],
+[
+"out_of_scope",
+"delete my history"
+],
+[
+"out_of_scope",
+"who are you"
+],
+[
+"out_of_scope",
+"where am i"
+],
+[
+"out_of_scope",
+"change user"
+],
+[
+"out_of_scope",
+"login to network"
+],
+[
+"out_of_scope",
+"format the drive"
+],
+[
+"out_of_scope",
+"uninstall firefox"
+],
+[
+"out_of_scope",
+"update the system"
+]
+]

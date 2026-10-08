@@ -1,0 +1,236 @@
+<title>MiniOS Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-screen console. Header with model card, scrolling log of turns
+   (command → trace → reply), composer pinned at the bottom with suggestion chips. */
+:root {
+  --bg: #eef0ec;
+  --surface: #fbfcfa;
+  --trace: #e3e7e1;
+  --fg: #1a1f1c;
+  --muted: #5c665f;
+  --line: #cfd5cd;
+  --accent: #2e5bd6;
+  --accent-ink: #ffffff;
+  --exec: #1d6b4a;
+  --warn: #9a5a00;
+  --slot-name: #d9e4ff;
+  --slot-location: #d6f0e2;
+  --slot-file_type: #f6e3c8;
+  --slot-app: #ecdcf7;
+  --font-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121513; --surface: #1a1e1b; --trace: #0d0f0e; --fg: #e4e9e5; --muted: #8e9a92;
+    --line: #2c332e; --accent: #7c9cff; --accent-ink: #0d1020; --exec: #6fd3a3; --warn: #f0b45a;
+    --slot-name: #23325c; --slot-location: #1d4232; --slot-file_type: #4b3618; --slot-app: #3b2851;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121513; --surface: #1a1e1b; --trace: #0d0f0e; --fg: #e4e9e5; --muted: #8e9a92;
+  --line: #2c332e; --accent: #7c9cff; --accent-ink: #0d1020; --exec: #6fd3a3; --warn: #f0b45a;
+  --slot-name: #23325c; --slot-location: #1d4232; --slot-file_type: #4b3618; --slot-app: #3b2851;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-ui); }
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); max-width: 720px; margin: 0 auto; }
+
+header { padding: 12px 16px 10px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+h1 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+h1 span { font-family: var(--font-mono); font-weight: 400; font-size: 12px; color: var(--muted); margin-left: 6px; }
+button { font: inherit; color: inherit; }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.ghost:focus-visible, .chip:focus-visible, .send:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details { font-size: 13px; color: var(--muted); }
+summary { cursor: pointer; font-family: var(--font-mono); font-size: 12px; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+#about > summary::before { content: "▸ "; }
+#about[open] > summary::before { content: "▾ "; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px 16px; margin: 10px 0 4px; font-variant-numeric: tabular-nums; }
+.stats div { display: flex; flex-direction: column; }
+.stats b { font-family: var(--font-mono); font-weight: 500; color: var(--fg); font-size: 14px; }
+.stats small { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.note { margin: 8px 0 2px; max-width: 62ch; }
+
+.log { overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 18px; overscroll-behavior: contain; }
+.turn { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cmd { align-self: flex-end; max-width: 88%; background: var(--accent); color: var(--accent-ink); padding: 8px 12px; border-radius: 14px 14px 4px 14px; overflow-wrap: anywhere; }
+.trace { background: var(--trace); border-radius: 8px; padding: 10px 12px; font: 12.5px/1.6 var(--font-mono); overflow-x: auto; min-width: 0; }
+.row { display: grid; grid-template-columns: 4.5em 1fr; gap: 8px; }
+.row > span:first-child { color: var(--muted); }
+.row > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.conf { font-variant-numeric: tabular-nums; }
+.dim { color: var(--muted); }
+.tagged mark { color: var(--fg); border-radius: 3px; padding: 0 3px; }
+.tagged mark sub { font-size: 9.5px; color: var(--muted); margin-left: 3px; vertical-align: baseline; }
+mark.name { background: var(--slot-name); }
+mark.location { background: var(--slot-location); }
+mark.file_type { background: var(--slot-file_type); }
+mark.app { background: var(--slot-app); }
+.exec { color: var(--exec); }
+.exec em { font-style: normal; font-size: 10.5px; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 6px; opacity: 0.8; }
+.state { color: var(--fg); }
+.abstain { color: var(--warn); }
+.reply { max-width: 92%; padding: 2px 2px 0; overflow-wrap: anywhere; white-space: pre-line; }
+.reply::before { content: "agent"; display: block; font: 500 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 2px; }
+.why { margin-top: -2px; }
+.why > summary { display: inline-flex; align-items: center; gap: 6px; font: 11.5px var(--font-mono); color: var(--muted); cursor: pointer; padding: 4px 6px 4px 2px; border-radius: 6px; list-style: none; }
+.why > summary::-webkit-details-marker { display: none; }
+.why > summary::before { content: none; }
+.why > summary svg { width: 14px; height: 14px; flex: none; transition: transform 0.15s ease; }
+.why[open] > summary svg { transform: rotate(90deg); }
+.why > summary .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--exec); flex: none; }
+.why > summary .dot.ask { background: var(--accent); }
+.why > summary .dot.skip { background: var(--warn); }
+.why .trace { margin-top: 4px; }
+.divider { text-align: center; font: 11px var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 10px; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.composer { min-width: 0; border-top: 1px solid var(--line); padding: 10px 16px 12px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; font: 12.5px var(--font-mono); color: var(--fg); cursor: pointer; white-space: nowrap; }
+form { display: flex; gap: 8px; }
+input { flex: 1; min-width: 0; font: 16px var(--font-ui); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+.send { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 0 16px; font-weight: 600; cursor: pointer; }
+.pending { font: 12px var(--font-mono); color: var(--warn); }
+@media (prefers-reduced-motion: no-preference) { .turn { animation: rise 0.18s ease-out; } }
+@keyframes rise { from { transform: translateY(4px); } to { transform: none; } }
+</style>
+
+<div class="app">
+  <header>
+    <div class="top">
+      <h1>MiniOS Agent<span id="ver"></span></h1>
+      <button class="ghost" id="reset" type="button">Clear</button>
+    </div>
+    <details id="about">
+      <summary id="sum"></summary>
+      <div class="stats" id="stats"></div>
+      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both were trained in Python and run here in plain JavaScript, on this phone, with no network calls. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures.</p>
+    </details>
+  </header>
+
+  <main class="log" id="log" aria-live="polite"></main>
+
+  <div class="composer">
+    <div class="chips" id="chips"></div>
+    <div class="pending" id="pending" hidden></div>
+    <form id="form" autocomplete="off">
+      <input id="q" type="text" enterkeyhint="send" autocapitalize="none" spellcheck="false" placeholder="Type a command in English" aria-label="Command">
+      <button class="send" type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<script type="application/json" id="model">/*MODEL*/</script>
+<script>/*RUNTIME*/</script>
+<script>/*AGENT*/</script>
+<script>
+const MODEL = JSON.parse(document.getElementById("model").textContent);
+const EVAL = /*EVAL*/;
+const nlu = new NLURuntime.NLU(MODEL);
+const agent = new Agent(nlu);
+const $ = id => document.getElementById(id);
+const log = $("log");
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+$("ver").textContent = "model " + MODEL.version;
+$("sum").textContent = (JSON.stringify(MODEL).length / 1024).toFixed(0) + " KB model · " + MODEL.intents.length + " intents · runs offline";
+const stats = [
+  [MODEL.stats.examples, "training sentences"],
+  [MODEL.stats.features.toLocaleString("en"), "intent features"],
+  [MODEL.stats.train_seconds + " s", "training time"],
+  [EVAL.accuracy + " %", "intent accuracy*"],
+  [EVAL.slot_f1, "slot F1*"],
+  [EVAL.n, "held-out sentences*"],
+];
+$("stats").innerHTML = stats.map(([v, l]) => `<div><b>${esc(v)}</b><small>${esc(l)}</small></div>`).join("")
+  + `<div style="grid-column:1/-1"><small>* measured on handwritten sentences the model never saw</small></div>`;
+
+function tagged(text, r) {
+  const toks = NLURuntime.tokenize(text);
+  let html = "", pos = 0, i = 0;
+  while (i < toks.length) {
+    const lab = r.labels[i];
+    if (lab === "O") { i++; continue; }
+    const slot = lab.slice(2), s = toks[i][1];
+    let e = toks[i][2];
+    i++;
+    while (i < toks.length && r.labels[i] === "I-" + slot) { e = toks[i][2]; i++; }
+    html += esc(text.slice(pos, s)) + `<mark class="${esc(slot)}">${esc(text.slice(s, e))}<sub>${esc(slot)}</sub></mark>`;
+    pos = e;
+  }
+  return html + esc(text.slice(pos));
+}
+
+function row(label, html, cls = "") {
+  return `<div class="row ${cls}"><span>${label}</span><span>${html}</span></div>`;
+}
+
+function renderTurn(text, out) {
+  const r = out.trace[0].r;
+  const alt = r.ranking.slice(1).map(([n, p]) => `${esc(n)} ${p.toFixed(2)}`).join(" · ");
+  let t = row("intent", `<b>${esc(r.intent)}</b> <span class="conf">${r.confidence.toFixed(2)}</span> <span class="dim">· ${r.ms.toFixed(2)} ms</span>`);
+  t += row("alt", `<span class="dim">${alt}</span>`);
+  t += row("slots", `<span class="tagged">${tagged(text, r)}</span>`);
+  for (const x of out.trace.slice(1)) {
+    if (x.type === "exec") t += row("exec", `$ ${esc(x.text)}<em>simulated</em>`, "exec");
+    else if (x.type === "state") t += row("state", esc(x.text), "state");
+    else if (x.type === "abstain") t += row("skip", esc(x.text), "abstain");
+  }
+  const el = document.createElement("section");
+  el.className = "turn";
+  const kinds = out.trace.slice(1).map(x => x.type);
+  const dot = kinds.includes("abstain") ? "skip" : kinds.includes("exec") ? "" : "ask";
+  const icon = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  el.innerHTML = `<div class="cmd">${esc(text)}</div><div class="reply">${esc(out.reply)}</div>`
+    + `<details class="why"><summary aria-label="Show what the agent did">${icon}<span class="dot ${dot}"></span>${esc(r.intent)} ${r.confidence.toFixed(2)}</summary><div class="trace">${t}</div></details>`;
+  log.appendChild(el);
+  const why = el.querySelector(".why");
+  why.addEventListener("toggle", () => { if (why.open) why.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+  log.scrollTop = log.scrollHeight;
+}
+
+function updatePending() {
+  const p = agent.pending;
+  $("pending").hidden = !p;
+  if (p) $("pending").textContent = "waiting for " + p.need + " · " + p.intent + " · say cancel to drop it";
+}
+
+function send(text) {
+  text = text.trim();
+  if (!text) return;
+  renderTurn(text, agent.handle(text));
+  updatePending();
+}
+
+const CHIPS = ["is the pi overheating?", "turn the volume up", "brightness 40%", "open budget.csv",
+  "make a folder called drafts in documents", "new markdown file", "shut down", "how's the system doing",
+  "it's too loud", "open the terminal", "delete the reports folder", "help"];
+$("chips").innerHTML = CHIPS.map((c, i) => `<button class="chip" type="button" id="chip${i}">${esc(c)}</button>`).join("");
+CHIPS.forEach((c, i) => $("chip" + i).addEventListener("click", () => send(c)));
+
+$("form").addEventListener("submit", e => {
+  e.preventDefault();
+  send($("q").value);
+  $("q").value = "";
+});
+$("reset").addEventListener("click", () => { log.innerHTML = ""; agent.reset(); updatePending(); $("q").focus(); });
+
+// Two example turns so the trace format is visible on first load
+["create a folder called holiday photos in pictures", "fire up firefox"].forEach(send);
+const d = document.createElement("div");
+d.className = "divider";
+d.textContent = "examples above · your turn";
+log.appendChild(d);
+</script>

@@ -1,0 +1,278 @@
+fixed: 'new folder' is not a name i need a clean workspace, make a new folder
+says folder, labeled file    new text foler Boiling.txt
+says folder, labeled file    add a markdown dir named "Luke Warm.md"
+says folder, labeled file    cn you make csv folder Chilly.csv
+says folder, labeled file    i nned a json dir called Breezy.json
+says folder, labeled file    make python fldr Windy.py
+says folder, labeled file    creet html dir Stormy.html
+says folder, labeled file    new javascript foler Drip.js
+says folder, labeled file    add a css dir named "Splash.css"
+says folder, labeled file    cn you make text folder Wave.txt
+says folder, labeled file    i nned a markdown dir called Ripple.md
+says folder, labeled file    make csv fldr Tide.csv
+says folder, labeled file    creet json dir Current.json
+ambiguous                    this is a library
+ambiguous                    i love this song
+ambiguous                    mute the tv
+volume/brightness conflict   make it up
+volume/brightness conflict   maybe set it to 10%
+volume/brightness conflict   raise it a little
+volume/brightness conflict   lower it down
+volume/brightness conflict   increase it some more
+volume/brightness conflict   decrease it please
+ambiguous                    light up the room
+volume/brightness conflict   should we go down a bit
+ambiguous                    this is an oled
+ambiguous                    crank the light up
+ambiguous                    turn that flash off
+ambiguous                    i love this theme
+ambiguous                    lower the light
+ambiguous                    light up
+volume/brightness conflict   bring it down
+volume/brightness conflict   set it up
+volume/brightness conflict   could you just decrease it
+ambiguous                    turn the light off
+ambiguous                    we need more screen
+ambiguous                    we need less display
+volume/brightness conflict   max it out
+ambiguous                    dim the tv
+ambiguous                    increase the pc
+volume/brightness conflict   down to ten
+volume/brightness conflict   up it
+ambiguous                    we need to upgrade
+duplicate                    shw ram
+ambiguous                    it's time to stop
+ambiguous                    see you later
+duplicate                    turn of
+ambiguous                    bye bye
+ambiguous                    pff
+ambiguous                    dwn
+ambiguous                    halt
+filler                       slow down
+filler                       hurry up
+filler                       wait for it
+filler                       almost there
+filler                       getting closer
+filler                       far away
+filler                       up high
+filler                       down low
+filler                       in the middle
+filler                       to the left
+filler                       to the right
+filler                       going forward
+filler                       moving backward
+filler                       turning around
+filler                       jumping up
+filler                       sitting down
+filler                       standing still
+filler                       walking away
+filler                       running fast
+filler                       swimming deep
+filler                       flying high
+filler                       dreaming big
+filler                       thinking hard
+filler                       speaking softly
+filler                       yelling loudly
+filler                       whispering secrets
+filler                       laughing out loud
+filler                       crying tears
+filler                       smiling wide
+filler                       frowning sad
+filler                       feeling happy
+filler                       feeling angry
+filler                       confused face
+filler                       surprised look
+filler                       bored now
+filler                       excited for this
+filler                       worried about it
+filler                       scared of the dark
+filler                       brave heart
+filler                       strong mind
+filler                       weak knees
+filler                       heavy lifting
+filler                       light as a feather
+filler                       dark as night
+filler                       bright as day
+filler                       cold as ice
+filler                       hot as fire
+filler                       wet water
+filler                       dry sand
+filler                       soft pillow
+filler                       hard rock
+filler                       smooth surface
+filler                       rough texture
+filler                       sharp knife
+filler                       dull blade
+filler                       clean room
+filler                       dirty laundry
+filler                       empty glass
+filler                       full cup
+filler                       new car
+filler                       old house
+filler                       young child
+filler                       old man
+filler                       fast runner
+filler                       slow walker
+filler                       early bird
+filler                       night owl
+filler                       morning person
+filler                       evening stroll
+filler                       afternoon tea
+filler                       midnight snack
+filler                       breakfast time
+filler                       lunch break
+filler                       dinner date
+filler                       snack attack
+filler                       sweet tooth
+filler                       sour lemon
+filler                       bitter truth
+filler                       salty sea
+filler                       spicy food
+filler                       bland taste
+filler                       rich flavor
+filler                       poor choice
+filler                       wealthy person
+filler                       broke student
+filler                       expensive taste
+filler                       cheap price
+filler                       free stuff
+filler                       paid app
+filler                       discount code
+filler                       coupon clipping
+filler                       saving money
+filler                       spending cash
+filler                       credit card
+filler                       debit account
+filler                       bank transfer
+filler                       online shopping
+filler                       retail therapy
+filler                       window shopping
+filler                       browsing the web
+filler                       surfing the net
+filler                       clicking links
+filler                       scrolling down
+filler                       swiping left
+filler                       tapping the screen
+filler                       double tapping
+filler                       zooming in
+filler                       pinching out
+filler                       rotating screen
+filler                       landscape mode
+filler                       portrait view
+filler                       full screen
+filler                       windowed mode
+filler                       minimized app
+filler                       maximized window
+filler                       hidden file
+filler                       visible folder
+filler                       transparent background
+filler                       opaque color
+filler                       solid line
+filler                       dashed border
+filler                       dotted circle
+filler                       perfect square
+filler                       round corner
+filler                       sharp edge
+filler                       flat design
+filler                       drop shadow
+filler                       outer glow
+filler                       inner stroke
+filler                       gradient fill
+filler                       solid color
+filler                       red apple
+filler                       blue sky
+filler                       green grass
+filler                       yellow sun
+filler                       orange juice
+filler                       purple rain
+filler                       pink panther
+filler                       brown bear
+filler                       black night
+filler                       white snow
+filler                       gray cloud
+filler                       silver lining
+filler                       gold medal
+filler                       copper wire
+filler                       iron man
+filler                       steel beam
+filler                       wood floor
+filler                       glass window
+filler                       brick wall
+filler                       stone path
+filler                       dirt road
+filler                       paved highway
+filler                       traffic jam
+filler                       green light
+filler                       red stop sign
+filler                       yield right of way
+filler                       speed limit
+filler                       slow down zone
+filler                       school crossing
+filler                       pedestrian walk
+filler                       bicycle lane
+filler                       bus stop
+filler                       train station
+filler                       airport terminal
+filler                       boat dock
+filler                       space station
+filler                       rocket ship
+filler                       shooting star
+filler                       full moon
+filler                       crescent phase
+filler                       solar eclipse
+filler                       meteor shower
+filler                       milky way
+filler                       black hole
+filler                       big bang
+filler                       dark matter
+filler                       string theory
+filler                       quantum physics
+filler                       relativity
+filler                       gravity falls
+filler                       magnetic field
+filler                       electric charge
+filler                       positive vibe
+filler                       negative energy
+filler                       neutral stance
+filler                       acidic base
+filler                       chemical reaction
+filler                       biology class
+filler                       chemistry lab
+filler                       physics exam
+filler                       math test
+filler                       history lesson
+filler                       geography quiz
+filler                       literature book
+filler                       poetry slam
+filler                       art gallery
+filler                       music concert
+filler                       theater play
+filler                       movie theater
+filler                       popcorn time
+filler                       soda drink
+filler                       candy bar
+filler                       chocolate chip
+filler                       vanilla extract
+filler                       strawberry jam
+filler                       raspberry pi
+filler                       blackberry phone
+filler                       blueberry muffin
+filler                       peach tree
+filler                       plum crazy
+filler                       cherry on top
+filler                       apple of my eye
+filler                       banana split
+filler                       going bananas
+filler                       perfectly normal sentence
+filler                       another random thought
+filler                       just padding the numbers now
+filler                       almost at the end
+filler                       counting down the lines
+filler                       keeping the variety up
+filler                       writing nonsense is fun
+filler                       making sure to hit the quota
+filler                       final stretch of the batch
+filler                       nearly four hundred items
+filler                       wrapping this up soon
+filler                       one more for good luck
+filler                       finished with the out of scope items
