@@ -25,6 +25,7 @@ page = open("web/template.html").read()
 page = page.replace("/*MODEL*/", open("models/model.json").read().replace("</", "<\\/"))
 page = page.replace("/*RUNTIME*/", open("web/runtime.js").read())
 page = page.replace("/*ENTITIES*/", open("web/entities.js").read())
+page = page.replace("/*SKILLS*/", open("web/skills.json").read().replace("</", "<\\/"))
 # training data + trainer for on-device retraining (Web Worker)
 manifest = json.load(open("data/manifest.json"))
 data = {"train": "\n".join(open(f, encoding="utf-8").read() for f in manifest["train"]),

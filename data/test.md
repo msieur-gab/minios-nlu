@@ -133,7 +133,6 @@
 - delete the folder called drafts
 - remove the old stuff directory
 - rename notes.md to ideas.md
-- what's the temperature outside
 - play my favourite playlist
 - how many files are in documents
 - tell me about yourself
@@ -145,7 +144,6 @@
 - who made you
 - open the pod bay doors hal
 - turn off the wifi
-- what's the temperature in Munich
 - the volume of this box is 20 liters
 - close the browser
 - shut the door please
@@ -194,3 +192,35 @@
 - how long is a marathon
 - when does the shop close
 - time to go home
+
+## intent: get_weather
+- what's the temperature outside
+- what's the temperature in [Munich](place)
+- is it going to rain later
+- do I need a coat tomorrow
+- weather in [Porto](place) this weekend
+- how's it looking outside
+- any snow expected in [Innsbruck](place) on saturday
+- what will the weather be like friday
+
+## intent: remember_me
+- hi, my name is [Gab](name)
+- from now on call me [Captain](name)
+- I just moved to [Rotterdam](place)
+- my home base is [Munich](place)
+- remember I live in [Kyoto](place)
+
+## intent: recall_me
+- do you know who I am
+- what name did I give you
+- which city do I live in
+- what info do you have on me
+
+## intent: forget_me
+- forget my name please
+- I don't want you to know where I live anymore
+- wipe everything you know about me
+
+## intent: get_time
+- what time is it over in [Seoul](place)
+- current time in [Chicago](place)

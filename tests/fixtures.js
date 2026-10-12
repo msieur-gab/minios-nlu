@@ -1,0 +1,30 @@
+// Recorded-style Open-Meteo responses so the API skills can be tested without a network.
+// Shapes follow open-meteo.com (place search: results[]; forecast: current{} and daily{} arrays).
+const PLACES = {
+  munich: { name: "Munich", latitude: 48.13743, longitude: 11.57549, country: "Germany", admin1: "Bavaria", timezone: "Europe/Berlin" },
+  tokyo: { name: "Tokyo", latitude: 35.6895, longitude: 139.69171, country: "Japan", admin1: "Tokyo", timezone: "Asia/Tokyo" },
+  paris: { name: "Paris", latitude: 48.85341, longitude: 2.3488, country: "France", admin1: "Île-de-France", timezone: "Europe/Paris" },
+  "new york": { name: "New York", latitude: 40.71427, longitude: -74.00597, country: "United States", admin1: "New York", timezone: "America/New_York" },
+  lisbon: { name: "Lisbon", latitude: 38.71667, longitude: -9.13333, country: "Portugal", admin1: "Lisbon", timezone: "Europe/Lisbon" },
+};
+function forecast(start) {
+  const time = [], codes = [3, 61, 2, 0, 80, 63, 1, 71, 3, 2, 0, 0, 61, 45, 3, 2];
+  for (let i = 0; i < 16; i++) { const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    time.push(d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0")); }
+  return { timezone: "Europe/Berlin",
+    current: { time: time[0] + "T20:00", interval: 900, temperature_2m: 11.4, weather_code: 3, wind_speed_10m: 9.7 },
+    daily: { time, weather_code: codes, temperature_2m_max: time.map((_, i) => 14 + (i % 5)), temperature_2m_min: time.map((_, i) => 5 + (i % 4)),
+      precipitation_probability_max: codes.map(c => (c >= 51 ? 70 : 10)) } };
+}
+function mockFetch(start, { offline = false, log = [] } = {}) {
+  return async url => {
+    log.push(url);
+    if (offline) throw new TypeError("Failed to fetch");
+    const u = new URL(url);
+    const body = u.hostname.startsWith("geocoding")
+      ? { results: PLACES[u.searchParams.get("name").toLowerCase()] ? [PLACES[u.searchParams.get("name").toLowerCase()]] : undefined }
+      : forecast(start);
+    return { ok: true, status: 200, json: async () => body };
+  };
+}
+module.exports = { mockFetch, PLACES };

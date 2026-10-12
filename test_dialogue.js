@@ -3,8 +3,12 @@ const fs = require("fs");
 const R = require("./web/runtime.js");
 const { Agent } = require("./web/agent.js");
 const nlu = new R.NLU(JSON.parse(fs.readFileSync("models/model.json", "utf8")));
-const agent = new Agent(nlu);
-agent.clock = () => new Date(2026, 9, 12, 20, 14);
+const { mockFetch } = require("./tests/fixtures.js");
+const store = { d: {}, getItem(k) { return k in this.d ? this.d[k] : null; }, setItem(k, v) { this.d[k] = String(v); }, removeItem(k) { delete this.d[k]; } };
+const NOW = new Date(2026, 9, 12, 20, 14);
+const agent = new Agent(nlu, store);
+agent.clock = () => NOW;
+agent.fetch = mockFetch(NOW);
 Math.random = () => 0; // first response variant, so the output is stable
 
 const CONVERSATIONS = [
@@ -34,11 +38,37 @@ const CONVERSATIONS = [
   ["set an alarm for 7am"],
   ["what's on my calendar tomorrow"],
   ["make a folder called Monday in Schedule"],
+  ["open firefox"],
+  ["launch the thing"],
+  ["open an app", "calculator"],
+  // memory + API skills (network answers are recorded, see tests/fixtures.js)
+  ["what's the weather like", "Munich"],
+  ["what do you know about me"],
+  ["hi, my name is Gab"],
+  ["I live in Munich"],
+  ["hello"],
+  ["what do you know about me"],
+  ["what's the weather like"],
+  ["will it rain tomorrow?"],
+  ["weather in Lisbon this weekend"],
+  ["what's the weather in Tokyo on friday"],
+  ["weather in Atlantis"],
+  ["what time is it in tokyo"],
+  ["what time is it in New York"],
+  ["what time is it"],
+  ["weather in 3 weeks"],
+  ["forget where I live"],
+  ["where do I live"],
+  ["forget everything about me"],
+  ["what's my name"],
 ];
+const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)
+(async () => {
 for (const conv of CONVERSATIONS) {
   agent.reset();
   for (const t of conv) {
     const out = agent.handle(t);
+    if (out.later) { const res = await out.later; out.reply = out.reply + "\n  → " + res.reply.replace(/\n/g, "\n    "); if (res.trace) out.trace.push(...res.trace); }
     const r = out.trace[0].r;
     const ent = out.trace.find(x => x.type === "entity");
     const exec = out.trace.filter(x => x.type === "exec").map(x => x.text).join(" | ");
@@ -46,3 +76,4 @@ for (const conv of CONVERSATIONS) {
   }
   console.log();
 }
+})();

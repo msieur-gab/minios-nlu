@@ -2,12 +2,14 @@
 // Trains the shipped model from the files listed in data/manifest.json. No dependencies.
 const fs = require("fs");
 const T = require("./web/trainer.js");
+require("./skills.js").compile(); // skills/*.md → data/skills.md + web/skills.json
 const R = require("./web/runtime.js");
 
 const args = process.argv.slice(2);
 const flag = (name, d) => { const i = args.indexOf(name); return i >= 0 ? +args.splice(i, 2)[1] : d; };
 const prune = flag("--prune", 0.2);
-const out = args[0] || "models/model.json";
+const verbose = args.includes("-v");
+const out = args.find(a => !a.startsWith("-")) || "models/model.json";
 const manifest = JSON.parse(fs.readFileSync("data/manifest.json", "utf8"));
 
 const examples = manifest.train.flatMap(f => T.parseDataset(fs.readFileSync(f, "utf8")));
@@ -20,4 +22,4 @@ const ev = T.evaluate(new R.NLU(model), test);
 console.log(`${out}: ${(json.length / 1024).toFixed(0)} KB, trained in ${model.stats.train_seconds}s ` +
   `(intent ${model.stats.intent_seconds}s, slots ${model.stats.slot_seconds}s)`);
 console.log(`held-out: intent accuracy ${ev.accuracy.toFixed(1)}% (n=${ev.n}), slot F1 ${ev.slotF1.toFixed(2)}`);
-if (args.includes("-v")) console.log(ev.errors.join("\n"));
+if (verbose) console.log(ev.errors.join("\n"));

@@ -1364,294 +1364,58 @@
 - time to [turn off](power_action)
 - turn the computer off
 
-## intent: open_app
-- I need [Terminal](app)
-- I need [console](app)
-- I need a [chromium](app)
-- I need a [settings](app)
-- I need a [shell](app)
-- I need the [console](app)
-- I need the [files](app)
-- I need to use the [Browser](app)
-- I need to use the [command line](app)
-- I need to use the [console](app)
-- I need to use the [file manager](app)
-- I need to use the [shell](app)
-- I need to use the [terminal](app)
-- I want [Terminal](app)
-- I want [browser](app)
-- I want [console](app)
-- I want [editor](app)
-- I want a [console](app)
-- I want a [firefox](app)
-- I want a [text editor](app)
-- I want the [Terminal](app)
-- I want to use the [Terminal](app)
-- I want to use the [browser](app)
-- I want to use the [command line](app)
-- I want to use the [file explorer](app)
-- I want to use the [web browser](app)
-- [browser](app)
-- [browser](app) please
-- [calculator](app)
-- [calculator](app) please
-- [chromium](app)
-- [command line](app)
-- [command line](app) please
-- [console](app)
-- [terminal](app)
-- [text editor](app) please
-- [web browser](app)
-- bring up [browser](app)
-- bring up [web browser](app)
-- bring up my [console](app)
-- bring up the [Browser](app)
-- can you launch a [Terminal](app) please?
-- can you open the [files](app) please?
-- can you start [console](app) please
-- can you start a [browser](app) please
-- could you launch [firefox](app) please?
-- could you launch the [file explorer](app)?
-- could you launch the [files](app) please?
-- could you open the [editor](app)?
-- could you start [command line](app) please
-- could you start the [calculator](app)?
-- fire up [shell](app)
-- fire up my [console](app)
-- fire up my [file manager](app)
-- fire up my [shell](app)
-- fire up the [files](app)
-- get me [command line](app)
-- get me [settings](app)
-- get me [text editor](app)
-- get me a [command line](app)
-- get me a [console](app)
-- get me a [file manager](app)
-- get me a [terminal](app)
-- get me the [Browser](app)
-- get me the [editor](app)
-- get me the [settings](app)
-- give me [calculator](app)
-- give me [file manager](app)
-- give me a [editor](app)
-- give me the [Terminal](app)
-- give me the [file explorer](app)
-- give me the [file manager](app)
-- go to the [Terminal](app)
-- go to the [calculator](app)
-- go to the [editor](app)
-- go to the [settings](app)
-- go to the [shell](app)
-- go to the [terminal](app)
-- launch [chromium](app)
-- launch [command line](app)
-- launch [console](app)
-- launch [terminal](app) please
-- launch [web browser](app) please
-- launch a new [console](app) window
-- launch a new [file manager](app) window
-- launch a new [files](app) window
-- launch an app
-- launch an app please
-- launch an application
-- launch my [editor](app)
-- launch new [calculator](app) window
-- launch new [console](app) window
-- launch new [editor](app) window
-- launch something
-- launch something please
-- launch the [command line](app)
-- let's open the [browser](app)
-- let's open the [chromium](app)
-- let's open the [file explorer](app)
-- let's open the [file manager](app)
-- let's open the [terminal](app)
-- let's open the [text editor](app)
-- lets open the [Browser](app)
-- lets open the [browser](app)
-- lets open the [calculator](app)
-- lets open the [chromium](app)
-- lets open the [command line](app)
-- lets open the [editor](app)
-- lets open the [files](app)
-- lets open the [text editor](app)
-- open [command line](app)
-- open [editor](app)
-- open [file explorer](app)
-- open [file manager](app)
-- open [settings](app) please
-- open [settings](app) program
-- open a new [command line](app) window
-- open a new [files](app) window
-- open a new [text editor](app) window
-- open a new [web browser](app) window
-- open a program
-- open a program please
-- open an app
-- open new [Browser](app) window
-- open new [console](app) window
-- open new [settings](app) window
-- open new [shell](app) window
-- open something
-- open the [firefox](app) app
-- open the [shell](app)
-- open the [shell](app) app
-- open up [chromium](app) app
-- open up the [editor](app) application
-- open up the [web browser](app) application
-- please launch the [editor](app)
-- please open the [file explorer](app)
-- please start the [shell](app)
-- pull up [text editor](app)
-- pull up my [calculator](app)
-- pull up my [file explorer](app)
-- run [chromium](app)
-- run my [browser](app)
-- run my [terminal](app)
-- run the [shell](app)
-- show [calculator](app)
-- show my [chromium](app)
-- show my [web browser](app)
-- show the [command line](app)
-- start [Browser](app) please
-- start [Terminal](app) app
-- start [browser](app)
-- start [calculator](app) program
-- start [command line](app) program
-- start [file manager](app) program
-- start [web browser](app)
-- start [web browser](app) app
-- start a program
-- start an app
-- start my [calculator](app)
-- start my [console](app)
-- start something
-- start the [Terminal](app)
-- start the [browser](app) app
-- start the [files](app)
-- start the [files](app) please
-- start the [shell](app)
-- start the [terminal](app)
-- start up [browser](app) app
-- start up [text editor](app) app
-- start up the [firefox](app) app
-- switch to the [Terminal](app)
-- switch to the [console](app)
-- switch to the [files](app)
-- switch to the [firefox](app)
-- switch to the [settings](app)
-- switch to the [terminal](app)
-- would you launch [console](app) please?
-- would you launch a [Browser](app) please
-- would you launch a [Terminal](app)
-- would you open [file explorer](app) please?
-- would you start [editor](app)
-- would you start a [Terminal](app) please
-
-## intent: get_time
-- can you tell me the time
-- can you tell me the time?
-- check the clock
-- check the time
-- could you tell me the time
-- could you tell me the time?
-- current time
-- current time?
-- do you have the time
-- do you have the time?
-- give me the time
-- give me the time please
-- how late is it
-- how late is it?
-- is it early?
-- is it late
-- is it late?
-- it's already early?
-- it's already late
-- it's late?
-- local time
-- local time?
-- show me the clock
-- tell me the time
-- the time?
-- time
-- time please
-- time?
-- what hour is it
-- what hour is it?
-- what time is it
-- what time is it in london
-- what time is it in new york?
-- what time is it in paris
-- what time is it in paris?
-- what time is it now
-- what time is it now?
-- what time is it right now
-- what time is it?
-- what's the time
-- what's the time now?
-- what's the time please
-- what's the time?
-
 ## intent: get_date
 - give me the date
 - give me the date please
-- how long before next sunday
-- how long is it until in 3 weeks
-- how long is it until the day after tomorrow
-- how long until tomorrow?
-- how long until yesterday?
-- how many days is it before in 3 weeks
-- how many days is it till yesterday?
-- how many days until december 24?
-- how many days until in 10 days
+- how long before next friday?
+- how long before yesterday
+- how long is it before in 10 days
+- how long is it till december 24?
+- how long is it till the 20th
+- how many days before in 100 days?
+- how many days is it before this saturday
+- how many days till in a month
+- how many days until in 100 days
 - how many days until in 3 weeks
 - how many days until march 3?
-- how many days until next monday
-- how many days until the 1st of january
-- how many days until the 1st of january?
-- how many days until the day after tomorrow
-- is it friday
+- how many days until next friday?
+- how many days until the 20th
+- is it friday?
 - is it monday
-- is it sunday?
-- is it the weekend?
-- is today monday
-- is today sunday?
-- is today the weekend
+- is it monday?
+- is today friday?
+- is today monday?
+- tell me the date
 - tell me the date please
 - what date is in 100 days
-- what date is march 3
-- what date is the 20th
-- what date is the 20th?
-- what date is this saturday
-- what date will it be next monday?
-- what date will it be the day after tomorrow
-- what date will it be this saturday?
+- what date is in a month?
+- what date is last friday
+- what date is the 1st of january
+- what date will it be next friday?
+- what date will it be next monday
+- what date will it be yesterday?
 - what day are we
-- what day are we today?
 - what day are we?
-- what day does in 10 days fall on?
-- what day does in 100 days fall on
-- what day does in a month fall on
+- what day does in 3 weeks fall on?
 - what day does next monday fall on?
-- what day does next sunday fall on?
-- what day is in 10 days
-- what day is in a month
-- what day is in a month fall on
+- what day does this saturday fall on?
+- what day is december 24 fall on?
+- what day is in 100 days
 - what day is it
 - what day is it today
 - what day is it?
-- what day is next sunday
-- what day is the 1st of january fall on?
+- what day is next monday fall on
+- what day is the 1st of january fall on
+- what day is the 1st of january?
 - what day is the 20th fall on?
-- what day is the 20th?
-- what day is tomorrow?
+- what day is the day after tomorrow
+- what day is the day after tomorrow?
 - what day of the week is it
 - what day of the week is it?
-- what is the date
-- what is the date in 100 days
-- what is the date in a month
-- what is the date next sunday
+- what is the date in 10 days?
+- what is the date next sunday?
+- what is the date yesterday
+- what is the date yesterday?
 - what is the date?
 - what is today's date
 - what is today's date?
@@ -1660,343 +1424,220 @@
 - what year is it
 - what year is it?
 - what's the date
-- what's the date in 10 days?
-- what's the date in a month
-- what's the date march 3?
-- what's the date the 1st of january
-- what's the date this saturday?
+- what's the date in 3 weeks
+- what's the date the 20th?
 - what's the date today
 - what's the date today?
+- what's the date yesterday
 - what's the date?
 - what's today
 - what's today?
-- which date is march 3
-- which date will it be in 10 days
-- which date will it be this saturday?
+- which date is in a month
+- which date is in a month?
+- which date is the day after tomorrow
 - which day are we
-- which day are we?
-- which day is it
+- which day are we today
+- which day are we today?
 - which day is it?
-
-## intent: set_timer
-- 10 minutes timer
-- 12 minutes timer
-- 15 minutes timer please
-- 2 and a half hours timer
-- 20 mins timer
-- I need a timer
-- I need a timer for 1h30
-- I need a timer for 2 and a half hours
-- I need a timer for 2 hours
-- a minute timer please
-- a quarter of an hour timer please
-- alert me in 45 seconds
-- alert me in 90 seconds
-- an hour and a half timer please
-- begin a countdown for 7 minutes
-- begin a countdown of 15 minutes
-- begin a countdown of 1h30
-- buzz me in 1h30
-- buzz me in 2 hours
-- buzz me in 20 mins
-- buzz me in half an hour
-- can you set a timer for 40 min
-- can you set a timer for 7 minutes
-- can you set a timer for 7 minutes?
-- can you set a timer for half an hour
-- can you set a timer?
-- can you start a timer
-- can you start a timer?
-- could you set a timer for 1h30?
-- could you set a timer for 45 seconds?
-- countdown 10 minutes
-- countdown 40 min
-- countdown 45 seconds
-- countdown 7 minutes
-- countdown for 10 minutes
-- countdown for 2 and a half hours
-- countdown for an hour and a half
-- countdown for twenty five minutes
-- countdown half an hour
-- countdown three minutes
-- let me know when 10 minutes is up
-- let me know when 1h30 are up
-- let me know when 20 mins is up
-- let me know when 40 min are up
-- let me know when a quarter of an hour are up
-- make a timer for 15 minutes
-- make a timer for 45 seconds
-- make a timer for 5 min please
-- ping me in 15 minutes
-- ping me in 45 seconds
-- ping me in 90 seconds
-- ping me in twenty five minutes
-- put the timer on for 15 minutes
-- put timer on to 2 hours
-- run a countdown for 2 hours
-- run a countdown of 30 seconds
-- run a countdown of 7 minutes
-- set a 12 minutes timer please
-- set a 2 hours timer
-- set a 30 seconds timer
-- set a 7 minutes timer please
-- set a baking timer for 12 minutes
-- set a baking timer for an hour
-- set a baking timer for half an hour
-- set a break timer for an hour
-- set a pasta timer for a minute
-- set a timer
-- set a timer for 30 seconds please
-- set a timer for 45 seconds please
-- set a timer on for an hour
-- set a timer please
-- set a timer to 20 mins
-- set a timer to 30 seconds
-- set timer on to 5 min
-- start a 1h30 timer please
-- start a 45 seconds timer please
-- start a baking timer for 45 seconds
-- start a baking timer for a quarter of an hour
-- start a countdown for a minute
-- start a countdown of 12 minutes
-- start a countdown of 90 seconds
-- start a pasta timer for 20 mins
-- start a tea timer for 40 min
-- start a tea timer for an hour
-- start a timer
-- start a timer for 2 and a half hours please
-- start a timer for 2 hours
-- start a timer for 30 seconds
-- start a timer for half an hour please
-- start a timer for twenty five minutes
-- start a timer please
-- start the timer for three minutes
-- start the timer to an hour and a half
-- start timer for 45 seconds
-- start timer to twenty five minutes
-- tell me when 1h30 are up
-- tell me when 1h30 is up
-- tell me when a minute are up
-- tell me when an hour are up
-- time me for 15 minutes
-- time me for 20 mins
-- time me for 45 seconds
-- time me for twenty five minutes
-- time this for 10 minutes
-- time this for 12 minutes
-- time this for 30 seconds
-- time this for 5 min
-- time this for 7 minutes
-- timer 15 minutes
-- timer 1h30
-- timer 90 seconds
-- timer for 2 and a half hours
-- timer for 20 mins
-- timer for 30 seconds
-- timer for half an hour
-- timer three minutes
-- timer twenty five minutes
 
 ## intent: set_reminder
 - I need a reminder to [back up the photos](task)
-- I need a reminder to [buy milk](task) on the 3rd of november
-- I need a reminder to [call mum](task) every day at 7am
-- I need a reminder to [call the bank](task)
+- I need a reminder to [call the bank](task) next week
 - I need a reminder to [check the laundry](task)
-- I need a reminder to [go to bed](task) this weekend
-- I need a reminder to [pick up the kids](task) next year
-- I need a reminder to [pick up the kids](task) the day after tomorrow at 10:30
-- I need a reminder to [submit the report](task) in 10 minutes
-- I need a reminder to [submit the report](task) on december 24
-- I want a reminder to [ask Romain about the demo](task)
-- I want a reminder to [call mum](task) next year
-- I want a reminder to [drink some water](task)
-- I want a reminder to [submit the report](task) tonight at 8
+- I need a reminder to [send the invoice](task) on sunday
+- I need a reminder to [stretch](task) every weekday at 8
+- I need a reminder to [water the plants](task)
+- I want a reminder to [bring the bikes in](task)
+- I want a reminder to [buy milk](task) in 2 weeks
+- I want a reminder to [call the bank](task) in 10 minutes
+- I want a reminder to [glue the box](task) at 6:45
+- I want a reminder to [pick up the kids](task) next year
+- I want a reminder to [print the tickets](task) on sunday
+- I want a reminder to [renew my passport](task)
+- I want a reminder to [take the bread out](task)
 - add a reminder
-- add a reminder at next tuesday afternoon
-- add a reminder for [buy milk](task) tomorrow morning
-- add a reminder for [check the laundry](task) this evening
-- add a reminder for [check the oven](task) tomorrow morning
-- add a reminder for [submit the report](task) next friday
-- add a reminder for [take the bread out](task) on monday at 9
-- add a reminder for next year
-- add a reminder on this evening
-- add a reminder please
-- add a reminder that I need to [oil the cedar box](task)
-- add a reminder that I need to [stretch](task)
-- add a reminder to [ask Romain about the demo](task)
-- add a reminder to [check the oven](task) at noon
-- add a reminder to [check the oven](task) on the 3rd of november
-- add a reminder to [drink some water](task) in 2 weeks
+- add a reminder at this evening
+- add a reminder at tomorrow
+- add a reminder for [oil the cedar box](task) on sunday
+- add a reminder for this weekend
+- add a reminder on at midnight
+- add a reminder on on sunday
+- add a reminder on tomorrow morning
+- add a reminder that I need to [charge the camera](task)
+- add a reminder that I need to [drink some water](task)
+- add a reminder that I need to [move the car](task)
+- add a reminder that I need to [take a break](task)
+- add a reminder that I need to [take the bread out](task)
+- add a reminder to [bring the bikes in](task)
+- add a reminder to [charge the camera](task)
+- add a reminder to [go to bed](task)
 - add a reminder to [move the car](task)
-- add a reminder to [start dinner](task)
-- add a reminder: [call mum](task) at midnight
-- add a reminder: [feed the cat](task) next year
-- add a reminder: [pick up the kids](task) in half an hour
-- add a reminder: [reply to Eva](task) this evening
-- add a reminder: [start dinner](task) in 2 days
-- add a reminder: [submit the report](task) tonight at 8
-- add a reminder: [take a break](task) in three days
-- add a reminder: [take the bread out](task) in an hour
-- at noon remind me to [call the bank](task)
-- can you remind me to [back up the photos](task)
-- can you remind me to [check the oven](task)?
-- can you remind me to [glue the box](task) this evening
-- can you remind me to [move the car](task)?
-- can you remind me to [order more wood](task)
-- can you remind me to [pay the rent](task)
-- can you remind me to [pay the rent](task) every monday at 9?
-- can you remind me to [print the tickets](task) in 2 days?
-- can you remind me to [print the tickets](task)?
-- could you remind me to [drink some water](task) every monday at 9
-- could you remind me to [go to bed](task) at midnight
-- could you remind me to [renew my passport](task) on december 24?
-- could you remind me to [start dinner](task) at 3pm?
-- could you remind me to [stretch](task)
-- create a reminder at every monday at 9
-- create a reminder at on monday at 9
-- create a reminder for every weekday at 8
-- create a reminder for later
-- create a reminder on at 6:45
-- create a reminder on on monday at 9
-- create a reminder on tomorrow
+- add a reminder to [order more wood](task) at 3pm
+- add a reminder to [reply to Eva](task)
+- add a reminder to [submit the report](task)
+- add a reminder: [back up the photos](task) next friday
+- add a reminder: [call mum](task) on december 24
+- add a reminder: [pick up the kids](task) on sunday
+- add a reminder: [pick up the kids](task) tonight at 8
+- add a reminder: [renew my passport](task) on the 3rd of november
+- add a reminder: [submit the report](task) in 10 minutes
+- add a reminder: [take a break](task) every monday at 9
+- add a reminder: [take a break](task) the day after tomorrow at 10:30
+- add a reminder: [water the plants](task) on the 20th
+- at 3pm remind me to [go to bed](task)
+- at 6:45 remind me to [reply to Eva](task)
+- can you remind me to [call mum](task)
+- can you remind me to [call the bank](task)
+- can you remind me to [call the bank](task) in 2 days?
+- can you remind me to [feed the cat](task) at noon
+- can you remind me to [glue the box](task)
+- can you remind me to [order more wood](task)?
+- can you remind me to [pick up the kids](task)
+- can you remind me to [pick up the kids](task) in half an hour?
+- can you remind me to [pick up the kids](task)?
+- can you remind me to [print the tickets](task)
+- can you remind me to [take a break](task)
+- could you remind me to [call mum](task)
+- could you remind me to [call mum](task) at midnight
+- could you remind me to [print the tickets](task) at 6:45?
+- create a reminder
+- create a reminder for [print the tickets](task) in 10 minutes
+- create a reminder for next week
+- create a reminder on at noon
+- create a reminder on in three days
 - create a reminder please
-- create a reminder to [ask Romain about the demo](task) in 10 minutes
-- create a reminder to [take the bread out](task) later
-- create a reminder to [water the plants](task) on december 24
-- don't let me forget to [call mum](task)
-- don't let me forget to [check the laundry](task) in 10 minutes
-- don't let me forget to [pick up the kids](task) this weekend
-- don't let me forget to [send the invoice](task)
-- don't let me forget to [start dinner](task)
-- in 10 minutes remind me to [feed the cat](task)
-- in 2 days remind me to [start dinner](task)
-- in 2 weeks remind me to [buy milk](task)
-- in 2 weeks remind me to [renew my passport](task)
+- create a reminder to [pay the rent](task) in 2 weeks
+- don't let me forget to [call the bank](task)
+- don't let me forget to [feed the cat](task)
+- don't let me forget to [go to bed](task)
+- don't let me forget to [pay the rent](task)
+- don't let me forget to [stretch](task) in half an hour
+- don't let me forget to [take the bread out](task)
+- every weekday at 8 remind me to [check the oven](task)
+- in an hour remind me to [book the dentist](task)
+- in half an hour remind me to [renew my passport](task)
+- in half an hour remind me to [submit the report](task)
+- in three days remind me to [print the tickets](task)
+- later remind me to [check the laundry](task)
+- later remind me to [submit the report](task)
 - make a reminder
-- make a reminder at on the 20th
-- make a reminder on in 2 weeks
+- make a reminder at the day after tomorrow at 10:30
+- make a reminder at this evening
+- make a reminder for [glue the box](task) at midnight
+- make a reminder for [take the bread out](task) every monday at 9
+- make a reminder on on the 3rd of november
+- make a reminder on tomorrow morning
 - make a reminder please
-- make sure I don't forget to [ask Romain about the demo](task) in three days
-- make sure I don't forget to [call mum](task)
-- make sure I don't forget to [call the bank](task) at 6:45
-- make sure I don't forget to [call the bank](task) next friday
+- make a reminder to [reply to Eva](task) on the 20th
 - make sure I don't forget to [check the oven](task)
-- make sure I don't forget to [drink some water](task) next tuesday afternoon
-- make sure I don't forget to [order more wood](task)
-- make sure I don't forget to [pay the rent](task)
-- make sure I don't forget to [take a break](task)
-- new reminder: [ask Romain about the demo](task) on monday at 9
-- new reminder: [buy milk](task) the day after tomorrow at 10:30
-- new reminder: [glue the box](task) at 6:45
-- new reminder: [send the invoice](task) every weekday at 8
-- new reminder: [send the invoice](task) tomorrow morning
-- new reminder: [water the plants](task) at 6:45
-- next friday remind me to [pick up the kids](task)
-- next year remind me to [stretch](task)
-- nudge me at midnight about [go to bed](task)
-- nudge me every day at 7am about [send the invoice](task)
-- nudge me every monday at 9 about [reply to Eva](task)
-- nudge me friday at 18h about [check the oven](task)
-- nudge me in 2 days about [start dinner](task)
-- nudge me in half an hour about [go to bed](task)
-- nudge me in three days about [reply to Eva](task)
-- nudge me on december 24 about [pay the rent](task)
-- nudge me on the 3rd of november to [feed the cat](task)
-- on december 24 remind me to [back up the photos](task)
-- ping me friday at 18h about [feed the cat](task)
-- ping me on monday at 9 to [check the laundry](task)
-- ping me this weekend to [ask Romain about the demo](task)
-- ping me tomorrow morning about [book the dentist](task)
-- ping me tomorrow morning about [renew my passport](task)
-- please remind me to [call mum](task)
-- please remind me to [order more wood](task)
-- please remind me to [pay the rent](task) please
-- please remind me to [print the tickets](task)
-- please remind me to [reply to Eva](task) please
-- please remind me to [stretch](task) please
-- please remind me to [take the bread out](task) please
-- remind me about [buy milk](task) every weekday at 8
-- remind me about [charge the camera](task) on the 3rd of november
-- remind me about [glue the box](task) at noon
-- remind me about [go to bed](task) in half an hour
-- remind me about [move the car](task) later
-- remind me about [move the car](task) next week
-- remind me about [pick up the kids](task) on sunday
-- remind me about [print the tickets](task) every monday at 9
-- remind me about [print the tickets](task) next week
-- remind me about [reply to Eva](task) every day at 7am
-- remind me about [stretch](task) in 10 minutes
-- remind me about [submit the report](task) on monday at 9
-- remind me about [take a break](task) the day after tomorrow at 10:30
-- remind me about [take the bread out](task) on sunday
-- remind me at 3pm to [call mum](task)
-- remind me at 3pm to [take a break](task)
-- remind me every day at 7am
-- remind me every day at 7am to [go to bed](task)
-- remind me every day at 7am to [take the bread out](task)
-- remind me every monday at 9 to [buy milk](task)
-- remind me friday at 18h
-- remind me in 2 weeks
-- remind me in an hour
+- make sure I don't forget to [clean the workshop](task) at 6:45
+- make sure I don't forget to [drink some water](task)
+- make sure I don't forget to [glue the box](task) every weekday at 8
+- make sure I don't forget to [move the car](task)
+- make sure I don't forget to [send the invoice](task) every weekday at 8
+- make sure I don't forget to [take the bread out](task)
+- new reminder: [buy milk](task) on december 24
+- new reminder: [call mum](task) this weekend
+- new reminder: [call the bank](task) the day after tomorrow at 10:30
+- new reminder: [drink some water](task) the day after tomorrow at 10:30
+- new reminder: [pay the rent](task) in half an hour
+- next tuesday afternoon remind me to [start dinner](task)
+- next week remind me to [renew my passport](task)
+- nudge me in 2 weeks about [go to bed](task)
+- nudge me in half an hour about [pay the rent](task)
+- nudge me next tuesday afternoon about [bring the bikes in](task)
+- nudge me next year to [glue the box](task)
+- nudge me on december 24 to [submit the report](task)
+- nudge me the day after tomorrow at 10:30 to [pay the rent](task)
+- nudge me this evening about [charge the camera](task)
+- ping me at 6:45 about [take the bread out](task)
+- ping me at midnight about [reply to Eva](task)
+- ping me at midnight to [print the tickets](task)
+- ping me every monday at 9 about [bring the bikes in](task)
+- ping me every monday at 9 about [stretch](task)
+- ping me on sunday to [oil the cedar box](task)
+- ping me the day after tomorrow at 10:30 about [clean the workshop](task)
+- please remind me to [buy milk](task) please
+- please remind me to [go to bed](task)
+- please remind me to [oil the cedar box](task)
+- please remind me to [send the invoice](task)
+- please remind me to [send the invoice](task) please
+- remind me about [ask Romain about the demo](task) on the 3rd of november
+- remind me about [ask Romain about the demo](task) this weekend
+- remind me about [back up the photos](task) on the 3rd of november
+- remind me about [bring the bikes in](task) on sunday
+- remind me about [check the laundry](task) next tuesday afternoon
+- remind me about [check the oven](task) at noon
+- remind me about [check the oven](task) later
+- remind me about [check the oven](task) next year
+- remind me about [drink some water](task) tonight at 8
+- remind me about [glue the box](task) in 10 minutes
+- remind me about [go to bed](task) in 10 minutes
+- remind me about [move the car](task) on december 24
+- remind me about [order more wood](task) on december 24
+- remind me about [pick up the kids](task) at midnight
+- remind me at 3pm to [glue the box](task)
+- remind me at 6:45
+- remind me at 6:45 to [go to bed](task)
+- remind me at 6:45 to [reply to Eva](task)
+- remind me at noon
+- remind me every day at 7am to [clean the workshop](task)
+- remind me every monday at 9 to [send the invoice](task)
+- remind me every weekday at 8
+- remind me in 10 minutes
+- remind me in half an hour to [call the bank](task)
+- remind me in half an hour to [water the plants](task)
 - remind me later
-- remind me later to [back up the photos](task)
-- remind me next year
-- remind me on sunday
+- remind me later to [take the bread out](task)
+- remind me next friday
+- remind me next friday to [renew my passport](task)
+- remind me next year to [clean the workshop](task)
+- remind me on monday at 9 to [charge the camera](task)
 - remind me on the 3rd of november
-- remind me on the 3rd of november to [pick up the kids](task)
-- remind me on the 3rd of november to [renew my passport](task)
 - remind me the day after tomorrow at 10:30
-- remind me the day after tomorrow at 10:30 to [call mum](task)
-- remind me this evening to [pay the rent](task)
-- remind me this weekend
-- remind me to [ask Romain about the demo](task) please
-- remind me to [back up the photos](task) on december 24
-- remind me to [book the dentist](task) on monday at 9
-- remind me to [bring the bikes in](task) on the 20th
-- remind me to [call mum](task) in 2 weeks
+- remind me the day after tomorrow at 10:30 to [submit the report](task)
+- remind me this evening
+- remind me to [ask Romain about the demo](task) every weekday at 8
+- remind me to [back up the photos](task) every weekday at 8
+- remind me to [back up the photos](task) in three days
+- remind me to [back up the photos](task) this weekend
+- remind me to [book the dentist](task)
+- remind me to [buy milk](task) the day after tomorrow at 10:30
+- remind me to [call mum](task)
+- remind me to [call the bank](task) every monday at 9
 - remind me to [charge the camera](task) please
-- remind me to [drink some water](task) in half an hour
-- remind me to [feed the cat](task) next year
-- remind me to [oil the cedar box](task) on sunday
-- remind me to [order more wood](task)
-- remind me to [renew my passport](task)
-- remind me to [renew my passport](task) tomorrow morning
-- remind me to [send the invoice](task) at 6:45
-- remind me to [send the invoice](task) at midnight
-- remind me to [start dinner](task) at 3pm
-- remind me to [stretch](task) friday at 18h
+- remind me to [check the laundry](task) the day after tomorrow at 10:30
+- remind me to [clean the workshop](task)
+- remind me to [clean the workshop](task) next week
+- remind me to [glue the box](task) at midnight
+- remind me to [go to bed](task)
+- remind me to [go to bed](task) later
+- remind me to [print the tickets](task) in three days
+- remind me to [reply to Eva](task) next friday
+- remind me to [start dinner](task)
 - remind me to [submit the report](task) please
-- remind me to [take a break](task) in 2 weeks
+- remind me to [take a break](task)
+- remind me to [take a break](task) in half an hour
 - remind me to [take the bread out](task)
-- remind me to [take the bread out](task) every day at 7am
-- remind me to [water the plants](task)
-- remind me tomorrow morning to [start dinner](task)
-- remind me tomorrow to [go to bed](task)
-- remind me tomorrow to [pick up the kids](task)
-- remind me tonight at 8
-- remind me tonight at 8 to [book the dentist](task)
+- remind me tomorrow
+- remind me tonight at 8 to [drink some water](task)
+- remind me tonight at 8 to [take the bread out](task)
 - set a reminder
-- set a reminder for [oil the cedar box](task) next tuesday afternoon
-- set a reminder for [stretch](task) at midnight
-- set a reminder for on sunday
-- set a reminder on every monday at 9
+- set a reminder for [print the tickets](task) this evening
+- set a reminder for [renew my passport](task) next tuesday afternoon
+- set a reminder for this evening
 - set a reminder please
-- set a reminder that I need to [book the dentist](task)
-- set a reminder that I need to [call mum](task)
-- set a reminder that I need to [print the tickets](task)
-- set a reminder that I need to [send the invoice](task)
-- set a reminder that I need to [take a break](task)
-- set a reminder to [clean the workshop](task)
-- set a reminder to [glue the box](task)
-- set a reminder to [move the car](task) on monday at 9
-- set a reminder to [oil the cedar box](task)
-- the day after tomorrow at 10:30 remind me to [renew my passport](task)
-- this evening remind me to [pay the rent](task)
-- this evening remind me to [start dinner](task)
-- this weekend remind me to [check the laundry](task)
-- this weekend remind me to [send the invoice](task)
-- tomorrow morning remind me to [pay the rent](task)
+- set a reminder that I need to [pay the rent](task)
+- set a reminder that I need to [submit the report](task)
+- set a reminder to [buy milk](task) every monday at 9
+- set a reminder to [buy milk](task) tonight at 8
+- set a reminder to [check the oven](task) this weekend
+- set a reminder to [go to bed](task) in 10 minutes
+- set a reminder to [move the car](task) next tuesday afternoon
+- set a reminder to [submit the report](task)
+- this evening remind me to [feed the cat](task)
+- this weekend remind me to [feed the cat](task)
+- this weekend remind me to [water the plants](task)
 
 ## intent: greet
 - hi
@@ -2093,7 +1734,6 @@
 - drop it
 
 ## intent: out_of_scope
-- what's the weather like
 - tell me a joke
 - play some music
 - how much is 12 times 7
@@ -2180,8 +1820,6 @@
 - open the window it's hot
 - open the door
 - show me a picture of a cat
-- what's the temperature in Paris
-- is it hot outside
 - play the next song
 - skip this track
 - check my email
@@ -2192,7 +1830,6 @@
 - wake me up at 6
 - what's on my calendar tomorrow
 - add a meeting on friday
-- will it rain tomorrow
 - when is the next train
 - how long does it take to boil an egg
 - what time does the bakery open
@@ -2203,3 +1840,12 @@
 - who invented the clock
 - delete my reminders
 - what did I do yesterday
+- who built you
+- who created you
+- who is your creator
+- what's your name
+- where do you live
+- what's the name of this song
+- my name is on the door
+- which city is the capital of japan
+- remember the alamo

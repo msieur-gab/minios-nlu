@@ -7,6 +7,8 @@ Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 - **Intent:** TF-IDF features (words, word pairs, character 3–4-grams) and a logistic regression.
 - **Slots:** a linear-chain CRF tagger (BIO labels).
 - **Training:** plain JavaScript, no dependencies (`web/trainer.js`). The same file trains in Node (`node train.js`) and in the browser, so the PWA can retrain itself on the phone. Weak weights are dropped and the rest stored as 1-byte numbers: 317 KB instead of 1,234 KB, with the same held-out accuracy.
+- **Skills as files:** `skills/*.md` describe a skill in plain Markdown: example sentences (with `{a|b}` alternatives and value lists), the values it knows, what it does (an action type plus parameters) and what it says. `node skills.js` turns them into training sentences and the agent's replies; see `skills/README.md`. Converted so far: open_app, set_timer, get_time; new: get_weather, remember_me, recall_me, forget_me.
+- **Real APIs:** weather and the time in other places come from Open-Meteo (free, no key). Only the place name and its coordinates are sent; your name and place are stored on the device only.
 - **Inbox:** every sentence the agent can't handle lands in an inbox on the device (plus any reply you flag as wrong). For each one: add it to an existing skill (tap words to mark values), make a new skill from it, or mark it "not for me". Retrain on the phone, keep the trained model across reloads, and export what was taught as a `.md` training file to commit here. A new skill is recognised straight away but answers that no action is set up yet, until a handler exists in `agent.js`.
 - **Runtime:** dependency-free Python and plain JavaScript, both reading the same exported `model.json`.
 - **Reference:** `train.py` still trains the same models with scikit-learn into `models/model_sklearn.json`, for comparison.
@@ -27,10 +29,13 @@ Try it: the `docs/` folder is a Progressive Web App that runs the model fully of
 | `adjust_brightness` | direction, level |
 | `system_status` | metric |
 | `power` | power_action |
-| `get_time` | none |
+| `get_time` | place (optional) |
 | `get_date` | none (date read by the parser) |
 | `set_timer` | none (duration read by the parser) |
 | `set_reminder` | task (when read by the parser) |
+| `get_weather` | place (optional; day read by the parser) |
+| `remember_me` | name, place |
+| `recall_me`, `forget_me` | none |
 | `greet`, `thanks`, `help`, `affirm`, `deny`, `out_of_scope` | none |
 
 ## Layout
@@ -73,13 +78,14 @@ pip install -r requirements-train.txt   # only for the Python reference tools
 python seed_data.py              # regenerate the template seed
 python clean_batches.py          # clean raw external batches into data/synth_*.md
 python lint.py data/raw/x.md     # duplicates, conflicts, structure diversity
+node skills.js                   # compile skills/*.md (train.js also does it)
 node train.js                    # train the shipped model (no dependencies), print held-out scores
 python train.py                  # optional reference: scikit-learn → models/model_sklearn.json
 python evaluate.py               # held-out metrics and error list
 python cv.py data/synth_x.md     # 5-fold before/after for a new dataset
 python build_web.py              # build web/index.html and the PWA in docs/
 node test_entities.js            # date/time parser against fixed phrases (TZ=Europe/Berlin)
-node test_dialogue.js            # scripted conversations through model + agent, fixed clock
+node test_dialogue.js            # scripted conversations through model + agent, fixed clock, recorded API answers
 ```
 
 Training takes about 20 seconds on a laptop, in Node or in the browser (training files are listed in `data/manifest.json`). Inference runs in well under a millisecond per sentence.

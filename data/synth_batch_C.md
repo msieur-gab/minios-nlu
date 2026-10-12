@@ -324,7 +324,6 @@
 - how to become a sysadmin
 - define computer network
 - what is the volume of a box
-- what's the temperature in paris today
 - my laptop has no space inside
 - keeping an open mind
 - the volume of water is too high
@@ -370,8 +369,6 @@
 - read my new messages
 - text john that i will be late
 - check my spam folder in gmail
-- what is the weather like
-- will it rain tomorrow
 - order a pizza
 - add eggs to my shopping list
 - open youtube and search for cats

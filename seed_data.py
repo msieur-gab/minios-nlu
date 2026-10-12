@@ -160,6 +160,7 @@ def lambda_name():
     return "[" + n + "](name)"
 
 
+# open_app, set_timer and get_time now live in skills/*.md (compiled by skills.js into data/skills.md)
 T = {
     "create_folder": [
         "{please |}{create|make|add|set up|build} {a |a new |}{folder|directory|dir} {called|named} <name>",
@@ -307,35 +308,6 @@ T = {
         "{turn the computer off|switch off the device}",
         "{power|shut} it down",
     ],
-    "open_app": [
-        "{open|launch|start|run} {the |my |}<app>",
-        "{please |}{open|launch|start} {the |}<app>{ please|}",
-        "{can|could|would} you {open|launch|start} {the |a |}<app>{ please|}{?|}",
-        "{bring up|fire up|pull up|show} {the |my |}<app>",
-        "I {need|want} {the |a |}<app>",
-        "I {want|need} to use the <app>",
-        "<app>{ please|}",
-        "{open|launch} {a |}new <app> window",
-        "{give me|get me} {a |the |}<app>",
-        "{open|start} {up |}{the |}<app> {app|application|program}",
-        "{open|launch|start} {an app|an application|a program|something}{ please|}",
-        "{let's|lets} open the <app>",
-        "{switch to|go to} the <app>",
-    ],
-    "get_time": [
-        "what time is it{ now| right now| at the moment|}{?|}",
-        "what's the time{ now| please|}{?|}",
-        "{tell me|give me} the time{ please|}",
-        "{can|could} you tell me the time{?|}",
-        "{the |}time{ please|?|}",
-        "do you have the time{?|}",
-        "{current|local} time{?|}",
-        "what hour is it{?|}",
-        "how late is it{?|}",
-        "{is it|it's} {already |}{late|early}{?|}",
-        "what time is it in {tokyo|new york|paris|london}{?|}",
-        "{check|show me} the {time|clock}",
-    ],
     "get_date": [
         "what's the date{ today|}{?|}",
         "what is {today's|the} date{?|}",
@@ -353,22 +325,6 @@ T = {
         "{is today|is it} {monday|friday|the weekend|sunday}{?|}",
         "what month is it{?|}",
         "what year is it{?|}",
-    ],
-    "set_timer": [
-        "{set|start|make} a timer for <dur>{ please|}",
-        "{set|start} a <dur> timer{ please|}",
-        "{set|start|put} {the |a |}timer {on |}{for |to }<dur>",
-        "timer {for |}<dur>",
-        "<dur> timer{ please|}",
-        "{start|begin|run} a countdown {of|for} <dur>",
-        "countdown {for |}<dur>",
-        "{can|could} you {set|start} a timer{ for <dur>|}{?|}",
-        "{set|start} a timer{ please|}",
-        "time {me|this} for <dur>",
-        "{alert|ping|buzz} me in <dur>",
-        "{let me know|tell me} when <dur> {are|is} up",
-        "{set|start} a {pasta|tea|egg|glue|baking|break} timer for <dur>",
-        "I need a timer{ for <dur>|}",
     ],
     "set_reminder": [
         "remind me to <task> <when>",
@@ -407,7 +363,7 @@ SMALL = {
              "don't", "no thanks", "abort", "no way", "not now", "cancel that",
              "leave it", "n", "scratch that", "actually no", "drop it"],
     "out_of_scope": [
-        "what's the weather like", "tell me a joke", "play some music",
+        "tell me a joke", "play some music",
         "how much is 12 times 7", "send an email to my boss", "delete the reports folder", "remove notes.md", "rename the folder to drafts",
         "move invoices to the archive", "delete everything", "what is the capital of france",
         "who are you", "set an alarm for 7", "turn off the wifi", "how are you", "order a pizza", "copy the file to desktop",
@@ -431,19 +387,21 @@ SMALL = {
         "my screen is broken", "clean the screen", "what does reboot mean", "never shut down",
         "who turned off the lights", "the volume of a sphere", "the music was great yesterday",
         "how to free up disk space on windows", "open the window it's hot", "open the door",
-        "show me a picture of a cat", "what's the temperature in Paris", "is it hot outside",
+        "show me a picture of a cat", 
         "play the next song", "skip this track",
         "check my email", "open my bank app", "open google.com", "what's the battery level",
         "set an alarm for 7am", "wake me up at 6", "what's on my calendar tomorrow", "add a meeting on friday",
-        "will it rain tomorrow", "when is the next train", "how long does it take to boil an egg",
+        "when is the next train", "how long does it take to boil an egg",
         "what time does the bakery open", "when was the eiffel tower built", "time flies", "I had a long day",
         "my timer app is broken", "who invented the clock", "delete my reminders", "what did I do yesterday",
+        "who built you", "who created you", "who is your creator", "what's your name", "where do you live",
+        "what's the name of this song", "my name is on the door", "which city is the capital of japan", "remember the alamo",
     ],
 }
 
-PER_TEMPLATE = {"create_folder": 14, "create_file": 12, "open_app": 16, "open_file": 22,
+PER_TEMPLATE = {"create_folder": 14, "create_file": 12, "open_file": 22,
                 "adjust_volume": 9, "adjust_brightness": 10, "system_status": 18, "power": 20,
-                "get_time": 6, "get_date": 8, "set_timer": 10, "set_reminder": 14}
+                "get_date": 8, "set_reminder": 14}
 
 
 def main():

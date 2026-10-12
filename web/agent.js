@@ -7,6 +7,9 @@ const ACTIONABLE = new Set(["create_folder", "create_file", "open_app", "open_fi
   "get_time", "get_date", "set_timer", "set_reminder"]);
 // Rule-based dates, times and durations (web/entities.js): shared by every time skill, no training.
 const ENT = typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js");
+// Skills described in skills/*.md, compiled by skills.js into web/skills.json
+const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
+for (const k of Object.keys(SKILLS)) ACTIONABLE.add(k);
 
 // Editable response sets. {slot} placeholders are filled at runtime; one variant is picked at random.
 const RESPONSES = {
@@ -15,9 +18,6 @@ const RESPONSES = {
   "create_file.done": ["Created {file} in {where}.", "Done. {file} is in {where}.", "{file} created in {where}."],
   "create_file.default_type": ["You didn't say which type, so I made a plain text file."],
   "create_file.ask_name": ["What should I call the file?", "OK. What's the file name?"],
-  "open_app.done": ["Opening the {app}.", "Starting the {app}."],
-  "open_app.ask_app": ["Which app? I can open the terminal, browser, file manager, text editor, calculator or settings."],
-  "open_app.unknown": ["I don't know an app called “{value}”. I can open the terminal, browser, file manager, text editor, calculator or settings."],
   "open_file.done": ["Opening {target}.", "Here's {target}."],
   "open_file.ask_name": ["Which file or folder should I open?"],
   "volume.ask": ["Up or down? You can also give a level, like 40%."],
@@ -29,18 +29,12 @@ const RESPONSES = {
   "confirm.dropped": ["I'll take that as a no for the {what}."],
   "greet": ["Hi. Tell me what to create or open.", "Hello. I can create folders and files, or open apps."],
   "thanks": ["You're welcome.", "Anytime."],
-  "help": ["I can create folders and files, open files and apps, change volume and brightness, check the system (disk, CPU, temperature, memory, network), shut down or restart, tell the time and date, and set timers and reminders. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm” or “timer 10 minutes”."],
-  "time.done": ["It's {time}.", "{time}."],
-  "time.elsewhere": ["I only know the time here: it's {time}."],
+  "help": ["I can create folders and files, open files and apps, change volume and brightness, check the system (disk, CPU, temperature, memory, network), shut down or restart, tell the time and date here or in another city, set timers and reminders, check the weather, and remember your name and where you live. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”."],
   "date.today": ["Today is {date}.", "It's {date}."],
   "date.other": ["{phrase} is {date}.", "That's {date}."],
   "date.range": ["{phrase} runs from {from} to {to}."],
   "date.until": ["{n} until {date}.", "{date} is in {n}."],
   "date.since": ["{date} was {n} ago."],
-  "timer.ask": ["How long? For example “10 minutes” or “1h30”.", "Sure. For how long?"],
-  "timer.done": ["Timer set for {dur}. It rings at {at}.", "{dur}, starting now. Done at {at}."],
-  "timer.ring": ["⏰ {dur} timer is done."],
-  "timer.is_time": ["That's a time rather than a duration, so I set a reminder for {at} instead."],
   "reminder.ask_when": ["When should I remind you?", "OK. When?"],
   "reminder.ask_day": ["{phrase} runs from {from} to {to}. Which day?"],
   "reminder.done": ["I'll remind you{what} {at}.", "Reminder set{what} {at}.", "OK, I'll remind you{what} {at}."],
@@ -57,6 +51,9 @@ const RESPONSES = {
   "empty_value": ["I didn't catch a name. Try again, or say cancel."],
 };
 
+// replies written in the skill files: "<skill>.<name>"
+for (const [name, sk] of Object.entries(SKILLS)) for (const [k, v] of Object.entries(sk.replies)) RESPONSES[name + "." + k] = v;
+
 const XDG = { desktop: "Desktop", documents: "Documents", downloads: "Downloads", music: "Music",
   pictures: "Pictures", videos: "Videos", templates: "Templates", public: "Public" };
 const DEICTIC = /^(here|this (folder|directory|dir)|(the )?current (folder|directory|dir)|cwd|current)$/i;
@@ -64,16 +61,8 @@ const DEICTIC = /^(here|this (folder|directory|dir)|(the )?current (folder|direc
 const TYPE_EXT = { markdown: "md", md: "md", text: "txt", txt: "txt", "plain text": "txt", python: "py", py: "py",
   json: "json", html: "html", csv: "csv", yaml: "yml", yml: "yml", javascript: "js", js: "js", css: "css" };
 
-const APPS = [
-  { id: "terminal", label: "terminal", cmd: "x-terminal-emulator", words: ["terminal", "console", "shell", "command line", "cli", "term"] },
-  { id: "browser", label: "browser", cmd: "x-www-browser", words: ["browser", "web browser", "internet", "web"] },
-  { id: "firefox", label: "Firefox browser", cmd: "firefox", words: ["firefox", "firefox browser"] },
-  { id: "chromium", label: "Chromium browser", cmd: "chromium", words: ["chromium", "chrome", "chromium browser", "chrome browser"] },
-  { id: "files", label: "file manager", cmd: 'xdg-open "$HOME"', words: ["file manager", "files", "file explorer", "explorer", "finder", "folders"] },
-  { id: "editor", label: "text editor", cmd: "mousepad", words: ["text editor", "editor", "notepad", "mousepad"] },
-  { id: "calculator", label: "calculator", cmd: "galculator", words: ["calculator", "calc"] },
-  { id: "settings", label: "settings", cmd: "xfce4-settings-manager", words: ["settings", "system settings", "preferences", "control panel"] },
-];
+// the app list lives in skills/open_app.md (## Values: app)
+const APPS = SKILLS.open_app.values.app.map(v => ({ id: v.key, label: v.key, cmd: v.out, words: v.words }));
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
@@ -237,8 +226,179 @@ const stripVerb = t => t.replace(/^(please\s+)?((can|could|would) you\s+)?/i, ""
   .replace(/^(open|launch|start|run|bring up|fire up|show( me)?|give me|get me|pull up|display|view)\s+(up\s+)?/i, "")
   .replace(/\s+(please|for me)\s*\??$/i, "");
 
+
+// ---------- action types: what a skill file can ask the agent to do ----------
+const ME_KEY = "minios.me.v1";
+const norm1 = t => t.toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
+const findValue = (list, raw) => { const v = norm1(cleanValue(raw)); return list.find(x => x.words.includes(v)) || null; };
+const orList = a => a.length > 1 ? a.slice(0, -1).join(", ") + " or " + a[a.length - 1] : a.join("");
+const samePlace = (a, b) => !!a && !!b && a.toLowerCase().replace(/^the\s+/, "") === b.toLowerCase().replace(/^the\s+/, "");
+const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const isoDay = d => d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+const placeOf = (slots, text) => {
+  if (slots.place) return cleanValue(slots.place).replace(/^the\s+/i, "");
+  const m = /\b(?:in|at|for)\s+(?!the\s+(?:morning|afternoon|evening)\b)([A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)/.exec(text); // a capitalised name after "in"
+  return m ? m[1] : null;
+};
+
+const ACTIONS = {
+  // run a command template with a value from the skill's list, e.g. command: "{app} &"
+  run(intent, sk, slots, trace) {
+    const need = sk.params.needs, list = sk.values[need] || [];
+    const choices = orList(list.map(v => v.key));
+    let raw = slots[need];
+    if (!raw) {
+      const guess = stripVerb(this.lastText);
+      if (findValue(list, guess)) { trace.push({ type: "state", text: need + " filled from the skill's list ← “" + cleanValue(guess) + "”" }); raw = guess; }
+      else return this.ask(intent, slots, need, intent + ".ask_" + need, trace, { choices });
+    }
+    const v = findValue(list, raw);
+    if (!v) {
+      trace.push({ type: "abstain", text: "no " + need + " matches “" + cleanValue(raw) + "” in " + sk.file });
+      return { trace, reply: fill(intent + ".unknown", { value: cleanValue(raw), choices }) };
+    }
+    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => k === need ? v.out : cleanValue(slots[k] || "")) });
+    return { trace, reply: fill(intent + ".done", { [need]: v.key }) };
+  },
+
+  timer(intent, sk, slots, trace) {
+    const now = this.now();
+    const ents = ENT.parse(this.lastText, { now });
+    const dur = ents.find(x => x.type === "duration");
+    const at = ents.find(x => x.type === "datetime");
+    if (!dur && at) { // "timer for 3pm": that's a time, so it becomes a reminder
+      trace.push({ type: "entity", e: at });
+      const r2 = this.schedule(null, at, trace);
+      return { trace, reply: fill(intent + ".is_time", { at: whenText(fromIso(at.value), now) }) + (r2.reply.startsWith("I'll") ? "" : " " + r2.reply) };
+    }
+    if (!dur) return this.ask(intent, slots, "duration", intent + ".ask", trace);
+    trace.push({ type: "entity", e: dur });
+    const end = new Date(now.getTime() + dur.seconds * 1000);
+    trace.push({ type: "exec", text: `systemd-run --user --on-active=${dur.seconds}s notify-send "Timer" "${durWords(dur.seconds)} is up"` });
+    this.scheduled.push({ kind: "timer", at: end, seconds: dur.seconds });
+    this.arm(end, fill(intent + ".ring", { dur: durWords(dur.seconds) }));
+    return { trace, reply: fill(intent + ".done", { dur: durWords(dur.seconds), at: clock(end) }) };
+  },
+
+  // the time here, or in another place (its time zone comes from the place search)
+  clock(intent, sk, slots, trace) {
+    const now = this.now(), me = this.mem();
+    const place = placeOf(slots, this.lastText);
+    if (!place || (me.place && samePlace(place, me.place.name))) {
+      trace.push({ type: "exec", text: "date +%H:%M" });
+      return { trace, reply: fill(intent + ".done", { time: clock(now) }) };
+    }
+    trace.push({ type: "exec", text: "GET geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(place) });
+    const later = this.geocode(place).then(g => {
+      if (!g) return { reply: fill(intent + ".not_found", { place }) };
+      const f = o => new Intl.DateTimeFormat("en-GB", { timeZone: g.timezone, ...o }).format(now);
+      return { reply: fill(intent + ".elsewhere", { place: g.name, time: f({ hour: "2-digit", minute: "2-digit", hour12: false }), day: f({ weekday: "long" }) }),
+        trace: [{ type: "state", text: g.name + (g.region ? ", " + g.region : "") + " → " + g.timezone }] };
+    }).catch(err => ({ reply: fill(intent + ".offline", { time: clock(now) }), trace: [{ type: "abstain", text: err.message }] }));
+    return { trace, reply: "Looking up " + place + "…", later };
+  },
+
+  // current weather or the forecast for the days in the sentence, from Open-Meteo
+  weather(intent, sk, slots, trace) {
+    const now = this.now(), me = this.mem();
+    const place = placeOf(slots, this.lastText) || (me.place && me.place.name);
+    if (!place) return this.ask(intent, slots, "place", intent + ".ask_place", trace);
+    const e = ENT.parse(this.lastText, { now }).find(x => ["date", "datetime", "range"].includes(x.type));
+    if (e) trace.push({ type: "entity", e });
+    const today = startOfDay(now);
+    let days = null;
+    if (e && e.type === "range") {
+      days = [];
+      for (let d = fromIso(e.from); d <= fromIso(e.to) && days.length < 7; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) if (d >= today) days.push(d);
+    } else if (e) days = [startOfDay(fromIso(e.value))];
+    if (days && days.length && days[days.length - 1] < today) return { trace, reply: fill(intent + ".past") };
+    if (days && days.some(d => (d - today) / 864e5 > 15)) return { trace, reply: fill(intent + ".too_far") };
+    const sky = code => (sk.values.sky.find(v => v.key === String(code)) || { out: "mixed weather" }).out;
+    const label = d => { const k = Math.round((d - today) / 864e5); return k === 0 ? "today" : k === 1 ? "tomorrow" : dayText(d, now); };
+    const known = me.place && samePlace(place, me.place.name) && me.place.lat != null ? me.place : null;
+    const later = (async () => {
+      const g = known || await this.geocode(place);
+      if (!g) return { reply: fill(intent + ".not_found", { place }) };
+      if (!known && me.place && samePlace(place, me.place.name)) this.setMem({ ...this.mem(), place: g }); // home place found on the map
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}`
+        + "&current=temperature_2m,weather_code,wind_speed_10m"
+        + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16";
+      const r = await this.fetch(url);
+      if (!r.ok) throw new Error("weather service answered " + r.status);
+      const w = await r.json();
+      const t2 = [{ type: "exec", text: "GET " + url.replace("https://", "") }];
+      if (!days) {
+        const c = w.current;
+        return { trace: t2, reply: fill(intent + ".now", { place: g.name, sky: sky(c.weather_code), temp: Math.round(c.temperature_2m), wind: Math.round(c.wind_speed_10m) }) };
+      }
+      const line = d => {
+        const i = w.daily.time.indexOf(isoDay(d));
+        if (i < 0) return null;
+        const p = w.daily.precipitation_probability_max[i];
+        return { when: label(d), sky: sky(w.daily.weather_code[i]), min: Math.round(w.daily.temperature_2m_min[i]), max: Math.round(w.daily.temperature_2m_max[i]), rain: p == null ? "?" : p };
+      };
+      const lines = days.map(line).filter(Boolean);
+      if (!lines.length) return { trace: t2, reply: fill(intent + ".too_far") };
+      if (lines.length === 1) return { trace: t2, reply: fill(intent + ".day", { ...lines[0], when: cap(lines[0].when), place: g.name }) };
+      return { trace: t2, reply: fill(intent + ".days", { place: g.name, phrase: e.text }) + "\n"
+        + lines.map(L => `${cap(L.when)}: ${L.sky}, ${L.min} to ${L.max}°C, ${L.rain}% rain`).join("\n") };
+    })().catch(err => ({ reply: fill(intent + ".offline"), trace: [{ type: "abstain", text: err.message }] }));
+    return { trace, reply: fill(intent + ".checking", { place }), later };
+  },
+
+  // remember / recall / forget your name and where you live (mode set by the skill file)
+  memory(intent, sk, slots, trace) {
+    const me = this.mem(), mode = sk.params.mode, text = this.lastText.toLowerCase();
+    const aboutName = /\b(name|call me|who am i|who i am)\b/.test(text);
+    const aboutPlace = /\b(live|living|city|town|place|location|home|based|moved|address)\b/.test(text);
+    if (mode === "set") {
+      const name = slots.name && cleanValue(slots.name);
+      const place = slots.place && cleanValue(slots.place);
+      if (!name && !place) return { trace, reply: fill(intent + ".ask") };
+      const next = { ...me };
+      if (name) next.name = name;
+      if (place) next.place = { name: place };
+      this.setMem(next);
+      trace.push({ type: "state", text: "saved on this device: " + [name && "name", place && "place"].filter(Boolean).join(" and ") });
+      const said = name ? fill(intent + ".name", { name }) : "";
+      if (!place) return { trace, reply: said };
+      trace.push({ type: "exec", text: "GET geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(place) });
+      const later = this.geocode(place).then(g => {
+        if (!g) return { reply: (said + " " + fill(intent + ".place_not_found", { place })).trim() };
+        const cur = this.mem();
+        if (cur.place && samePlace(cur.place.name, place)) this.setMem({ ...cur, place: g });
+        return { reply: (said + " " + fill(intent + ".place_found", { place: [g.name, g.region].filter(Boolean).join(", ") })).trim(),
+          trace: [{ type: "state", text: g.name + " " + g.lat.toFixed(2) + ", " + g.lon.toFixed(2) + " · " + g.timezone }] };
+      }).catch(() => ({ reply: (said + " " + fill(intent + ".place_offline", { place })).trim() }));
+      return { trace, reply: (said + " " + fill(intent + ".place", { place })).trim(), later };
+    }
+    const placeText = p => [p.name, p.region].filter(Boolean).join(", ");
+    if (mode === "get") {
+      if (aboutName && !aboutPlace) return { trace, reply: me.name ? fill(intent + ".name", { name: me.name }) : fill(intent + ".no_name") };
+      if (aboutPlace && !aboutName) return { trace, reply: me.place ? fill(intent + ".place", { place: placeText(me.place) }) : fill(intent + ".no_place") };
+      const facts = [me.name && "your name is " + me.name, me.place && "you live in " + placeText(me.place)].filter(Boolean);
+      return { trace, reply: facts.length ? fill(intent + ".all", { facts: facts.join(", and ") }) : fill(intent + ".nothing") };
+    }
+    // forget
+    const next = { ...me };
+    let key = "all";
+    if (aboutName && !aboutPlace && !/everything|all about/.test(text)) { delete next.name; key = "name"; }
+    else if (aboutPlace && !aboutName && !/everything|all about/.test(text)) { delete next.place; key = "place"; }
+    else { delete next.name; delete next.place; }
+    const had = key === "all" ? (me.name || me.place) : me[key];
+    this.setMem(next);
+    trace.push({ type: "state", text: "forgot " + key });
+    return { trace, reply: had ? fill(intent + "." + key) : fill(intent + ".nothing") };
+  },
+};
+
 class Agent {
-  constructor(nlu) { this.nlu = nlu; this.reset(); }
+  constructor(nlu, store) {
+    this.nlu = nlu;
+    this.store = store || null;
+    this.fetch = typeof fetch !== "undefined" ? fetch.bind(globalThis) : null;
+    this.reset();
+  }
 
   reset() {
     this.pending = null; this.volume = 50; this.muted = false; this.brightness = 80;
@@ -348,6 +508,7 @@ class Agent {
       return { trace, reply: fill("fallback"), unknown: true };
     }
     if (!ACTIONABLE.has(r.intent)) {
+      if (r.intent === "greet" && this.mem().name) return { trace, reply: "Hi " + this.mem().name + ". What can I do for you?" };
       if (RESPONSES[r.intent]) return { trace, reply: fill(r.intent) };
       // a skill taught through the inbox: recognised, but nothing is wired to it yet
       const got = Object.entries(r.slots).map(([k, v]) => k + " “" + cleanValue(v) + "”").join(", ");
@@ -357,13 +518,37 @@ class Agent {
     return this.run(r.intent, r.slots, trace);
   }
 
-  ask(intent, slots, need, key, trace) {
+  ask(intent, slots, need, key, trace, vars = {}) {
     this.pending = { intent, slots, need };
     trace.push({ type: "state", text: "missing " + need + ", waiting for answer" });
-    return { trace, reply: fill(key) };
+    return { trace, reply: fill(key, vars) };
+  }
+
+  // ---------- what the agent remembers about you: on this device only ----------
+  mem() {
+    try { return JSON.parse((this.store && this.store.getItem(ME_KEY)) || "null") || this._mem || {}; } catch { return this._mem || {}; }
+  }
+  setMem(m) {
+    this._mem = m;
+    try { if (this.store) this.store.setItem(ME_KEY, JSON.stringify(m)); } catch { /* kept in memory only */ }
+  }
+  // place → coordinates and time zone (Open-Meteo place search), cached per session
+  async geocode(name) {
+    const key = name.toLowerCase();
+    this.geoCache = this.geoCache || {};
+    if (key in this.geoCache) return this.geoCache[key];
+    if (!this.fetch) throw new Error("no network access");
+    const r = await this.fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=" + encodeURIComponent(name));
+    if (!r.ok) throw new Error("place search answered " + r.status);
+    const g = ((await r.json()).results || [])[0];
+    const out = g ? { name: g.name, region: [g.admin1, g.country].filter(Boolean).join(", "), lat: g.latitude, lon: g.longitude, timezone: g.timezone } : null;
+    this.geoCache[key] = out;
+    return out;
   }
 
   run(intent, slots, trace) {
+    const sk = SKILLS[intent];
+    if (sk && ACTIONS[sk.action]) return ACTIONS[sk.action].call(this, intent, sk, slots, trace);
     if (intent === "create_folder") {
       if (!slots.name) return this.ask(intent, slots, "name", "create_folder.ask_name", trace);
       const name = cleanValue(slots.name);
@@ -385,26 +570,6 @@ class Agent {
       trace.push({ type: "exec", text: "mkdir -p " + shq(loc.path) + " && touch " + shq(path) });
       return { trace, reply: fill("create_file.done", { file: "“" + name + "”", where: loc.label }) + note };
     }
-    if (intent === "open_app") {
-      if (!slots.app) {
-        // Deterministic fallback: look up the words after the verb in the app dictionary
-        const guess = this.lastText.replace(/^(please\s+)?(can|could|would) you\s+/i, "")
-          .replace(/^(please\s+)?(open|launch|start|run|bring up|fire up|show|give me|get me)\s+(up\s+)?/i, "")
-          .replace(/\s+(please|for me)\s*\??$/i, "");
-        if (resolveApp(guess)) {
-          trace.push({ type: "state", text: "app filled from dictionary ← “" + cleanValue(guess) + "”" });
-          slots = { ...slots, app: guess };
-        } else return this.ask(intent, slots, "app", "open_app.ask_app", trace);
-      }
-      const app = resolveApp(slots.app);
-      if (!app) {
-        trace.push({ type: "abstain", text: "no app matches “" + cleanValue(slots.app) + "”" });
-        return { trace, reply: fill("open_app.unknown", { value: cleanValue(slots.app) }) };
-      }
-      trace.push({ type: "exec", text: app.cmd + " &" });
-      return { trace, reply: fill("open_app.done", { app: app.label }) };
-    }
-
     if (intent === "open_file") {
       let name = slots.name && cleanValue(slots.name);
       if (!name && !slots.location) {
@@ -463,12 +628,6 @@ class Agent {
       trace.push({ type: "state", text: "risky action (" + act + "), waiting for confirmation" });
       return { trace, reply: fill("power.confirm", { action_q: P.q }) };
     }
-    if (intent === "get_time") {
-      const now = this.now();
-      const elsewhere = /\bin\s+(?!the\b)([a-z][a-z .'-]+)\??$/i.exec(this.lastText);
-      trace.push({ type: "exec", text: "date +%H:%M" });
-      return { trace, reply: fill(elsewhere ? "time.elsewhere" : "time.done", { time: clock(now) }) };
-    }
     if (intent === "get_date") {
       const now = this.now(), text = this.lastText;
       const e = ENT.parse(text, { now }).find(x => x.type === "date" || x.type === "datetime" || x.type === "range");
@@ -493,24 +652,6 @@ class Agent {
       else reply = fill("date.other", { phrase: cap(e.text), date: dayText(d, now) });
       if (e.ambiguous && e.alternatives.length) reply += " If you meant the other one, that's " + dayText(fromIso(e.alternatives[0].split("/")[0]), now) + ".";
       return { trace, reply };
-    }
-    if (intent === "set_timer") {
-      const now = this.now();
-      const ents = ENT.parse(this.lastText, { now });
-      const dur = ents.find(x => x.type === "duration");
-      const at = ents.find(x => x.type === "datetime");
-      if (!dur && at) { // "timer for 3pm" → it's a time
-        trace.push({ type: "entity", e: at });
-        const r2 = this.schedule(null, at, trace);
-        return { trace, reply: fill("timer.is_time", { at: whenText(fromIso(at.value), now) }) + (r2.reply.startsWith("I'll") ? "" : " " + r2.reply) };
-      }
-      if (!dur) return this.ask(intent, slots, "duration", "timer.ask", trace);
-      trace.push({ type: "entity", e: dur });
-      const end = new Date(now.getTime() + dur.seconds * 1000);
-      trace.push({ type: "exec", text: `systemd-run --user --on-active=${dur.seconds}s notify-send "Timer" "${durWords(dur.seconds)} is up"` });
-      this.scheduled.push({ kind: "timer", at: end, seconds: dur.seconds });
-      this.arm(end, fill("timer.ring", { dur: durWords(dur.seconds) }));
-      return { trace, reply: fill("timer.done", { dur: durWords(dur.seconds), at: clock(end) }) };
     }
     if (intent === "set_reminder") {
       const now = this.now();

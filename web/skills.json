@@ -1,0 +1,634 @@
+{
+ "skills": {
+  "forget_me": {
+   "file": "skills/forget_me.md",
+   "action": "memory",
+   "params": {
+    "skill": "forget_me",
+    "action": "memory",
+    "mode": "forget",
+    "samples": "10"
+   },
+   "values": {},
+   "replies": {
+    "name": [
+     "OK, I've forgotten your name."
+    ],
+    "place": [
+     "OK, I've forgotten where you live."
+    ],
+    "all": [
+     "Done. I don't remember anything about you anymore."
+    ],
+    "nothing": [
+     "There was nothing to forget."
+    ]
+   },
+   "sentences": 34
+  },
+  "get_time": {
+   "file": "skills/get_time.md",
+   "action": "clock",
+   "params": {
+    "skill": "get_time",
+    "action": "clock",
+    "train_only": "city",
+    "samples": "8"
+   },
+   "values": {},
+   "replies": {
+    "done": [
+     "It's {time}.",
+     "{time}."
+    ],
+    "elsewhere": [
+     "In {place} it's {time} on {day}.",
+     "It's {time} in {place} ({day})."
+    ],
+    "not_found": [
+     "I couldn't find a place called “{place}”."
+    ],
+    "offline": [
+     "I can't look up other places right now. Here it's {time}."
+    ]
+   },
+   "sentences": 84
+  },
+  "get_weather": {
+   "file": "skills/get_weather.md",
+   "action": "weather",
+   "params": {
+    "skill": "get_weather",
+    "action": "weather",
+    "train_only": "city, day",
+    "samples": "8"
+   },
+   "values": {
+    "sky": [
+     {
+      "key": "0",
+      "words": [
+       "0"
+      ],
+      "say": [
+       "0"
+      ],
+      "out": "clear sky"
+     },
+     {
+      "key": "1",
+      "words": [
+       "1"
+      ],
+      "say": [
+       "1"
+      ],
+      "out": "mostly clear"
+     },
+     {
+      "key": "2",
+      "words": [
+       "2"
+      ],
+      "say": [
+       "2"
+      ],
+      "out": "partly cloudy"
+     },
+     {
+      "key": "3",
+      "words": [
+       "3"
+      ],
+      "say": [
+       "3"
+      ],
+      "out": "overcast"
+     },
+     {
+      "key": "45",
+      "words": [
+       "45"
+      ],
+      "say": [
+       "45"
+      ],
+      "out": "fog"
+     },
+     {
+      "key": "48",
+      "words": [
+       "48"
+      ],
+      "say": [
+       "48"
+      ],
+      "out": "freezing fog"
+     },
+     {
+      "key": "51",
+      "words": [
+       "51"
+      ],
+      "say": [
+       "51"
+      ],
+      "out": "light drizzle"
+     },
+     {
+      "key": "53",
+      "words": [
+       "53"
+      ],
+      "say": [
+       "53"
+      ],
+      "out": "drizzle"
+     },
+     {
+      "key": "55",
+      "words": [
+       "55"
+      ],
+      "say": [
+       "55"
+      ],
+      "out": "heavy drizzle"
+     },
+     {
+      "key": "56",
+      "words": [
+       "56"
+      ],
+      "say": [
+       "56"
+      ],
+      "out": "freezing drizzle"
+     },
+     {
+      "key": "57",
+      "words": [
+       "57"
+      ],
+      "say": [
+       "57"
+      ],
+      "out": "heavy freezing drizzle"
+     },
+     {
+      "key": "61",
+      "words": [
+       "61"
+      ],
+      "say": [
+       "61"
+      ],
+      "out": "light rain"
+     },
+     {
+      "key": "63",
+      "words": [
+       "63"
+      ],
+      "say": [
+       "63"
+      ],
+      "out": "rain"
+     },
+     {
+      "key": "65",
+      "words": [
+       "65"
+      ],
+      "say": [
+       "65"
+      ],
+      "out": "heavy rain"
+     },
+     {
+      "key": "66",
+      "words": [
+       "66"
+      ],
+      "say": [
+       "66"
+      ],
+      "out": "freezing rain"
+     },
+     {
+      "key": "67",
+      "words": [
+       "67"
+      ],
+      "say": [
+       "67"
+      ],
+      "out": "heavy freezing rain"
+     },
+     {
+      "key": "71",
+      "words": [
+       "71"
+      ],
+      "say": [
+       "71"
+      ],
+      "out": "light snow"
+     },
+     {
+      "key": "73",
+      "words": [
+       "73"
+      ],
+      "say": [
+       "73"
+      ],
+      "out": "snow"
+     },
+     {
+      "key": "75",
+      "words": [
+       "75"
+      ],
+      "say": [
+       "75"
+      ],
+      "out": "heavy snow"
+     },
+     {
+      "key": "77",
+      "words": [
+       "77"
+      ],
+      "say": [
+       "77"
+      ],
+      "out": "snow grains"
+     },
+     {
+      "key": "80",
+      "words": [
+       "80"
+      ],
+      "say": [
+       "80"
+      ],
+      "out": "light showers"
+     },
+     {
+      "key": "81",
+      "words": [
+       "81"
+      ],
+      "say": [
+       "81"
+      ],
+      "out": "showers"
+     },
+     {
+      "key": "82",
+      "words": [
+       "82"
+      ],
+      "say": [
+       "82"
+      ],
+      "out": "violent showers"
+     },
+     {
+      "key": "85",
+      "words": [
+       "85"
+      ],
+      "say": [
+       "85"
+      ],
+      "out": "snow showers"
+     },
+     {
+      "key": "86",
+      "words": [
+       "86"
+      ],
+      "say": [
+       "86"
+      ],
+      "out": "heavy snow showers"
+     },
+     {
+      "key": "95",
+      "words": [
+       "95"
+      ],
+      "say": [
+       "95"
+      ],
+      "out": "thunderstorm"
+     },
+     {
+      "key": "96",
+      "words": [
+       "96"
+      ],
+      "say": [
+       "96"
+      ],
+      "out": "thunderstorm with hail"
+     },
+     {
+      "key": "99",
+      "words": [
+       "99"
+      ],
+      "say": [
+       "99"
+      ],
+      "out": "thunderstorm with heavy hail"
+     }
+    ]
+   },
+   "replies": {
+    "now": [
+     "{place} right now: {sky}, {temp}°C, wind {wind} km/h."
+    ],
+    "day": [
+     "{when} in {place}: {sky}, {min} to {max}°C, {rain}% chance of rain."
+    ],
+    "days": [
+     "{place}, {phrase}:"
+    ],
+    "ask_place": [
+     "Which city? Tip: say “I live in …” and I'll remember it for next time."
+    ],
+    "not_found": [
+     "I couldn't find a place called “{place}”."
+    ],
+    "too_far": [
+     "I can only see 16 days ahead."
+    ],
+    "past": [
+     "I only have the forecast, not past weather."
+    ],
+    "offline": [
+     "I can't reach the weather service right now. Are you online?"
+    ],
+    "checking": [
+     "Checking the weather for {place}…"
+    ]
+   },
+   "sentences": 169
+  },
+  "open_app": {
+   "file": "skills/open_app.md",
+   "action": "run",
+   "params": {
+    "skill": "open_app",
+    "action": "run",
+    "command": "{app} &",
+    "needs": "app",
+    "samples": "16"
+   },
+   "values": {
+    "app": [
+     {
+      "key": "terminal",
+      "words": [
+       "terminal",
+       "console",
+       "shell",
+       "command line",
+       "cli",
+       "term"
+      ],
+      "say": [
+       "terminal",
+       "Terminal",
+       "console",
+       "shell",
+       "command line",
+       "cli",
+       "term"
+      ],
+      "out": "x-terminal-emulator"
+     },
+     {
+      "key": "browser",
+      "words": [
+       "browser",
+       "web browser",
+       "internet",
+       "web"
+      ],
+      "say": [
+       "browser",
+       "Browser",
+       "web browser",
+       "internet",
+       "web"
+      ],
+      "out": "x-www-browser"
+     },
+     {
+      "key": "Firefox browser",
+      "words": [
+       "firefox browser",
+       "firefox"
+      ],
+      "say": [
+       "Firefox browser",
+       "firefox"
+      ],
+      "out": "firefox"
+     },
+     {
+      "key": "Chromium browser",
+      "words": [
+       "chromium browser",
+       "chromium",
+       "chrome",
+       "chrome browser"
+      ],
+      "say": [
+       "Chromium browser",
+       "chromium",
+       "chrome",
+       "chrome browser"
+      ],
+      "out": "chromium"
+     },
+     {
+      "key": "file manager",
+      "words": [
+       "file manager",
+       "files",
+       "file explorer",
+       "explorer",
+       "finder",
+       "folders"
+      ],
+      "say": [
+       "file manager",
+       "files",
+       "file explorer",
+       "explorer",
+       "finder",
+       "folders"
+      ],
+      "out": "xdg-open \"$HOME\""
+     },
+     {
+      "key": "text editor",
+      "words": [
+       "text editor",
+       "editor",
+       "notepad",
+       "mousepad"
+      ],
+      "say": [
+       "text editor",
+       "editor",
+       "notepad",
+       "mousepad"
+      ],
+      "out": "mousepad"
+     },
+     {
+      "key": "calculator",
+      "words": [
+       "calculator",
+       "calc"
+      ],
+      "say": [
+       "calculator",
+       "calc"
+      ],
+      "out": "galculator"
+     },
+     {
+      "key": "settings",
+      "words": [
+       "settings",
+       "system settings",
+       "preferences",
+       "control panel"
+      ],
+      "say": [
+       "settings",
+       "system settings",
+       "preferences",
+       "control panel"
+      ],
+      "out": "xfce4-settings-manager"
+     }
+    ]
+   },
+   "replies": {
+    "done": [
+     "Opening the {app}.",
+     "Starting the {app}."
+    ],
+    "ask_app": [
+     "Which app? I can open the {choices}."
+    ],
+    "unknown": [
+     "I don't know an app called “{value}”. I can open the {choices}."
+    ]
+   },
+   "sentences": 194
+  },
+  "recall_me": {
+   "file": "skills/recall_me.md",
+   "action": "memory",
+   "params": {
+    "skill": "recall_me",
+    "action": "memory",
+    "mode": "get",
+    "samples": "10"
+   },
+   "values": {},
+   "replies": {
+    "name": [
+     "Your name is {name}."
+    ],
+    "place": [
+     "You live in {place}."
+    ],
+    "all": [
+     "Here is everything I know about you: {facts}. It's stored on this phone only."
+    ],
+    "nothing": [
+     "I don't know anything about you yet. Tell me “my name is …” or “I live in …”."
+    ],
+    "no_name": [
+     "I don't know your name yet. Tell me “my name is …”."
+    ],
+    "no_place": [
+     "I don't know where you live yet. Tell me “I live in …”."
+    ]
+   },
+   "sentences": 62
+  },
+  "remember_me": {
+   "file": "skills/remember_me.md",
+   "action": "memory",
+   "params": {
+    "skill": "remember_me",
+    "action": "memory",
+    "mode": "set",
+    "train_only": "first, city",
+    "samples": "8"
+   },
+   "values": {},
+   "replies": {
+    "name": [
+     "Nice to meet you, {name}. I'll remember your name, on this phone only.",
+     "Got it, {name}. Saved on this phone."
+    ],
+    "place": [
+     "Got it: you live in {place}. I'll use it for the weather."
+    ],
+    "place_found": [
+     "Found it: {place}. Saved on this phone, I'll use it for the weather and the time."
+    ],
+    "place_not_found": [
+     "I saved “{place}”, but I couldn't find it on the map, so weather won't work for it yet."
+    ],
+    "place_offline": [
+     "I saved “{place}”. I'll look it up on the map when we're back online."
+    ],
+    "ask": [
+     "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
+    ]
+   },
+   "sentences": 109
+  },
+  "set_timer": {
+   "file": "skills/set_timer.md",
+   "action": "timer",
+   "params": {
+    "skill": "set_timer",
+    "action": "timer",
+    "train_only": "dur",
+    "samples": "10"
+   },
+   "values": {},
+   "replies": {
+    "ask": [
+     "How long? For example “10 minutes” or “1h30”.",
+     "Sure. For how long?"
+    ],
+    "done": [
+     "Timer set for {dur}. It rings at {at}.",
+     "{dur}, starting now. Done at {at}."
+    ],
+    "ring": [
+     "⏰ {dur} timer is done."
+    ],
+    "is_time": [
+     "That's a time rather than a duration, so I set a reminder for {at} instead."
+    ]
+   },
+   "sentences": 120
+  }
+ }
+}

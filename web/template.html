@@ -100,6 +100,7 @@ input { flex: 1; min-width: 0; font: 16px var(--font-ui); color: var(--fg); back
 input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: transparent; }
 .send { background: var(--user); color: var(--user-ink); border: 0; border-radius: 10px; padding: 0 16px; font-weight: 600; cursor: pointer; }
 .pending { font: 12px var(--font-mono); color: var(--warn); }
+.reply.waiting { color: var(--muted); }
 .retrain { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0 4px; }
 .retrain button:disabled { opacity: 0.5; cursor: progress; }
 .rlog { font: 12px var(--font-mono); color: var(--dim, #777); min-width: 0; overflow-wrap: anywhere; }
@@ -159,7 +160,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
       <summary id="sum"></summary>
       <div class="stats" id="stats"></div>
       <div class="retrain"><button class="ghost" id="retrain" type="button">Retrain on this device</button><span class="rlog" id="rlog"></span></div>
-      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both are trained by the same plain JavaScript that runs them, with no network calls and no dependencies: the button above retrains the whole model on this phone from the bundled training sentences. Weak weights are dropped and the rest stored as 1-byte numbers, which keeps the model small. Dates, times and durations are read by a small rule-based parser, not by the model. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures. Timers and reminders do ring here while the page stays open.</p>
+      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both are trained by the same plain JavaScript that runs them, with no network calls and no dependencies: the button above retrains the whole model on this phone from the bundled training sentences. Weak weights are dropped and the rest stored as 1-byte numbers, which keeps the model small. Dates, times and durations are read by a small rule-based parser, not by the model. Skills are described in plain Markdown files (skills/*.md). Weather and the time in other places come from Open-Meteo, the only network calls; your name and place stay on this phone. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures. Timers and reminders do ring here while the page stays open.</p>
     </details>
   </header>
 
@@ -196,6 +197,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
 <script type="application/json" id="model">/*MODEL*/</script>
 <script>/*RUNTIME*/</script>
 <script>/*ENTITIES*/</script>
+<script>const SKILLS_DATA = /*SKILLS*/;</script>
 <script>const DATA = /*DATA*/; const WORKER_SRC = /*WORKER_SRC*/;</script>
 <script>/*AGENT*/</script>
 <script>/*INBOX*/</script>
@@ -203,7 +205,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
 const MODEL = JSON.parse(document.getElementById("model").textContent);
 const EVAL = /*EVAL*/;
 const nlu = new NLURuntime.NLU(MODEL);
-const agent = new Agent(nlu);
+const agent = new Agent(nlu, (() => { try { return window.localStorage; } catch { return null; } })());
 const $ = id => document.getElementById(id);
 const log = $("log");
 
@@ -211,7 +213,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 
 function showModel(m, ev, where) {
   $("ver").textContent = "model " + m.version;
-  $("sum").textContent = (JSON.stringify(m).length / 1024).toFixed(0) + " KB model · " + m.intents.length + " intents · runs offline";
+  $("sum").textContent = (JSON.stringify(m).length / 1024).toFixed(0) + " KB model · " + m.intents.length + " intents · runs on the device · weather online";
   const stats = [
     [m.stats.examples, "training sentences"],
     [m.stats.features.toLocaleString("en"), "intent features"],
@@ -491,6 +493,18 @@ function renderAgent(el, text, out) {
   });
   const why = el.querySelector(".why");
   why.addEventListener("toggle", () => { if (why.open) why.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+  if (out.later) {
+    const bubble = el.querySelector(".reply");
+    bubble.classList.add("waiting");
+    out.later.then(res => {
+      bubble.classList.remove("waiting");
+      bubble.textContent = res.reply;
+      const tr = el.querySelector(".trace");
+      for (const x of res.trace || []) tr.insertAdjacentHTML("beforeend",
+        x.type === "exec" ? row("exec", `$ ${esc(x.text)}<em>network</em>`, "exec") : row(x.type === "abstain" ? "skip" : "state", esc(x.text), x.type));
+      log.scrollTop = log.scrollHeight;
+    });
+  }
   log.scrollTop = log.scrollHeight;
 }
 
@@ -534,7 +548,9 @@ const CHIPS = ["is the pi overheating?", "turn the volume up", "brightness 40%",
   "make a folder called drafts in documents", "new markdown file", "shut down", "how's the system doing",
   "it's too loud", "open the terminal", "delete the reports folder", "help",
   "what time is it", "what day is next friday", "timer 1 minute", "remind me to call mum next friday at 3pm",
-  "remind me to stretch every weekday at 3pm", "how many days until december 24"];
+  "remind me to stretch every weekday at 3pm", "how many days until december 24",
+  "I live in Munich", "what's the weather tomorrow", "weather in Lisbon this weekend", "what time is it in Tokyo",
+  "my name is Gab", "what do you know about me", "forget everything about me"];
 $("chips").innerHTML = CHIPS.map((c, i) => `<button class="chip" type="button" id="chip${i}">${esc(c)}</button>`).join("");
 CHIPS.forEach((c, i) => $("chip" + i).addEventListener("click", () => send(c)));
 
