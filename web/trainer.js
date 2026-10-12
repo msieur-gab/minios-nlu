@@ -3,7 +3,7 @@
 // Needs the feature functions of web/runtime.js (NLURuntime).
 //
 //   intent : TF-IDF (same features as the runtime) + multinomial logistic regression, L-BFGS
-//   slots  : averaged structured perceptron with Viterbi decoding (same weight layout the CRF used)
+//   slots  : linear-chain CRF, L-BFGS (the runtime decodes it with Viterbi)
 //   export : weak intent weights dropped, the rest stored as 1-byte integers (format 2)
 
 const NLUTrainer = (() => {
@@ -46,10 +46,6 @@ const NLUTrainer = (() => {
   }
 
   // ---------- helpers ----------
-  function rng(seed) { // mulberry32: same shuffle on every device
-    return () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-  }
   function b64(bytes) {
     let s = "";
     for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
@@ -160,75 +156,6 @@ const NLUTrainer = (() => {
     return { w: x, iterations: it, loss: f };
   }
 
-  // ---------- slots: averaged structured perceptron ----------
-  function viterbi(em, trans, L) {
-    if (!em.length) return [];
-    let score = em[0].slice();
-    const back = [];
-    for (let t = 1; t < em.length; t++) {
-      const nw = new Float64Array(L), bp = new Int32Array(L);
-      for (let b = 0; b < L; b++) {
-        let best = -Infinity, arg = 0;
-        for (let a = 0; a < L; a++) { const v = score[a] + trans[a * L + b]; if (v > best) { best = v; arg = a; } }
-        nw[b] = best + em[t][b]; bp[b] = arg;
-      }
-      score = nw; back.push(bp);
-    }
-    let last = 0;
-    for (let i = 1; i < L; i++) if (score[i] > score[last]) last = i;
-    const path = [last];
-    for (let i = back.length - 1; i >= 0; i--) path.push(back[i][path[path.length - 1]]);
-    return path.reverse();
-  }
-
-  function perceptron(seqs, labels, { epochs = 12, seed = 7, dropout = 0, noBias = false, onStep } = {}) {
-    const L = labels.length;
-    const W = new Map(), U = new Map(); // weights and their time-weighted sums (averaging trick)
-    const T = new Float64Array(L * L), TU = new Float64Array(L * L);
-    let c = 1;
-    const row = (M, f) => { let r = M.get(f); if (!r) { r = new Float64Array(L); M.set(f, r); } return r; };
-    const order = seqs.map((_, i) => i);
-    const rand = rng(seed);
-    for (let ep = 0; ep < epochs; ep++) {
-      for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
-      let errors = 0;
-      for (const i of order) {
-        const { gold } = seqs[i];
-        // word dropout: sometimes hide a token's own identity so context features learn to carry the decision
-        const feats = seqs[i].feats.map(fs => fs.filter(f => !(noBias && f === "bias")
-          && !(dropout && (f.startsWith("w=") || f.startsWith("s3=") || f.startsWith("w-1|w=") || f.startsWith("w|w+1=")) && rand() < dropout)));
-        const em = feats.map(fs => { const r = new Float64Array(L); for (const f of fs) { const w = W.get(f); if (w) for (let l = 0; l < L; l++) r[l] += w[l]; } return r; });
-        const pred = viterbi(em, T, L);
-        let wrong = false;
-        for (let t = 0; t < gold.length; t++) {
-          if (pred[t] === gold[t]) continue;
-          wrong = true;
-          for (const f of feats[t]) {
-            const w = row(W, f), u = row(U, f);
-            w[gold[t]] += 1; u[gold[t]] += c; w[pred[t]] -= 1; u[pred[t]] -= c;
-          }
-        }
-        for (let t = 1; t < gold.length; t++) {
-          const g = gold[t - 1] * L + gold[t], p = pred[t - 1] * L + pred[t];
-          if (g !== p) { T[g] += 1; TU[g] += c; T[p] -= 1; TU[p] -= c; }
-        }
-        if (wrong) errors++;
-        c++;
-      }
-      if (onStep) onStep(ep, errors);
-    }
-    const state = {};
-    for (const [f, w] of W) {
-      const u = U.get(f), out = [];
-      for (let l = 0; l < L; l++) { const v = w[l] - u[l] / c; if (Math.abs(v) >= 0.005) out.push(l, Math.round(v * 1000) / 1000); }
-      if (out.length) state[f] = out;
-    }
-    const trans = [];
-    for (let a = 0; a < L; a++) { const r = []; for (let b = 0; b < L; b++) r.push(Math.round((T[a * L + b] - TU[a * L + b] / c) * 1000) / 1000); trans.push(r); }
-    return { state, trans };
-  }
-
-
   // ---------- slots: linear-chain CRF (what sklearn-crfsuite trained), L2 penalty, L-BFGS ----------
   // Parameters exist only for (attribute, label) pairs seen in the gold data, like crfsuite's default.
   function crf(seqs, labels, { c2 = 0.05, maxIter = 150, keep = 0.01, onStep } = {}) {
@@ -327,7 +254,7 @@ const NLUTrainer = (() => {
 
   // ---------- train + export ----------
   function train(examples, opts = {}) {
-    const { prune = 0.2, C = 8, tagger = "crf", c2 = 0.05, slotPrune = 0.2, slotIter = 150, epochs = 12, dropout = 0, noBias = false, log = () => {} } = opts;
+    const { prune = 0.2, C = 8, c2 = 0.05, slotPrune = 0.2, slotIter = 150, log = () => {} } = opts;
     const t0 = now();
     const intents = [...new Set(examples.map(e => e.intent))].sort();
     const K = intents.length;
@@ -371,9 +298,7 @@ const NLUTrainer = (() => {
     });
     const labels = [...labelSet].sort();
     for (const s of seqs) s.gold = s.labels.map(l => labels.indexOf(l));
-    const tag = tagger === "crf"
-      ? crf(seqs, labels, { c2, keep: slotPrune, maxIter: slotIter, onStep: (it, f) => log(`slot model: step ${it}, loss ${f.toFixed(1)}`) })
-      : perceptron(seqs, labels, { epochs, dropout, noBias, onStep: (ep, err) => log(`slot model: pass ${ep + 1}/${epochs}, ${err} sentences wrong`) });
+    const tag = crf(seqs, labels, { c2, keep: slotPrune, maxIter: slotIter, onStep: (it, f) => log(`slot model: step ${it}, loss ${f.toFixed(1)}`) });
     const tSlots = now() - t1;
 
     const model = {
@@ -390,7 +315,7 @@ const NLUTrainer = (() => {
       state: tag.state,
       trans: tag.trans,
       stats: { examples: examples.length, features: keep.length, weights_kept: kept, weights_total: K * nf,
-        prune, tagger, slot_prune: slotPrune, lbfgs_iterations: lr.iterations, slot_iterations: tag.iterations, train_seconds: Math.round((tIntent + tSlots) / 100) / 10,
+        prune, slot_prune: slotPrune, lbfgs_iterations: lr.iterations, slot_iterations: tag.iterations, train_seconds: Math.round((tIntent + tSlots) / 100) / 10,
         intent_seconds: Math.round(tIntent / 100) / 10, slot_seconds: Math.round(tSlots / 100) / 10 },
     };
     log(`done in ${model.stats.train_seconds}s`);
