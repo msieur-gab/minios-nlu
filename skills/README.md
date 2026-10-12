@@ -21,6 +21,7 @@ Delete a folder and the skill is gone. Copy a folder and you have a new skill to
 ```markdown
 ---
 skill: get_weather       # must match the folder name
+help: check the weather (“weather tomorrow”)   # one line for the help answer
 samples: 8               # sentences generated per example line (default 6)
 train_only: city, day    # value lists used only to write examples
 ---
@@ -87,6 +88,16 @@ needs: app
 device's executor (simulated in the PWA). Only values from the list can be used, so a
 sentence can't inject a command.
 
+## Other front matter
+
+| key | |
+|---|---|
+| `kind: chat` | conversational (greet, thanks, yes, no…): never split out of a sentence as a command |
+| `action: say` | no script: answer with the `say` reply |
+| `script: adjust_volume` | use another skill's skill.js (Brightness reuses Volume's, with its own commands) |
+| `lowercase: 0.35` | share of generated sentences also added in lowercase |
+| anything else | free parameters the script reads from `ctx.params` (commands, a start level…) |
+
 ## skill.js
 
 Only when the Markdown isn't enough. It exports one function that gets a toolbox:
@@ -105,16 +116,28 @@ module.exports = {
 
 | ctx | |
 |---|---|
-| `slots`, `text`, `now` | what was understood, the sentence, the time |
+| **answering** | |
 | `say(reply, values)` | a reply from this skill's file |
 | `ask(slot, reply)` | ask for a missing value; the answer comes back to this skill |
-| `later(reply, values, async work)` | answer now with a reply, update it when the work is done |
+| `confirm(what, question, then)` | needs a yes first; `then(ctx)` runs after it |
+| `choose(question, options)` | offer options `{ label, keys, then }`; the answer picks one |
+| `later(reply, values, async work)` | answer now, update the reply when the work is done |
+| `handover(skill, slots, prefix)` | let another skill answer ("timer for 3pm" → set_reminder) |
+| **reading** | |
+| `slots`, `text`, `now`, `params` | what was understood, the sentence, the time, the front matter |
+| `entities()` | dates, times and durations from the date parser |
+| `find(list, words)`, `findIn(skill, list, words)`, `lookup(list, key)` | match words against a value list; a value's output |
+| **services** | |
 | `request(values)` | the call declared under `## Request` → `{ answer, json, place }` |
-| `entities()`, `used(e)` | dates, times and durations from the parser; show one in the trace |
 | `geocode(name)` | a place's coordinates and time zone |
 | `me.get()`, `me.set()` | what the agent remembers about the person, on the device |
-| `exec(command)`, `log(text)` | a command for the executor; a line in the trace |
-| `timers.arm(at, message)`, `timers.schedule(task, when)` | ring later; set a reminder |
-| `lookup(list, key)`, `fmt.*` | a value's output; date and time formatting helpers |
+| `state.get(key, start)`, `state.set(key, value)` | a value kept for the session (the volume level…) |
+| `files.where(place)`, `files.quote(path)` | "documents" → `$HOME/Documents`; a path safe for the shell |
+| `arm(at, message)` | ring at a time (in the PWA, while the page is open) |
+| `skills()` | every skill's help line |
+| `fmt.*` | dates and times in words (`dayText`, `whenText`, `durWords`, `ruleWords`…) |
+| **trace** | |
+| `exec(command)`, `log(text)`, `used(entity)` | a command for the executor; a note; a parsed date |
 
-These are the agent's shared services. A script uses them and never reaches past them.
+A script uses these and never reaches past them. The dialogue (web/agent.js) and the services
+(web/services.js) know no skill by name.

@@ -1,5 +1,518 @@
 {
  "skills": {
+  "adjust_brightness": {
+   "file": "skills/adjust_brightness/skill.md",
+   "dir": "skills/adjust_brightness",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "adjust_brightness",
+    "help": "change the brightness (“brightness 40%”)",
+    "samples": "10",
+    "train_only": "level",
+    "script": "adjust_volume",
+    "state": "brightness",
+    "start": "80",
+    "set": "brightnessctl set {n}%",
+    "up": "brightnessctl set 10%+",
+    "down": "brightnessctl set 10%-"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "ask": [
+     "Brighter or darker? You can also give a level, like 60%."
+    ],
+    "set": [
+     "Brightness set to {n}%."
+    ],
+    "up": [
+     "Brightness up to {n}%."
+    ],
+    "down": [
+     "Brightness down to {n}%."
+    ],
+    "same": [
+     "Brightness already at {n}%."
+    ]
+   },
+   "sentences": 96,
+   "values": {
+    "direction": [
+     {
+      "key": "up",
+      "words": [
+       "up",
+       "increase",
+       "increased",
+       "incrase",
+       "raise",
+       "louder",
+       "higher",
+       "more",
+       "brighter",
+       "brighten",
+       "boost",
+       "turn up",
+       "crank"
+      ],
+      "say": [
+       "up",
+       "increase",
+       "increased",
+       "incrase",
+       "raise",
+       "louder",
+       "higher",
+       "more",
+       "brighter",
+       "brighten",
+       "boost",
+       "turn up",
+       "crank"
+      ],
+      "out": "up"
+     },
+     {
+      "key": "down",
+      "words": [
+       "down",
+       "dwn",
+       "decrease",
+       "decrse",
+       "lower",
+       "quieter",
+       "quietr",
+       "softer",
+       "dimmer",
+       "dimmr",
+       "dim",
+       "dimmed",
+       "dimming",
+       "darker",
+       "less",
+       "reduce",
+       "hush"
+      ],
+      "say": [
+       "down",
+       "dwn",
+       "decrease",
+       "decrse",
+       "lower",
+       "quieter",
+       "quietr",
+       "softer",
+       "dimmer",
+       "dimmr",
+       "dim",
+       "dimmed",
+       "dimming",
+       "darker",
+       "less",
+       "reduce",
+       "hush"
+      ],
+      "out": "down"
+     },
+     {
+      "key": "mute",
+      "words": [
+       "mute",
+       "muted",
+       "muting",
+       "mut",
+       "silence",
+       "quiet"
+      ],
+      "say": [
+       "mute",
+       "muted",
+       "muting",
+       "mut",
+       "silence",
+       "quiet"
+      ],
+      "out": "mute"
+     },
+     {
+      "key": "unmute",
+      "words": [
+       "unmute",
+       "unmuted",
+       "unmut"
+      ],
+      "say": [
+       "unmute",
+       "unmuted",
+       "unmut"
+      ],
+      "out": "unmute"
+     }
+    ]
+   }
+  },
+  "adjust_volume": {
+   "file": "skills/adjust_volume/skill.md",
+   "dir": "skills/adjust_volume",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "adjust_volume",
+    "help": "change the volume (“volume to 30%”)",
+    "samples": "9",
+    "train_only": "level",
+    "state": "volume",
+    "start": "50",
+    "set": "pactl set-sink-volume @DEFAULT_SINK@ {n}%",
+    "up": "pactl set-sink-volume @DEFAULT_SINK@ +10%",
+    "down": "pactl set-sink-volume @DEFAULT_SINK@ -10%",
+    "mute": "pactl set-sink-mute @DEFAULT_SINK@ 1",
+    "unmute": "pactl set-sink-mute @DEFAULT_SINK@ 0"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "ask": [
+     "Up or down? You can also give a level, like 40%."
+    ],
+    "set": [
+     "Volume set to {n}%."
+    ],
+    "up": [
+     "Volume up to {n}%."
+    ],
+    "down": [
+     "Volume down to {n}%."
+    ],
+    "same": [
+     "Volume already at {n}%."
+    ],
+    "muted": [
+     "Sound muted."
+    ],
+    "unmuted": [
+     "Sound back on, at {n}%."
+    ]
+   },
+   "sentences": 117,
+   "values": {
+    "direction": [
+     {
+      "key": "up",
+      "words": [
+       "up",
+       "increase",
+       "increased",
+       "incrase",
+       "raise",
+       "louder",
+       "higher",
+       "more",
+       "brighter",
+       "brighten",
+       "boost",
+       "turn up",
+       "crank"
+      ],
+      "say": [
+       "up",
+       "increase",
+       "increased",
+       "incrase",
+       "raise",
+       "louder",
+       "higher",
+       "more",
+       "brighter",
+       "brighten",
+       "boost",
+       "turn up",
+       "crank"
+      ],
+      "out": "up"
+     },
+     {
+      "key": "down",
+      "words": [
+       "down",
+       "dwn",
+       "decrease",
+       "decrse",
+       "lower",
+       "quieter",
+       "quietr",
+       "softer",
+       "dimmer",
+       "dimmr",
+       "dim",
+       "dimmed",
+       "dimming",
+       "darker",
+       "less",
+       "reduce",
+       "hush"
+      ],
+      "say": [
+       "down",
+       "dwn",
+       "decrease",
+       "decrse",
+       "lower",
+       "quieter",
+       "quietr",
+       "softer",
+       "dimmer",
+       "dimmr",
+       "dim",
+       "dimmed",
+       "dimming",
+       "darker",
+       "less",
+       "reduce",
+       "hush"
+      ],
+      "out": "down"
+     },
+     {
+      "key": "mute",
+      "words": [
+       "mute",
+       "muted",
+       "muting",
+       "mut",
+       "silence",
+       "quiet"
+      ],
+      "say": [
+       "mute",
+       "muted",
+       "muting",
+       "mut",
+       "silence",
+       "quiet"
+      ],
+      "out": "mute"
+     },
+     {
+      "key": "unmute",
+      "words": [
+       "unmute",
+       "unmuted",
+       "unmut"
+      ],
+      "say": [
+       "unmute",
+       "unmuted",
+       "unmut"
+      ],
+      "out": "unmute"
+     }
+    ]
+   }
+  },
+  "affirm": {
+   "file": "skills/affirm/skill.md",
+   "dir": "skills/affirm",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "affirm",
+    "kind": "chat",
+    "action": "say"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "say": [
+     "OK. What would you like to do?"
+    ]
+   },
+   "sentences": 19,
+   "values": {}
+  },
+  "create_file": {
+   "file": "skills/create_file/skill.md",
+   "dir": "skills/create_file",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "create_file",
+    "help": "create files (“new markdown file called notes”)",
+    "samples": "12",
+    "train_only": "fname, fext, type, loc"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "done": [
+     "Created {file} in {where}.",
+     "Done. {file} is in {where}.",
+     "{file} created in {where}."
+    ],
+    "default_type": [
+     "You didn't say which type, so I made a plain text file."
+    ],
+    "ask_name": [
+     "What should I call the file?",
+     "OK. What's the file name?"
+    ]
+   },
+   "sentences": 352,
+   "values": {
+    "ext": [
+     {
+      "key": "markdown",
+      "words": [
+       "markdown",
+       "md"
+      ],
+      "say": [
+       "markdown",
+       "md"
+      ],
+      "out": "md"
+     },
+     {
+      "key": "text",
+      "words": [
+       "text",
+       "txt",
+       "plain text"
+      ],
+      "say": [
+       "text",
+       "txt",
+       "plain text"
+      ],
+      "out": "txt"
+     },
+     {
+      "key": "python",
+      "words": [
+       "python",
+       "py"
+      ],
+      "say": [
+       "python",
+       "py"
+      ],
+      "out": "py"
+     },
+     {
+      "key": "json",
+      "words": [
+       "json"
+      ],
+      "say": [
+       "json"
+      ],
+      "out": "json"
+     },
+     {
+      "key": "html",
+      "words": [
+       "html"
+      ],
+      "say": [
+       "html"
+      ],
+      "out": "html"
+     },
+     {
+      "key": "csv",
+      "words": [
+       "csv"
+      ],
+      "say": [
+       "csv"
+      ],
+      "out": "csv"
+     },
+     {
+      "key": "yaml",
+      "words": [
+       "yaml",
+       "yml"
+      ],
+      "say": [
+       "yaml",
+       "yml"
+      ],
+      "out": "yml"
+     },
+     {
+      "key": "javascript",
+      "words": [
+       "javascript",
+       "js"
+      ],
+      "say": [
+       "javascript",
+       "js"
+      ],
+      "out": "js"
+     },
+     {
+      "key": "css",
+      "words": [
+       "css"
+      ],
+      "say": [
+       "css"
+      ],
+      "out": "css"
+     }
+    ]
+   }
+  },
+  "create_folder": {
+   "file": "skills/create_folder/skill.md",
+   "dir": "skills/create_folder",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "create_folder",
+    "help": "create folders (“make a folder called drafts in documents”)",
+    "samples": "14",
+    "train_only": "folder, loc"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "done": [
+     "Done. {name} is now in {where}.",
+     "Created the folder {name} in {where}.",
+     "Folder {name} created in {where}."
+    ],
+    "ask_name": [
+     "What should I call the folder?",
+     "Sure. What name do you want for the folder?"
+    ]
+   },
+   "sentences": 316,
+   "values": {}
+  },
+  "deny": {
+   "file": "skills/deny/skill.md",
+   "dir": "skills/deny",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "deny",
+    "kind": "chat",
+    "action": "say"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "say": [
+     "OK. There's nothing to cancel."
+    ]
+   },
+   "sentences": 18,
+   "values": {}
+  },
   "forget_me": {
    "file": "skills/forget_me/skill.md",
    "dir": "skills/forget_me",
@@ -28,6 +541,60 @@
    "sentences": 33,
    "values": {}
   },
+  "get_date": {
+   "file": "skills/get_date/skill.md",
+   "dir": "skills/get_date",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "get_date",
+    "help": "tell the date (“what day is next friday?”)",
+    "samples": "8",
+    "train_only": "day"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "today": [
+     "Today is {date}.",
+     "It's {date}."
+    ],
+    "other": [
+     "{phrase} is {date}.",
+     "That's {date}."
+    ],
+    "range": [
+     "{phrase} runs from {from} to {to}."
+    ],
+    "until": [
+     "{n} until {date}.",
+     "{date} is in {n}."
+    ],
+    "since": [
+     "{date} was {n} ago."
+    ],
+    "is_today": [
+     "Yes, today is {date}."
+    ],
+    "not_today": [
+     "No, today is {date}."
+    ],
+    "other_one": [
+     "If you meant the other one, that's {date}."
+    ],
+    "unknown": [
+     "I don't know which date “{what}” is. Try a date like “december 25” or “next friday”."
+    ],
+    "month": [
+     "It's {month}."
+    ],
+    "year": [
+     "It's {year}."
+    ]
+   },
+   "sentences": 82,
+   "values": {}
+  },
   "get_time": {
    "file": "skills/get_time/skill.md",
    "dir": "skills/get_time",
@@ -35,6 +602,7 @@
    "action": "say",
    "params": {
     "skill": "get_time",
+    "help": "tell the time, here or in another city",
     "train_only": "city",
     "samples": "8"
    },
@@ -69,6 +637,7 @@
    "action": "say",
    "params": {
     "skill": "get_weather",
+    "help": "check the weather (“weather tomorrow”)",
     "train_only": "city, day",
     "samples": "8"
    },
@@ -416,6 +985,51 @@
     ]
    }
   },
+  "greet": {
+   "file": "skills/greet/skill.md",
+   "dir": "skills/greet",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "greet",
+    "kind": "chat"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "say": [
+     "Hi. Tell me what to create or open.",
+     "Hello. I can create folders and files, or open apps."
+    ],
+    "named": [
+     "Hi {name}. What can I do for you?"
+    ]
+   },
+   "sentences": 16,
+   "values": {}
+  },
+  "help": {
+   "file": "skills/help/skill.md",
+   "dir": "skills/help",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "help",
+    "kind": "chat"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "say": [
+     "I can {list}."
+    ],
+    "try": [
+     "Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”."
+    ]
+   },
+   "sentences": 17,
+   "values": {}
+  },
   "open_app": {
    "file": "skills/open_app/skill.md",
    "dir": "skills/open_app",
@@ -423,6 +1037,7 @@
    "action": "run",
    "params": {
     "skill": "open_app",
+    "help": "open apps (“open the terminal”)",
     "action": "run",
     "command": "{app} &",
     "needs": "app",
@@ -578,6 +1193,150 @@
     ]
    }
   },
+  "open_file": {
+   "file": "skills/open_file/skill.md",
+   "dir": "skills/open_file",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "open_file",
+    "help": "open files and folders (“open budget.csv”)",
+    "samples": "22",
+    "train_only": "fname, fext, folder, loc"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "done": [
+     "Opening {target}.",
+     "Here's {target}."
+    ],
+    "ask_name": [
+     "Which file or folder should I open?"
+    ]
+   },
+   "sentences": 253,
+   "values": {}
+  },
+  "out_of_scope": {
+   "file": "skills/out_of_scope/skill.md",
+   "dir": "skills/out_of_scope",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "out_of_scope",
+    "kind": "chat",
+    "action": "say"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "say": [
+     "I didn't understand that. Say help to see what I can do.",
+     "That's outside what I can do. Say help for the list."
+    ]
+   },
+   "sentences": 118,
+   "values": {}
+  },
+  "power": {
+   "file": "skills/power/skill.md",
+   "dir": "skills/power",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "power",
+    "help": "shut down or restart (asks first)",
+    "samples": "20",
+    "train_only": "power"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "ask": [
+     "Shut down, restart or sleep?"
+    ],
+    "confirm_shutdown": [
+     "Shut down the device now? Say yes to confirm or no to cancel."
+    ],
+    "confirm_reboot": [
+     "Restart the device now? Say yes to confirm or no to cancel."
+    ],
+    "confirm_sleep": [
+     "Put the device to sleep now? Say yes to confirm or no to cancel."
+    ],
+    "done_shutdown": [
+     "Shutting down."
+    ],
+    "done_reboot": [
+     "Restarting."
+    ],
+    "done_sleep": [
+     "Going to sleep."
+    ],
+    "declined": [
+     "OK, I'll leave it running.",
+     "Cancelled. Nothing changes."
+    ]
+   },
+   "sentences": 104,
+   "values": {
+    "action": [
+     {
+      "key": "shutdown",
+      "words": [
+       "shutdown",
+       "shut down",
+       "shutting down",
+       "power off",
+       "power down",
+       "turn off",
+       "switch off",
+       "halt",
+       "off"
+      ],
+      "say": [
+       "shutdown",
+       "shut down",
+       "shutting down",
+       "power off",
+       "power down",
+       "turn off",
+       "switch off",
+       "halt",
+       "off"
+      ],
+      "out": "sudo systemctl poweroff"
+     },
+     {
+      "key": "reboot",
+      "words": [
+       "reboot",
+       "restart"
+      ],
+      "say": [
+       "reboot",
+       "restart"
+      ],
+      "out": "sudo systemctl reboot"
+     },
+     {
+      "key": "sleep",
+      "words": [
+       "sleep",
+       "suspend",
+       "sleep mode"
+      ],
+      "say": [
+       "sleep",
+       "suspend",
+       "sleep mode"
+      ],
+      "out": "sudo systemctl suspend"
+     }
+    ]
+   }
+  },
   "recall_me": {
    "file": "skills/recall_me/skill.md",
    "dir": "skills/recall_me",
@@ -619,6 +1378,7 @@
    "action": "say",
    "params": {
     "skill": "remember_me",
+    "help": "remember your name and where you live",
     "train_only": "first, city",
     "samples": "8"
    },
@@ -648,6 +1408,48 @@
    "sentences": 178,
    "values": {}
   },
+  "set_reminder": {
+   "file": "skills/set_reminder/skill.md",
+   "dir": "skills/set_reminder",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "set_reminder",
+    "help": "set reminders (“remind me to call mum next friday at 3pm”)",
+    "samples": "14",
+    "train_only": "task, when"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "ask_when": [
+     "When should I remind you?",
+     "OK. When?"
+    ],
+    "ask_day": [
+     "{phrase} runs from {from} to {to}. Which day?"
+    ],
+    "done": [
+     "I'll remind you{what} {at}.",
+     "Reminder set{what} {at}.",
+     "OK, I'll remind you{what} {at}."
+    ],
+    "repeat": [
+     "OK, I'll remind you{what}{rule}. First one {next}."
+    ],
+    "no_time": [
+     "You didn't give a time, so I used 09:00."
+    ],
+    "ring": [
+     "⏰ Reminder: {what}"
+    ],
+    "past": [
+     "{at} has already passed. Shall I make it {next}?"
+    ]
+   },
+   "sentences": 215,
+   "values": {}
+  },
   "set_timer": {
    "file": "skills/set_timer/skill.md",
    "dir": "skills/set_timer",
@@ -655,6 +1457,7 @@
    "action": "say",
    "params": {
     "skill": "set_timer",
+    "help": "set timers (“timer 10 minutes”)",
     "train_only": "dur",
     "samples": "10"
    },
@@ -673,10 +1476,240 @@
      "⏰ {dur} timer is done."
     ],
     "is_time": [
-     "That's a time rather than a duration, so I set a reminder for {at} instead."
+     "That's a time rather than a duration, so here's a reminder instead:"
     ]
    },
    "sentences": 123,
+   "values": {}
+  },
+  "system_status": {
+   "file": "skills/system_status/skill.md",
+   "dir": "skills/system_status",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "system_status",
+    "help": "check the system (“is the pi overheating?”)",
+    "samples": "18",
+    "train_only": "metric"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "one": [
+     "(Simulated)"
+    ],
+    "all": [
+     "System overview (simulated values):"
+    ]
+   },
+   "sentences": 216,
+   "values": {
+    "check": [
+     {
+      "key": "disk",
+      "words": [
+       "disk",
+       "disk space",
+       "storage",
+       "storage space",
+       "space",
+       "space left",
+       "free space",
+       "sd card",
+       "spc",
+       "drive"
+      ],
+      "say": [
+       "disk",
+       "disk space",
+       "storage",
+       "storage space",
+       "space",
+       "space left",
+       "free space",
+       "sd card",
+       "spc",
+       "drive"
+      ],
+      "out": "df -h /"
+     },
+     {
+      "key": "cpu",
+      "words": [
+       "cpu",
+       "cpu usage",
+       "cpu load",
+       "processor",
+       "load",
+       "perf"
+      ],
+      "say": [
+       "cpu",
+       "cpu usage",
+       "cpu load",
+       "processor",
+       "load",
+       "perf"
+      ],
+      "out": "uptime && top -bn1 | head -3"
+     },
+     {
+      "key": "temp",
+      "words": [
+       "temp",
+       "temperature",
+       "tmp",
+       "cpu temperature",
+       "heat"
+      ],
+      "say": [
+       "temp",
+       "temperature",
+       "tmp",
+       "cpu temperature",
+       "heat"
+      ],
+      "out": "cat /sys/class/thermal/thermal_zone0/temp"
+     },
+     {
+      "key": "memory",
+      "words": [
+       "memory",
+       "memry",
+       "mem",
+       "ram",
+       "memory usage"
+      ],
+      "say": [
+       "memory",
+       "memry",
+       "mem",
+       "ram",
+       "memory usage"
+      ],
+      "out": "free -h"
+     },
+     {
+      "key": "network",
+      "words": [
+       "network",
+       "net",
+       "wifi",
+       "wi-fi",
+       "ip",
+       "ip addr",
+       "ip address",
+       "internet",
+       "connection"
+      ],
+      "say": [
+       "network",
+       "net",
+       "wifi",
+       "wi-fi",
+       "ip",
+       "ip addr",
+       "ip address",
+       "internet",
+       "connection"
+      ],
+      "out": "hostname -I && iwgetid -r"
+     },
+     {
+      "key": "uptime",
+      "words": [
+       "uptime"
+      ],
+      "say": [
+       "uptime"
+      ],
+      "out": "uptime -p"
+     }
+    ],
+    "sample": [
+     {
+      "key": "disk",
+      "words": [
+       "disk"
+      ],
+      "say": [
+       "disk"
+      ],
+      "out": "Disk: 9.8 GB free of 29 GB (66% used)."
+     },
+     {
+      "key": "cpu",
+      "words": [
+       "cpu"
+      ],
+      "say": [
+       "cpu"
+      ],
+      "out": "CPU: 11% busy, load 0.42 on 4 cores."
+     },
+     {
+      "key": "temp",
+      "words": [
+       "temp"
+      ],
+      "say": [
+       "temp"
+      ],
+      "out": "Temperature: 52 °C, well below the 80 °C where the board starts throttling."
+     },
+     {
+      "key": "memory",
+      "words": [
+       "memory"
+      ],
+      "say": [
+       "memory"
+      ],
+      "out": "Memory: 1.3 GB used of 3.8 GB."
+     },
+     {
+      "key": "network",
+      "words": [
+       "network"
+      ],
+      "say": [
+       "network"
+      ],
+      "out": "Network: Wi-Fi connected, IP 192.168.1.42."
+     },
+     {
+      "key": "uptime",
+      "words": [
+       "uptime"
+      ],
+      "say": [
+       "uptime"
+      ],
+      "out": "Uptime: 3 hours 12 minutes."
+     }
+    ]
+   }
+  },
+  "thanks": {
+   "file": "skills/thanks/skill.md",
+   "dir": "skills/thanks",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "thanks",
+    "kind": "chat",
+    "action": "say"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "say": [
+     "You're welcome.",
+     "Anytime."
+    ]
+   },
+   "sentences": 15,
    "values": {}
   }
  }

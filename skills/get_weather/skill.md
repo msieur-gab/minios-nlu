@@ -1,5 +1,6 @@
 ---
 skill: get_weather
+help: check the weather (“weather tomorrow”)
 train_only: city, day
 samples: 8
 ---

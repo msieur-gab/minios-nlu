@@ -1,267 +1,56 @@
-// Dialogue manager + response templates. Actions are simulated: the trace shows the
-// shell command the agent would run on the device, nothing is executed.
+// Dialogue core. It knows no skill by name: it routes what the model understood to the skill
+// folders (skills/<name>/), keeps the conversation going (missing values, confirmations, choices,
+// several commands in one sentence) and hands each skill a toolbox (ctx) of shared services.
+// Commands are simulated: the trace shows what would run on the device.
 
-const THRESHOLD = 0.45;
-const SPLIT_CONFIDENCE = 0.7; // each part of a multi-command sentence must be at least this sure
-const ACTIONABLE = new Set(["create_folder", "create_file", "open_app", "open_file",
-  "adjust_volume", "adjust_brightness", "system_status", "power",
-  "get_time", "get_date", "set_timer", "set_reminder"]);
-// Rule-based dates, times and durations (web/entities.js): shared by every time skill, no training.
+const THRESHOLD = 0.45;        // below this the agent abstains
+const SPLIT_CONFIDENCE = 0.7;  // each part of a multi-command sentence must be at least this sure
 const ENT = typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js");
-// Skills described in skills/*.md, compiled by skills.js into web/skills.json
+const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./services.js");
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
-for (const k of Object.keys(SKILLS)) ACTIONABLE.add(k);
+// skills that do something (conversational ones are marked "kind: chat")
+const ACTIONABLE = new Set(Object.keys(SKILLS).filter(k => SKILLS[k].params.kind !== "chat"));
 
-// Editable response sets. {slot} placeholders are filled at runtime; one variant is picked at random.
+// the dialogue's own replies; every skill brings its own as "<skill>.<name>"
 const RESPONSES = {
-  "create_folder.done": ["Done. {name} is now in {where}.", "Created the folder {name} in {where}.", "Folder {name} created in {where}."],
-  "create_folder.ask_name": ["What should I call the folder?", "Sure. What name do you want for the folder?"],
-  "create_file.done": ["Created {file} in {where}.", "Done. {file} is in {where}.", "{file} created in {where}."],
-  "create_file.default_type": ["You didn't say which type, so I made a plain text file."],
-  "create_file.ask_name": ["What should I call the file?", "OK. What's the file name?"],
-  "open_file.done": ["Opening {target}.", "Here's {target}."],
-  "open_file.ask_name": ["Which file or folder should I open?"],
-  "volume.ask": ["Up or down? You can also give a level, like 40%."],
-  "brightness.ask": ["Brighter or darker? You can also give a level, like 60%."],
-  "power.ask": ["Shut down, restart or sleep?"],
-  "power.confirm": ["{action_q} Say yes to confirm or no to cancel."],
-  "power.done": ["{action_done}"],
-  "power.cancel": ["OK, I'll leave it running.", "Cancelled. Nothing changes."],
-  "confirm.dropped": ["I'll take that as a no for the {what}."],
-  "greet": ["Hi. Tell me what to create or open.", "Hello. I can create folders and files, or open apps."],
-  "thanks": ["You're welcome.", "Anytime."],
-  "help": ["I can create folders and files, open files and apps, change volume and brightness, check the system (disk, CPU, temperature, memory, network), shut down or restart, tell the time and date here or in another city, set timers and reminders, check the weather, and remember your name and where you live. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”."],
-  "date.today": ["Today is {date}.", "It's {date}."],
-  "date.other": ["{phrase} is {date}.", "That's {date}."],
-  "date.range": ["{phrase} runs from {from} to {to}."],
-  "date.until": ["{n} until {date}.", "{date} is in {n}."],
-  "date.since": ["{date} was {n} ago."],
-  "reminder.ask_when": ["When should I remind you?", "OK. When?"],
-  "reminder.ask_day": ["{phrase} runs from {from} to {to}. Which day?"],
-  "reminder.done": ["I'll remind you{what} {at}.", "Reminder set{what} {at}.", "OK, I'll remind you{what} {at}."],
-  "reminder.repeat": ["OK, I'll remind you{what}{rule}. First one {next}."],
-  "reminder.no_time": [" You didn't give a time, so I used {t}."],
-  "reminder.ring": ["⏰ Reminder: {what}"],
-  "choose": ["{q}"],
-  "past": ["{at} has already passed. Shall I make it {next}?"],
-  "affirm": ["OK. What would you like to do?"],
-  "deny": ["OK. There's nothing to cancel."],
-  "cancel": ["Cancelled.", "OK, I dropped it."],
-  "fallback": ["I didn't understand that. Say help to see what I can do.", "That's outside what I can do. Say help for the list."],
-  "learned": ["I recognise this as “{intent}”{got}, but no action is set up for it yet."],
-  "empty_value": ["I didn't catch a name. Try again, or say cancel."],
+  cancel: ["Cancelled.", "OK, I dropped it."],
+  declined: ["OK, I'll leave it.", "Cancelled. Nothing changes."],
+  empty_value: ["I didn't catch a name. Try again, or say cancel."],
+  fallback: ["I didn't understand that. Say help to see what I can do."],
+  learned: ["I recognise this as “{intent}”{got}, but no action is set up for it yet."],
+  wait: ["One moment…"],
 };
-
-// replies written in the skill files: "<skill>.<name>"
 for (const [name, sk] of Object.entries(SKILLS)) for (const [k, v] of Object.entries(sk.replies)) RESPONSES[name + "." + k] = v;
 
-const XDG = { desktop: "Desktop", documents: "Documents", downloads: "Downloads", music: "Music",
-  pictures: "Pictures", videos: "Videos", templates: "Templates", public: "Public" };
-const DEICTIC = /^(here|this (folder|directory|dir)|(the )?current (folder|directory|dir)|cwd|current)$/i;
-
-const TYPE_EXT = { markdown: "md", md: "md", text: "txt", txt: "txt", "plain text": "txt", python: "py", py: "py",
-  json: "json", html: "html", csv: "csv", yaml: "yml", yml: "yml", javascript: "js", js: "js", css: "css" };
-
-// the app list lives in skills/open_app.md (## Values: app)
-const APPS = SKILLS.open_app.values.app.map(v => ({ id: v.key, label: v.key, cmd: v.out, words: v.words }));
-
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const fill = (key, vars = {}) => pick(RESPONSES[key]).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
+const has = key => key in RESPONSES;
 const cleanValue = v => v.trim().replace(/^["'“”‘’`]+|["'“”‘’`.!?,]+$/g, "").trim();
-const shq = p => (/[\s'"$`\\]/.test(p) ? '"' + p.replace(/(["\\`])/g, "\\$1") + '"' : p);
-
-function resolveLocation(raw) {
-  if (!raw) return { path: "$HOME", label: "your home folder", kind: "default" };
-  const v = cleanValue(raw).replace(/^the\s+/i, "").replace(/\s+(folder|directory|dir)$/i, "");
-  const low = v.toLowerCase();
-  if (DEICTIC.test(low)) return { path: "$HOME", label: "the current folder", kind: "here" };
-  if (low === "home" || low === "~") return { path: "$HOME", label: "your home folder", kind: "home" };
-  if (XDG[low]) return { path: "$HOME/" + XDG[low], label: XDG[low], kind: "xdg" };
-  return { path: "$HOME/" + v, label: v, kind: "relative" };
-}
-
-function resolveApp(raw) {
-  const v = cleanValue(raw).toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "");
-  return APPS.find(a => a.words.includes(v)) || null;
-}
-
-
-// Direction and level parsing: deterministic layer under the CRF slots
-const DIR_WORDS = {
-  up: ["up", "increase", "increased", "incrase", "raise", "louder", "higher", "more", "brighter", "brighten",
-    "boost", "turn up", "crank"],
-  down: ["down", "dwn", "decrease", "decrse", "lower", "quieter", "quietr", "softer", "dimmer", "dimmr", "dim",
-    "dimmed", "dimming", "darker", "less", "reduce", "hush"],
-  mute: ["mute", "muted", "muting", "mut", "silence", "quiet"],
-  unmute: ["unmute", "unmuted", "unmut"],
-};
-const DIR_PHRASES = [
-  [/too (loud|bright|much (noise|light))|deafening|blinding|glare|squint|ears|eyes (are )?hurt|headache|head hurts/i, "down"],
-  [/(can'?t|cannot|barely) (hear|see)|too (quiet|low|dark|dim)|barely (audible|visible)|blast/i, "up"],
-];
-function parseDirection(slot, text) {
-  const v = (slot ? cleanValue(slot) : "").toLowerCase();
-  for (const [dir, words] of Object.entries(DIR_WORDS)) if (words.includes(v)) return dir;
-  for (const [re, dir] of DIR_PHRASES) if (re.test(text)) return dir;
-  const low = " " + text.toLowerCase().replace(/[^a-z\s]/g, " ") + " ";
-  for (const dir of ["unmute", "mute", "up", "down"]) if (DIR_WORDS[dir].some(w => low.includes(" " + w + " "))) return dir;
-  return null;
-}
-function parseLevel(slot, text) {
-  const v = (slot || "").toLowerCase();
-  if (/\b(max|maximum|full)\b/.test(v)) return 100;
-  if (/\b(min|minimum|zero)\b/.test(v)) return 0;
-  if (/\bhalf\b/.test(v)) return 50;
-  const m = (v || text).match(/\b(\d{1,3})\s*(%|percent)?/);
-  if (m && (slot || m[2])) return Math.max(0, Math.min(100, parseInt(m[1], 10)));
-  return null;
-}
-
-const METRICS = {
-  disk: { words: ["disk", "disk space", "storage", "storage space", "space", "space left", "free space", "sd card", "spc", "drive"], cmd: "df -h /",
-    out: "Disk: 9.8 GB free of 29 GB (66% used)." },
-  cpu: { words: ["cpu", "cpu usage", "cpu load", "processor", "load", "perf"], cmd: "uptime && top -bn1 | head -3",
-    out: "CPU: 11% busy, load 0.42 on 4 cores." },
-  temp: { words: ["temperature", "temp", "tmp", "cpu temperature", "heat"], cmd: "cat /sys/class/thermal/thermal_zone0/temp",
-    out: "Temperature: 52 °C, well below the 80 °C where the board starts throttling." },
-  memory: { words: ["memory", "memry", "mem", "ram", "memory usage"], cmd: "free -h", out: "Memory: 1.3 GB used of 3.8 GB." },
-  network: { words: ["network", "net", "wifi", "wi-fi", "ip", "ip addr", "ip address", "internet", "connection"], cmd: "hostname -I && iwgetid -r",
-    out: "Network: Wi-Fi connected, IP 192.168.1.42." },
-  uptime: { words: ["uptime"], cmd: "uptime -p", out: "Uptime: 3 hours 12 minutes." },
-};
-function resolveMetrics(slot, text) {
-  const v = (slot ? cleanValue(slot) : "").toLowerCase();
-  if (v === "performance") return ["cpu", "memory", "temp"];
-  for (const [k, m] of Object.entries(METRICS)) if (m.words.includes(v)) return [k];
-  if (/hot|overheat|temperature|throttl|burning|fan/i.test(text)) return ["temp"];
-  if (/slow|lag|crash|forever/i.test(text)) return ["cpu", "memory", "temp"];
-  if (/online|offline|connection|ping/i.test(text)) return ["network"];
-  if (/how long.*running|since when/i.test(text)) return ["uptime"];
-  if (/space|storage|disk|drive|bytes/i.test(text)) return ["disk"];
-  return Object.keys(METRICS);
-}
-
-const POWER = {
-  shutdown: { words: ["shut down", "shutdown", "shutting down", "power off", "power down", "turn off", "switch off", "halt", "off"], cmd: "sudo systemctl poweroff",
-    q: "Shut down the device now?", done: "Shutting down." },
-  reboot: { words: ["reboot", "restart"], cmd: "sudo systemctl reboot", q: "Restart the device now?", done: "Restarting." },
-  sleep: { words: ["sleep", "suspend", "sleep mode"], cmd: "sudo systemctl suspend", q: "Put the device to sleep now?", done: "Going to sleep." },
-};
-function resolvePower(slot, text) {
-  const v = (slot ? cleanValue(slot) : "").toLowerCase();
-  for (const [k, p] of Object.entries(POWER)) if (p.words.includes(v)) return k;
-  if (/reboo?t|rebot|rest?r?a?r?t|restrat|re strt|power cycle|hard reset/i.test(text)) return "reboot";
-  if (/sle+p|slepp|suspend|standby|nap|bed\b|rest\b|goodnight/i.test(text)) return "sleep";
-  if (/\b(off|of|down|dwn|dw|halt)\b|pwr|plug|juice|kill power|drop power/i.test(text)) return "shutdown";
-  return null;
-}
-
-// ---------- time skills ----------
-const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const MONTHS_N = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const pad2 = n => String(n).padStart(2, "0");
-const fromIso = s => { const [d, t] = s.split("T"); const [y, m, dd] = d.split("-").map(Number); const [h, mi] = (t || "0:0").split(":").map(Number); return new Date(y, m - 1, dd, h, mi); };
-const clock = d => pad2(d.getHours()) + ":" + pad2(d.getMinutes());
-function dayText(d, now) {
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const k = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - today) / 864e5);
-  void k;
-  return DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS_N[d.getMonth()] + (d.getFullYear() !== now.getFullYear() ? " " + d.getFullYear() : "");
-}
-// "today at 20:30", "tomorrow at 9:00", "on Friday 23 October at 15:00"
-function whenText(d, now) {
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const k = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - today) / 864e5);
-  return (k === 0 ? "today" : k === 1 ? "tomorrow" : "on " + dayText(d, now)) + " at " + clock(d);
-}
-function plural(n, w) { return n + " " + w + (n === 1 ? "" : "s"); }
-function durWords(sec) {
-  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60, out = [];
-  if (h) out.push(plural(h, "hour")); if (m) out.push(plural(m, "minute")); if (s) out.push(plural(s, "second"));
-  return out.join(" ") || "0 seconds";
-}
-const RR_WORD = { MO: "Monday", TU: "Tuesday", WE: "Wednesday", TH: "Thursday", FR: "Friday", SA: "Saturday", SU: "Sunday" };
-function ruleWords(rrule) {
-  const p = Object.fromEntries(rrule.split(";").map(x => x.split("=")));
-  const every = p.INTERVAL ? "every " + (p.INTERVAL === "2" ? "other " : p.INTERVAL + " ") : "every ";
-  let what = { DAILY: "day", WEEKLY: "week", MONTHLY: "month", YEARLY: "year", HOURLY: "hour", MINUTELY: "minute" }[p.FREQ];
-  if (p.BYDAY) what = p.BYDAY === "MO,TU,WE,TH,FR" ? "weekday" : p.BYDAY.split(",").map(d => RR_WORD[d]).join(" and ");
-  if (p.INTERVAL && p.INTERVAL !== "2" && !p.BYDAY) what += "s";
-  return " " + every + what + (p.BYHOUR ? " at " + pad2(p.BYHOUR) + ":" + pad2(p.BYMINUTE) : "");
-}
-function onCalendar(rrule) { // systemd OnCalendar form of simple rules
-  const p = Object.fromEntries(rrule.split(";").map(x => x.split("=")));
-  if (p.INTERVAL) return null;
-  const t = " " + pad2(p.BYHOUR || 9) + ":" + pad2(p.BYMINUTE || 0) + ":00";
-  if (p.FREQ === "DAILY") return "*-*-*" + t;
-  if (p.FREQ === "WEEKLY" && p.BYDAY) return p.BYDAY.split(",").map(d => RR_WORD[d].slice(0, 3)).join(",") + " *-*-*" + t;
-  return null;
-}
-// "the 16th", "this one", "morning", "yes" → which of the offered options
-function pickOption(answer, options) {
-  const a = " " + answer.toLowerCase().replace(/[^a-z0-9:]+/g, " ") + " ";
-  for (let i = 0; i < options.length; i++) if (options[i].keys.some(k => a.includes(" " + k + " "))) return i;
-  if (/ (second|other|latter|2nd|the other one) /.test(a)) return 1;
-  if (/ (first|former|1st) /.test(a) || YES_RE.test(answer.trim())) return 0;
-  return -1;
-}
-function optionKeys(d, other, now) {
-  const keys = [];
-  if (d.toDateString() !== other.toDateString()) {
-    const n = d.getDate(), suf = n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th";
-    keys.push(String(n), n + suf, MONTHS_N[d.getMonth()].toLowerCase() + " " + n);
-    keys.push(...(d < other ? ["this", "this one", "coming", "this week"] : ["next", "next one", "next week", "later", "the following"]));
-  }
-  if (d.getHours() !== other.getHours()) {
-    const h = d.getHours();
-    keys.push(clock(d), String(h));
-    keys.push(...(h < 12 ? ["am", "morning", "a m"] : ["pm", "evening", "afternoon", "night", "tonight", "p m", String(h - 12)]));
-  }
-  return keys;
-}
-
 const YES_RE = /^(y|yes|yeah|yep|yup|sure|ok|okay|confirm|do it|go|go ahead|please do|absolutely|of course)\b/i;
 const NO_RE = /^(n|no|nope|nah|nvm|cancel|stop|don'?t|never ?mind|abort|not now)\b/i;
 const stripVerb = t => t.replace(/^(please\s+)?((can|could|would) you\s+)?/i, "")
   .replace(/^(open|launch|start|run|bring up|fire up|show( me)?|give me|get me|pull up|display|view)\s+(up\s+)?/i, "")
   .replace(/\s+(please|for me)\s*\??$/i, "");
-
-
-// ---------- action types: what a skill file can ask the agent to do ----------
-const ME_KEY = "minios.me.v1";
-const norm1 = t => t.toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
-const findValue = (list, raw) => { const v = norm1(cleanValue(raw)); return list.find(x => x.words.includes(v)) || null; };
-const orList = a => a.length > 1 ? a.slice(0, -1).join(", ") + " or " + a[a.length - 1] : a.join("");
-
-const ACTIONS = {
-  // run a command template with a value from the skill's list, e.g. command: "{app} &"
-  run(intent, sk, slots, trace) {
-    const need = sk.params.needs, list = sk.values[need] || [];
-    const choices = orList(list.map(v => v.key));
-    let raw = slots[need];
-    if (!raw) {
-      const guess = stripVerb(this.lastText);
-      if (findValue(list, guess)) { trace.push({ type: "state", text: need + " filled from the skill's list ← “" + cleanValue(guess) + "”" }); raw = guess; }
-      else return this.ask(intent, slots, need, intent + ".ask_" + need, trace, { choices });
-    }
-    const v = findValue(list, raw);
-    if (!v) {
-      trace.push({ type: "abstain", text: "no " + need + " matches “" + cleanValue(raw) + "” in " + sk.file });
-      return { trace, reply: fill(intent + ".unknown", { value: cleanValue(raw), choices }) };
-    }
-    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => k === need ? v.out : cleanValue(slots[k] || "")) });
-    return { trace, reply: fill(intent + ".done", { [need]: v.key }) };
-  },
+// a word from a skill's value list: "the Terminal app" → the "terminal" entry
+const findValue = (list, raw) => {
+  const v = cleanValue(raw).toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
+  return (list || []).find(x => x.words.includes(v)) || null;
 };
-
-// ---------- skill scripts: skills/<name>/skill.js ----------
-// In the browser the build bundles them into SKILL_CODE; in Node they are required from their folder.
-function loadScript(name, sk) {
-  if (typeof SKILL_CODE !== "undefined") return SKILL_CODE[name];
-  return require(require("path").join(__dirname, "..", sk.dir, "skill.js"));
+const orList = a => (a.length > 1 ? a.slice(0, -1).join(", ") + " or " + a[a.length - 1] : a.join(""));
+// which offered option an answer points to: an option's keys ("16th", "morning"), "the other one", or yes
+function pickOption(answer, options) {
+  const a = " " + answer.toLowerCase().replace(/[^a-z0-9:]+/g, " ") + " ";
+  for (let i = 0; i < options.length; i++) if ((options[i].keys || []).some(k => a.includes(" " + k + " "))) return i;
+  if (/ (second|other|latter|2nd|the other one) /.test(a)) return 1;
+  if (/ (first|former|1st) /.test(a) || YES_RE.test(answer.trim())) return 0;
+  return -1;
 }
-const getPath = (obj, path) => path.replace(/\[(\d+)\]/g, ".$1").split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj);
+// a skill's script: bundled by the build in the browser, required from its folder in Node
+function loadScript(name, sk) {
+  const from = sk.params.script || name;
+  if (typeof SKILL_CODE !== "undefined") return SKILL_CODE[from];
+  return require(require("path").join(__dirname, "..", "skills", from, "skill.js"));
+}
 
 class Agent {
   constructor(nlu, store) {
@@ -270,29 +59,27 @@ class Agent {
     this.fetch = typeof fetch !== "undefined" ? fetch.bind(globalThis) : null;
     this.reset();
   }
-
   reset() {
-    this.pending = null; this.queue = null; this.volume = 50; this.muted = false; this.brightness = 80;
+    this.pending = null; this.queue = null; this.levels = {};
     for (const t of this.timers || []) clearTimeout(t);
-    this.timers = []; this.scheduled = [];
+    this.timers = [];
   }
   now() { return this.clock ? this.clock() : new Date(); }
-  // In the PWA, timers and short reminders really ring while the page is open (onAlert renders the message).
+  // timers and reminders really ring in the PWA while the page is open (onAlert shows the message)
   arm(at, message) {
     const ms = at - this.now();
     if (this.onAlert && ms > 0 && ms < 2 ** 31 - 1) this.timers.push(setTimeout(() => this.onAlert(message), ms));
   }
 
-  // "turn the volume up and open firefox": split into commands when every part, on its own,
-  // is confidently something the agent can do. Otherwise the sentence stays whole
-  // ("make a folder called salt and pepper").
+  // ---------- several commands in one sentence ----------
+  // Split on and / then / ; only when every part is confidently a command on its own, so
+  // "a folder called salt and pepper" stays whole. A part without a verb borrows the previous one.
   splitCommands(text) {
     if (this.pending) return null;
     const parts = text.split(/\s*(?:,\s*)?\b(?:and then|and also|then|and)\b\s*|\s*;\s*/i).map(p => p.trim()).filter(Boolean);
     if (parts.length < 2 || parts.length > 4) return null;
     const ok = r => ACTIONABLE.has(r.intent) && r.confidence >= SPLIT_CONFIDENCE;
     const rs = parts.map(p => this.nlu.parse(p));
-    // a part without its own verb borrows the previous part's: "open the terminal and the browser"
     for (let i = 1; i < parts.length; i++) {
       if (ok(rs[i])) continue;
       const verb = parts[i - 1].split(/\s+/)[0];
@@ -300,10 +87,9 @@ class Agent {
       if (ok(r) && r.intent === rs[i - 1].intent) { parts[i] = verb + " " + parts[i]; rs[i] = r; }
     }
     if (!rs.every(ok)) return null;
-    // the same skill twice ("I live in Munich and my name is Gab"): keep it whole if the whole sentence already carries all the values
+    // one skill with all its values in the whole sentence ("I live in Munich and my name is Gab"): keep it whole
     const whole = this.nlu.parse(text);
-    const partSlots = rs.reduce((n, r) => n + Object.keys(r.slots).length, 0);
-    if (rs.every(r => r.intent === whole.intent) && Object.keys(whole.slots).length >= partSlots) return null;
+    if (rs.every(r => r.intent === whole.intent) && Object.keys(whole.slots).length >= rs.reduce((n, r) => n + Object.keys(r.slots).length, 0)) return null;
     return parts;
   }
 
@@ -312,8 +98,7 @@ class Agent {
     if (parts) return this.runSequence(parts, text);
     this.dropQueue = false;
     const out = this.handleOne(text);
-    // the answer to a question asked in the middle of a sequence: carry on with the rest
-    if (this.queue && !this.pending) {
+    if (this.queue && !this.pending) { // an answer to a question asked mid-sequence: carry on
       const rest = this.queue;
       this.queue = null;
       if (!this.dropQueue) return this.runSequence(rest, text, out);
@@ -333,392 +118,203 @@ class Agent {
     const trace = [{ type: "nlu", r: first ? first.trace[0].r : this.nlu.parse(text) },
       { type: "state", text: (first ? "answer received, continuing with " : "split into commands: ") + parts.map(p => "“" + p + "”").join(" + ") }];
     outs.forEach((o, k) => {
-      const r = o.trace[0].r;
-      trace.push({ type: "state", text: "→ " + (k + 1) + ". " + r.intent + " " + r.confidence.toFixed(2) });
+      trace.push({ type: "state", text: "→ " + (k + 1) + ". " + o.trace[0].r.intent + " " + o.trace[0].r.confidence.toFixed(2) });
       trace.push(...o.trace.slice(1));
     });
     if (this.queue) trace.push({ type: "state", text: "waiting for an answer; then: " + this.queue.map(p => "“" + p + "”").join(", ") });
     const reply = outs.map(o => o.reply).join("\n");
     if (!outs.some(o => o.later)) return { trace, reply };
-    const later = Promise.all(outs.map(o => o.later ? o.later : Promise.resolve({ reply: o.reply, trace: [] })))
+    const later = Promise.all(outs.map(o => o.later || Promise.resolve({ reply: o.reply, trace: [] })))
       .then(rs => ({ reply: rs.map(r => r.reply).join("\n"), trace: rs.flatMap(r => r.trace || []) }));
     return { trace, reply, later };
   }
 
+  // ---------- one command, or the answer to a question ----------
   handleOne(text) {
     const trace = [];
     this.lastText = text;
     const r = this.nlu.parse(text);
     trace.push({ type: "nlu", r });
+    const p = this.pending, t = text.trim();
+    const no = NO_RE.test(t) || (r.intent === "deny" && r.confidence >= 0.5);
+    const drop = why => { this.dropQueue = true; this.pending = null; trace.push({ type: "state", text: why }); };
 
-    if (this.pending && this.pending.type === "confirm") {
-      const p = this.pending;
+    if (p && p.type === "confirm") {
       this.pending = null;
-      const t = text.trim();
       const yes = YES_RE.test(t) || (r.intent === "affirm" && r.confidence >= 0.5);
-      const no = NO_RE.test(t) || (r.intent === "deny" && r.confidence >= 0.5);
-      if (yes && !no) {
-        trace.push({ type: "state", text: "confirmed " + p.what });
-        trace.push({ type: "exec", text: p.cmd });
-        return { trace, reply: p.done };
-      }
-      if (no) {
-        trace.push({ type: "state", text: "declined " + p.what });
-        return { trace, reply: fill("power.cancel") };
-      }
+      if (yes && !no) { trace.push({ type: "state", text: "confirmed " + p.what }); return this.resume(p, p.then, trace); }
+      if (no) { drop("declined " + p.what); return { trace, reply: fill(has(p.intent + ".declined") ? p.intent + ".declined" : "declined") }; }
       trace.push({ type: "state", text: "no clear yes, dropped " + p.what + " and read this as a new command" });
-    }
-
-    if (this.pending && this.pending.type === "choose") {
-      const p = this.pending;
+    } else if (p && p.type === "choose") {
       this.pending = null;
-      const i = NO_RE.test(text.trim()) ? -2 : pickOption(text, p.options);
-      if (i >= 0) {
-        trace.push({ type: "state", text: "picked “" + p.options[i].label + "”" });
-        return this.schedule(p.task, p.options[i].when, trace, p.noteNoTime);
-      }
-      if (i === -2) { this.dropQueue = true; trace.push({ type: "state", text: "declined, nothing scheduled" }); return { trace, reply: fill("cancel") }; }
+      const i = no ? -2 : pickOption(text, p.options);
+      if (i >= 0) { trace.push({ type: "state", text: "picked “" + p.options[i].label + "”" }); return this.resume(p, p.options[i].then, trace); }
+      if (i === -2) { drop("declined, nothing done"); return { trace, reply: fill("cancel") }; }
       trace.push({ type: "state", text: "answer matched no option, read it as a new command" });
-    }
-
-    if (this.pending) {
-      const p = this.pending;
-      if ((r.intent === "deny" && r.confidence >= 0.5) || NO_RE.test(text.trim())) {
-        this.pending = null;
-        this.dropQueue = true; trace.push({ type: "state", text: "cancelled pending " + p.intent });
-        return { trace, reply: fill("cancel") };
-      }
+    } else if (p) {
+      if (no) { drop("cancelled pending " + p.intent); return { trace, reply: fill("cancel") }; }
       if (r.intent === p.intent && r.slots[p.need]) {
-        trace.push({ type: "state", text: "same intent with " + p.need + ", merged into pending " + p.intent });
         this.pending = null;
+        trace.push({ type: "state", text: "same skill with " + p.need + ", merged into the question" });
         return this.run(p.intent, { ...p.slots, ...r.slots }, trace);
       }
-      if (r.intent === "out_of_scope" && r.confidence >= 0.55 && text.trim().split(/\s+/).length >= 4) {
-        this.dropQueue = true; trace.push({ type: "state", text: "off-topic sentence, dropped pending " + p.intent });
-        this.pending = null;
-      } else if (ACTIONABLE.has(r.intent) && r.confidence >= 0.8 && Object.keys(r.slots).length) {
-        this.dropQueue = true; trace.push({ type: "state", text: "new command, dropped pending " + p.intent });
-        this.pending = null;
-      } else {
-        let answer = text;
-        const extra = {};
-        if (r.slots.location && p.need === "name") {
-          const idx = text.lastIndexOf(r.slots.location);
-          answer = text.slice(0, idx).replace(/\s+(in|inside|on|under|within|to)(\s+(the|my))?\s*$/i, "");
-          extra.location = r.slots.location;
-        }
-        const value = cleanValue(answer.replace(/^(please\s+)?(call it|name it|let'?s call it|it'?s|it is|its|name|called|named|use|make it|open|launch|start|run|fire up)\s+/i, ""));
-        if (!value) {
-          trace.push({ type: "state", text: "still waiting for " + p.need });
-          return { trace, reply: fill("empty_value") };
-        }
-        if (p.need === "direction") {
-          trace.push({ type: "state", text: "reading the answer as a direction or level" });
-          this.pending = null;
-          return this.run(p.intent, { ...p.slots, direction: value, level: parseLevel(null, value) !== null ? value : undefined }, trace);
-        }
-        if (p.need === "power_action") {
-          this.pending = null;
-          return this.run(p.intent, { power_action: value }, trace);
-        }
-        trace.push({ type: "state", text: "filled " + p.need + " ← “" + value + "” (raw answer)" });
-        this.pending = null;
-        return this.run(p.intent, { ...p.slots, ...extra, [p.need]: value }, trace);
-      }
+      if (r.intent === "out_of_scope" && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
+      else if (ACTIONABLE.has(r.intent) && r.confidence >= 0.8 && Object.keys(r.slots).length) drop("new command, dropped the question");
+      else return this.answer(p, r, text, trace);
     }
 
-    if (r.intent !== "open_app" && r.slots.app && resolveApp(r.slots.app)
-        && /^(please\s+)?((can|could|would) you\s+)?(open|launch|start|run|fire up|bring up)\b/i.test(text)) {
-      trace.push({ type: "state", text: "“" + cleanValue(r.slots.app) + "” is a known app, routing to open_app" });
-      return this.run("open_app", { app: r.slots.app }, trace);
-    }
     if (r.confidence < THRESHOLD) {
       trace.push({ type: "abstain", text: "confidence " + r.confidence.toFixed(2) + " < " + THRESHOLD + ", abstaining" });
-      return { trace, reply: fill("fallback"), unknown: true };
+      return { trace, reply: fill(has("out_of_scope.say") ? "out_of_scope.say" : "fallback"), unknown: true };
     }
     if (r.intent === "out_of_scope") {
       trace.push({ type: "abstain", text: "out of scope, no action" });
-      return { trace, reply: fill("fallback"), unknown: true };
+      return { trace, reply: fill(has("out_of_scope.say") ? "out_of_scope.say" : "fallback"), unknown: true };
     }
-    if (!ACTIONABLE.has(r.intent)) {
-      if (r.intent === "greet" && this.mem().name) return { trace, reply: "Hi " + this.mem().name + ". What can I do for you?" };
-      if (RESPONSES[r.intent]) return { trace, reply: fill(r.intent) };
-      // a skill taught through the inbox: recognised, but nothing is wired to it yet
+    if (!SKILLS[r.intent]) { // taught through the inbox: recognised, but no skill folder does it yet
       const got = Object.entries(r.slots).map(([k, v]) => k + " “" + cleanValue(v) + "”").join(", ");
-      trace.push({ type: "state", text: "learned skill " + r.intent + ", no action bound" });
+      trace.push({ type: "state", text: "learned skill " + r.intent + ", no skill folder" });
       return { trace, reply: fill("learned", { intent: r.intent.replace(/_/g, " "), got: got ? " (" + got + ")" : "" }) };
     }
     return this.run(r.intent, r.slots, trace);
   }
 
+  // the answer to "what should I call it?": the needed value, minus any other value it carries
+  // ("drafts in documents" → name "drafts", location "documents")
+  answer(p, r, text, trace) {
+    let rest = text;
+    const extra = {};
+    for (const [k, v] of Object.entries(r.slots)) {
+      if (k === p.need) continue;
+      const at = rest.toLowerCase().lastIndexOf(v.toLowerCase());
+      if (at > 0) { rest = rest.slice(0, at).replace(/\s+(in|inside|on|under|within|to|at)(\s+(the|my))?\s*$/i, ""); extra[k] = v; }
+    }
+    const value = cleanValue(rest.replace(/^(please\s+)?(call it|name it|let'?s call it|it'?s|it is|its|name|called|named|use|make it|open|launch|start|run|fire up)\s+/i, ""));
+    if (!value) { trace.push({ type: "state", text: "still waiting for " + p.need }); return { trace, reply: fill("empty_value") }; }
+    this.pending = null;
+    trace.push({ type: "state", text: "filled " + p.need + " ← “" + value + "”" });
+    return this.run(p.intent, { ...p.slots, ...extra, [p.need]: value }, trace);
+  }
+
   ask(intent, slots, need, key, trace, vars = {}) {
     this.pending = { intent, slots, need };
-    trace.push({ type: "state", text: "missing " + need + ", waiting for answer" });
+    trace.push({ type: "state", text: "missing " + need + ", waiting for an answer" });
     return { trace, reply: fill(key, vars) };
   }
 
-  // ---------- running a skill: the toolbox a skill script receives ----------
-  runScript(intent, sk, slots, trace, script) {
+  // ---------- running a skill ----------
+  run(intent, slots, trace) {
+    const sk = SKILLS[intent];
+    if (sk.code || sk.params.script) return this.runScript(intent, sk, slots, trace);
+    if (sk.action === "run") return this.runCommand(intent, sk, slots, trace);
+    if (sk.request) return this.runScript(intent, sk, slots, trace, { run: ctx => ctx.later("checking", ctx.slots, async () => {
+      const res = await ctx.request(ctx.slots);
+      return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
+    }) });
+    return { trace, reply: fill(intent + ".say") };
+  }
+
+  // action: run — a command from the skill's front matter, filled with a value from its list
+  runCommand(intent, sk, slots, trace) {
+    const need = sk.params.needs, list = sk.values[need] || [];
+    const choices = orList(list.map(v => v.key));
+    let raw = slots[need];
+    if (!raw) {
+      const guess = stripVerb(this.lastText);
+      if (!findValue(list, guess)) return this.ask(intent, slots, need, intent + ".ask_" + need, trace, { choices });
+      trace.push({ type: "state", text: need + " filled from the skill's list ← “" + cleanValue(guess) + "”" });
+      raw = guess;
+    }
+    const v = findValue(list, raw);
+    if (!v) {
+      trace.push({ type: "abstain", text: "no " + need + " matches “" + cleanValue(raw) + "” in " + sk.file });
+      return { trace, reply: fill(intent + ".unknown", { value: cleanValue(raw), choices }) };
+    }
+    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (k === need ? v.out : cleanValue(slots[k] || ""))) });
+    return { trace, reply: fill(intent + ".done", { [need]: v.key }) };
+  }
+
+  // the toolbox a skill script receives
+  makeCtx(intent, sk, slots, trace) {
     const agent = this, now = this.now(), text = this.lastText;
-    let live = trace;                 // trace lines written before the reply goes out
-    const clean = Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, typeof v === "string" ? cleanValue(v) : v]));
     const ctx = {
-      intent, text, now, slots: clean, values: sk.values, params: sk.params,
-      entities: () => ENT.parse(text, { now }),
+      intent, text, now, values: sk.values, params: sk.params, live: trace,
+      slots: Object.fromEntries(Object.entries(slots).filter(([, v]) => v != null).map(([k, v]) => [k, typeof v === "string" ? cleanValue(v) : v])),
+      // what to answer
       say: (name, vars = {}) => fill(intent + "." + name, vars),
       ask: (slot, name, vars = {}) => ({ ask: [slot, name, vars] }),
+      confirm: (what, question, then) => ({ confirm: [what, question, then] }),
+      choose: (question, options) => ({ choose: [question, options] }),
       later: (name, vars, work) => ({ later: [name, vars, work] }),
-      log: (line, type = "state") => live.push({ type, text: line }),
-      used: e => live.push({ type: "entity", e }),       // show a parsed date or duration in the trace
-      exec: cmd => live.push({ type: "exec", text: cmd }),
+      handover: (to, newSlots = {}, prefix = "") => ({ handover: [to, newSlots, prefix] }),
+      // what happened, for the trace
+      log: (line, type = "state") => ctx.live.push({ type, text: line }),
+      used: e => ctx.live.push({ type: "entity", e }),
+      exec: cmd => ctx.live.push({ type: "exec", text: cmd }),
+      // shared services
+      entities: () => ENT.parse(text, { now }),
+      find: (list, raw) => findValue(sk.values[list], raw),
+      findIn: (skill, list, raw) => findValue(SKILLS[skill] && SKILLS[skill].values[list], raw), // another skill's list
+      lookup: (list, key) => ((sk.values[list] || []).find(v => v.key === String(key)) || {}).out,
+      guess: () => stripVerb(text),
+      state: { get: (k, d) => (k in agent.levels ? agent.levels[k] : d), set: (k, v) => { agent.levels[k] = v; } },
       me: { get: () => agent.mem(), set: m => agent.setMem(m) },
       geocode: name => agent.geocode(name),
       request: vars => agent.request(sk, vars, ctx),
-      lookup: (list, key) => ((sk.values[list] || []).find(v => v.key === String(key)) || {}).out,
-      timers: { schedule: (task, when) => agent.schedule(task, when, live), arm: (at, msg) => agent.arm(at, msg) },
-      fmt: { clock, dayText, whenText, durWords, fromIso, cap, pad2 },
+      arm: (at, message) => agent.arm(at, message),
+      skills: () => Object.values(SKILLS).filter(s => s.params.help).map(s => s.params.help),
+      fmt: SV.fmt, files: SV.files,
     };
-    const code = script || loadScript(intent, sk);
-    const res = code.run(ctx);
+    return ctx;
+  }
+
+  runScript(intent, sk, slots, trace, script) {
+    const ctx = this.makeCtx(intent, sk, slots, trace);
+    return this.finish(intent, sk, ctx, (script || loadScript(intent, sk)).run(ctx), trace, slots);
+  }
+  // an answer to a confirmation or a choice: back to the skill that asked
+  resume(p, then, trace) {
+    const sk = SKILLS[p.intent], ctx = this.makeCtx(p.intent, sk, p.slots || {}, trace);
+    return this.finish(p.intent, sk, ctx, then(ctx), trace, p.slots || {});
+  }
+  // turn what a script returned into the agent's reply
+  finish(intent, sk, ctx, res, trace, slots) {
     if (res && res.ask) { const [slot, name, vars] = res.ask; return this.ask(intent, slots, slot, intent + "." + name, trace, vars); }
+    if (res && res.confirm) {
+      const [what, question, then] = res.confirm;
+      this.pending = { type: "confirm", intent, slots, what, then };
+      trace.push({ type: "state", text: "needs a yes first (" + what + ")" });
+      return { trace, reply: question };
+    }
+    if (res && res.choose) {
+      const [question, options] = res.choose;
+      this.pending = { type: "choose", intent, slots, options };
+      trace.push({ type: "state", text: "asking: " + options.map(o => o.label).join(" / ") });
+      return { trace, reply: question };
+    }
+    if (res && res.handover) {
+      const [to, newSlots, prefix] = res.handover;
+      trace.push({ type: "state", text: "handed over to " + to });
+      const out = this.run(to, newSlots, trace);
+      if (prefix) out.reply = prefix + " " + out.reply;
+      return out;
+    }
     if (res && res.later) {
       const [name, vars, work] = res.later;
       const late = [];
-      live = late;
+      ctx.live = late;
       const later = Promise.resolve().then(work)
         .then(r => ({ reply: typeof r === "string" ? r : r.reply, trace: late }))
-        .catch(err => { late.push({ type: "abstain", text: err.message }); return { reply: RESPONSES[intent + ".offline"] ? ctx.say("offline", vars) : "Something went wrong: " + err.message, trace: late }; });
-      return { trace, reply: RESPONSES[intent + "." + name] ? ctx.say(name, vars) : "One moment…", later };
+        .catch(err => { late.push({ type: "abstain", text: err.message }); return { reply: has(intent + ".offline") ? ctx.say("offline", vars) : "Something went wrong: " + err.message, trace: late }; });
+      return { trace, reply: has(intent + "." + name) ? ctx.say(name, vars) : fill("wait"), later };
     }
     return { trace, reply: typeof res === "string" ? res : (res && res.reply) || "" };
   }
 
-  // the API call declared in a skill's "## Request" section; {place.*} triggers a place lookup
-  async request(sk, vars, ctx) {
-    const r = sk.request;
-    if (!r) throw new Error(sk.file + " has no ## Request section");
-    vars = { ...vars };
-    let place = null;
-    if (Object.values(r.query).some(v => v.includes("{place."))) {
-      place = typeof vars.place === "string" ? await this.geocode(vars.place) : vars.place;
-      if (!place) return { place: null, answer: {}, json: null };
-      vars.place = place;
-    }
-    const q = Object.entries(r.query).map(([k, v]) => k + "=" + encodeURIComponent(v.replace(/\{([\w.]+)\}/g, (_, p) => getPath(vars, p) ?? "")));
-    const url = r.url + (q.length ? "?" + q.join("&") : "");
-    ctx.exec(r.method + " " + url.replace(/^https?:\/\//, "").replace(/%2C/g, ","));
-    if (!this.fetch) throw new Error("no network access");
-    const res = await this.fetch(url);
-    if (!res.ok) throw new Error(new URL(url).host + " answered " + res.status);
-    const json = await res.json();
-    const answer = {};
-    for (const [name, a] of Object.entries(sk.answer || {})) {
-      let v = getPath(json, a.path);
-      if (a.round && typeof v === "number") v = Math.round(v);
-      if (a.via) v = ctx.lookup(a.via, v) ?? v;
-      answer[name] = v;
-    }
-    return { place, answer, json };
-  }
-
-  // ---------- what the agent remembers about you: on this device only ----------
-  mem() {
-    try { return JSON.parse((this.store && this.store.getItem(ME_KEY)) || "null") || this._mem || {}; } catch { return this._mem || {}; }
-  }
-  setMem(m) {
-    this._mem = m;
-    try { if (this.store) this.store.setItem(ME_KEY, JSON.stringify(m)); } catch { /* kept in memory only */ }
-  }
-  // place → coordinates and time zone (Open-Meteo place search), cached per session
-  async geocode(name) {
-    const key = name.toLowerCase();
-    this.geoCache = this.geoCache || {};
-    if (key in this.geoCache) return this.geoCache[key];
-    if (!this.fetch) throw new Error("no network access");
-    const r = await this.fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=" + encodeURIComponent(name));
-    if (!r.ok) throw new Error("place search answered " + r.status);
-    const g = ((await r.json()).results || [])[0];
-    const out = g ? { name: g.name, region: [g.admin1, g.country].filter(x => x && x !== g.name).join(", "), lat: g.latitude, lon: g.longitude, timezone: g.timezone } : null;
-    this.geoCache[key] = out;
-    return out;
-  }
-
-  run(intent, slots, trace) {
-    const sk = SKILLS[intent];
-    if (sk && sk.code) return this.runScript(intent, sk, slots, trace);
-    if (sk && ACTIONS[sk.action]) return ACTIONS[sk.action].call(this, intent, sk, slots, trace);
-    if (sk && sk.request) return this.runScript(intent, sk, slots, trace, { run: ctx => ctx.later("checking", ctx.slots, async () => {
-      const r = await ctx.request(ctx.slots);
-      return r.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...r.answer, ...(r.place ? { place: r.place.name } : {}) });
-    }) });
-    if (intent === "create_folder") {
-      if (!slots.name) return this.ask(intent, slots, "name", "create_folder.ask_name", trace);
-      const name = cleanValue(slots.name);
-      const loc = resolveLocation(slots.location);
-      trace.push({ type: "exec", text: "mkdir -p " + shq(loc.path + "/" + name) });
-      return { trace, reply: fill("create_folder.done", { name: "“" + name + "”", where: loc.label }) };
-    }
-    if (intent === "create_file") {
-      if (!slots.name) return this.ask(intent, slots, "name", "create_file.ask_name", trace);
-      let name = cleanValue(slots.name);
-      let note = "";
-      if (!/\.[A-Za-z0-9]{1,5}$/.test(name)) {
-        const ext = slots.file_type && TYPE_EXT[cleanValue(slots.file_type).toLowerCase()];
-        if (ext) name += "." + ext;
-        else { name += ".txt"; note = " " + fill("create_file.default_type"); }
-      }
-      const loc = resolveLocation(slots.location);
-      const path = loc.path + "/" + name;
-      trace.push({ type: "exec", text: "mkdir -p " + shq(loc.path) + " && touch " + shq(path) });
-      return { trace, reply: fill("create_file.done", { file: "“" + name + "”", where: loc.label }) + note };
-    }
-    if (intent === "open_file") {
-      let name = slots.name && cleanValue(slots.name);
-      if (!name && !slots.location) {
-        const guess = stripVerb(this.lastText);
-        if (resolveApp(guess)) {
-          trace.push({ type: "state", text: "“" + cleanValue(guess) + "” is an app, routing to open_app" });
-          return this.run("open_app", { app: guess }, trace);
-        }
-        return this.ask(intent, slots, "name", "open_file.ask_name", trace);
-      }
-      const loc = resolveLocation(slots.location);
-      const path = name ? loc.path + "/" + name : loc.path;
-      trace.push({ type: "exec", text: "xdg-open " + shq(path) });
-      const target = name ? "“" + name + "”" + (slots.location ? " from " + loc.label : "") : loc.label;
-      return { trace, reply: fill("open_file.done", { target }) };
-    }
-    if (intent === "adjust_volume" || intent === "adjust_brightness") {
-      const vol = intent === "adjust_volume";
-      const text = this.lastText;
-      let dir = parseDirection(slots.direction, slots.direction ? "" : text);
-      const level = parseLevel(slots.level, slots.level ? "" : (slots.direction || text));
-      if (dir === null && level === null) {
-        return this.ask(intent, slots, "direction", vol ? "volume.ask" : "brightness.ask", trace);
-      }
-      if (!vol && (dir === "mute" || dir === "unmute")) dir = dir === "mute" ? "down" : "up";
-      const key = vol ? "volume" : "brightness";
-      let reply, cmd;
-      if (vol && dir === "mute") {
-        this.muted = true; cmd = "pactl set-sink-mute @DEFAULT_SINK@ 1"; reply = "Sound muted.";
-      } else if (vol && dir === "unmute") {
-        this.muted = false; cmd = "pactl set-sink-mute @DEFAULT_SINK@ 0"; reply = "Sound back on, at " + this.volume + "%.";
-      } else {
-        const before = this[key];
-        this[key] = level !== null ? level : Math.max(0, Math.min(100, before + (dir === "down" ? -10 : 10)));
-        if (vol) this.muted = false;
-        const arg = level !== null ? this[key] + "%" : (dir === "down" ? "-10%" : "+10%");
-        cmd = vol ? "pactl set-sink-volume @DEFAULT_SINK@ " + arg : "brightnessctl set " + (level !== null ? arg : arg.replace(/^([+-])(.*)$/, "$2$1"));
-        const verb = level !== null ? "set to" : this[key] > before ? "up to" : this[key] < before ? "down to" : "already at";
-        reply = (vol ? "Volume " : "Brightness ") + verb + " " + this[key] + "%.";
-      }
-      trace.push({ type: "state", text: key + ": " + (dir || "level") + (level !== null ? " → " + level + "%" : "") });
-      trace.push({ type: "exec", text: cmd });
-      return { trace, reply };
-    }
-    if (intent === "system_status") {
-      const keys = resolveMetrics(slots.metric, this.lastText);
-      for (const k of keys) trace.push({ type: "exec", text: METRICS[k].cmd });
-      const lines = keys.map(k => METRICS[k].out);
-      return { trace, reply: (keys.length > 2 ? "System overview (simulated values):\n" : "(Simulated) ") + lines.join("\n") };
-    }
-    if (intent === "power") {
-      const act = resolvePower(slots.power_action, slots.power_action ? "" : this.lastText);
-      if (!act) return this.ask(intent, slots, "power_action", "power.ask", trace);
-      const P = POWER[act];
-      this.pending = { type: "confirm", intent, what: act, cmd: P.cmd, done: P.done };
-      trace.push({ type: "state", text: "risky action (" + act + "), waiting for confirmation" });
-      return { trace, reply: fill("power.confirm", { action_q: P.q }) };
-    }
-    if (intent === "get_date") {
-      const now = this.now(), text = this.lastText;
-      const e = ENT.parse(text, { now }).find(x => x.type === "date" || x.type === "datetime" || x.type === "range");
-      if (e) trace.push({ type: "entity", e });
-      if (/what (month|year)/i.test(text) && !e) {
-        const year = /year/i.test(text);
-        return { trace, reply: year ? "It's " + now.getFullYear() + "." : "It's " + MONTHS_N[now.getMonth()] + " " + now.getFullYear() + "." };
-      }
-      const unknown = /\b(?:is|until|till|before)\s+(?!it\b|today\b|we\b)([a-z][a-z' -]*?)\s*\??$/i.exec(text);
-      if (!e && unknown) {
-        trace.push({ type: "abstain", text: "no date found in “" + unknown[1] + "”" });
-        return { trace, reply: "I don't know which date “" + unknown[1] + "” is. Try a date like “december 25” or “next friday”." };
-      }
-      if (!e) return { trace, reply: fill("date.today", { date: dayText(now, now) }) };
-      if (e.type === "range") return { trace, reply: fill("date.range", { phrase: cap(e.text), from: dayText(fromIso(e.from), now), to: dayText(fromIso(e.to), now) }) };
-      const d = fromIso(e.value);
-      const day0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const k = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - day0) / 864e5);
-      let reply;
-      if (/how (many days|long)|until|till|before/i.test(text)) reply = k >= 0 ? fill("date.until", { n: plural(k, "day"), date: dayText(d, now) }) : fill("date.since", { n: plural(-k, "day"), date: dayText(d, now) });
-      else if (/^(is (it|today))\b/i.test(text.trim())) reply = (k === 0 ? "Yes, " : "No, ") + "today is " + dayText(now, now) + ".";
-      else reply = fill("date.other", { phrase: cap(e.text), date: dayText(d, now) });
-      if (e.ambiguous && e.alternatives.length) reply += " If you meant the other one, that's " + dayText(fromIso(e.alternatives[0].split("/")[0]), now) + ".";
-      return { trace, reply };
-    }
-    if (intent === "set_reminder") {
-      const now = this.now();
-      const task = slots.task ? cleanValue(slots.task) : null;
-      const ents = ENT.parse(this.lastText, { now }).filter(x => x.type !== "duration");
-      const e = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range");
-      if (!e) return this.ask(intent, { ...slots }, "when", "reminder.ask_when", trace);
-      trace.push({ type: "entity", e });
-      if (e.type === "range") {
-        this.pending = { intent, slots, need: "when" };
-        trace.push({ type: "state", text: "a whole " + e.grain + ", waiting for a day" });
-        return { trace, reply: fill("reminder.ask_day", { phrase: cap(e.text), from: dayText(fromIso(e.from), now), to: dayText(fromIso(e.to), now) }) };
-      }
-      let when = e, noTime = false;
-      if (e.type === "date") { // a day without a time: 9:00, and say so
-        noTime = true;
-        const d = fromIso(e.value);
-        const mk = iso => ({ type: "datetime", value: iso + "T09:00" });
-        when = { ...mk(e.value), alternatives: (e.alternatives || []).map(a => a + "T09:00"), ambiguous: e.ambiguous,
-          past: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 9) < now };
-      }
-      if (when.ambiguous && when.alternatives && when.alternatives.length) {
-        const opts = [when.type === "recurrence" ? when.time : when.value, when.alternatives[0]].map((v, i, arr) => {
-          if (when.type === "recurrence") {
-            const [h, m] = v.split(":");
-            const rr = when.rrule.replace(/BYHOUR=\d+;BYMINUTE=\d+/, "BYHOUR=" + +h + ";BYMINUTE=" + +m);
-            const keys = +h < 12 ? ["am", "morning", v, String(+h)] : ["pm", "evening", "afternoon", "night", v, String(+h), String(+h - 12)];
-            return { label: i === 0 ? ruleWords(rr).trim() : "at " + v, keys, when: { ...when, rrule: rr, time: v, ambiguous: false } };
-          }
-          const d = fromIso(v), o = fromIso(arr[1 - i]);
-          return { label: whenText(d, now), keys: optionKeys(d, o, now), when: { type: "datetime", value: v } };
-        });
-        this.pending = { type: "choose", intent, task, options: opts, need: "choice", noteNoTime: noTime };
-        trace.push({ type: "state", text: "ambiguous, asking: " + opts.map(o => o.label).join(" / ") });
-        return { trace, reply: fill("choose", { q: cap(opts[0].label) + ", or " + opts[1].label + "?" }) };
-      }
-      return this.schedule(task, when, trace, noTime);
-    }
-    return { trace, reply: fill("fallback") };
-  }
-
-  schedule(task, when, trace, noTime) {
-    const now = this.now();
-    const what = task || "";
-    if (when.type === "recurrence") {
-      const cal = onCalendar(when.rrule);
-      trace.push({ type: "exec", text: cal ? `systemd-run --user --on-calendar="${cal}" notify-send "Reminder" "${what || "Reminder"}"` : "# rule " + when.rrule + " (needs a small scheduler, not a single systemd timer)" });
-      this.scheduled.push({ kind: "reminder", rrule: when.rrule, what });
-      return { trace, reply: fill("reminder.repeat", { what: what ? " to " + what : "", rule: ruleWords(when.rrule), next: when.next ? whenText(fromIso(when.next), now) : "soon" }) };
-    }
-    const at = fromIso(when.value);
-    if (at < now) { // already passed: offer the same time tomorrow
-      const next = new Date(at.getTime());
-      while (next < now) next.setDate(next.getDate() + 1);
-      const iso = next.getFullYear() + "-" + pad2(next.getMonth() + 1) + "-" + pad2(next.getDate()) + "T" + clock(next);
-      this.pending = { type: "choose", intent: "set_reminder", task, need: "choice",
-        options: [{ label: whenText(next, now), keys: ["tomorrow", "yes"], when: { type: "datetime", value: iso } }] };
-      trace.push({ type: "state", text: "time already passed, offering " + iso });
-      return { trace, reply: fill("past", { at: cap(whenText(at, now)), next: whenText(next, now) }) };
-    }
-    const stamp = at.getFullYear() + "-" + pad2(at.getMonth() + 1) + "-" + pad2(at.getDate()) + " " + clock(at) + ":00";
-    trace.push({ type: "exec", text: `systemd-run --user --on-calendar="${stamp}" notify-send "Reminder" "${what || "Reminder"}"` });
-    this.scheduled.push({ kind: "reminder", at, what });
-    this.arm(at, fill("reminder.ring", { what: what || "time's up" }));
-    return { trace, reply: fill("reminder.done", { what: what ? " to " + what : "", at: whenText(at, now) }) + (noTime ? fill("reminder.no_time", { t: "09:00" }) : "") };
-  }
+  // network and memory services (web/services.js), bound to this agent's fetch and storage
+  request(sk, vars, ctx) { return SV.net.request(this, sk, vars, ctx); }
+  geocode(name) { return SV.net.geocode(this, name); }
+  mem() { return SV.me.get(this.store, this); }
+  setMem(m) { SV.me.set(this.store, this, m); }
 }
 if (typeof module !== "undefined") module.exports = { Agent };

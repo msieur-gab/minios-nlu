@@ -1,0 +1,130 @@
+---
+skill: out_of_scope
+kind: chat
+action: say
+---
+# Out of scope
+
+Sentences the agent should refuse: things no skill does, and look-alikes of what skills do
+("delete the reports folder", "set an alarm"). The more varied these are, the better the agent
+says "I can't" instead of guessing.
+
+## Examples
+- tell me a joke
+- play some music
+- how much is 12 times 7
+- send an email to my boss
+- delete the reports folder
+- remove notes.md
+- rename the folder to drafts
+- move invoices to the archive
+- delete everything
+- what is the capital of france
+- who are you
+- set an alarm for 7
+- turn off the wifi
+- how are you
+- order a pizza
+- copy the file to desktop
+- show me the news
+- translate hello into japanese
+- book a flight to tokyo
+- what's 2 plus 2
+- install firefox
+- update the system
+- take a screenshot
+- lock the screen
+- connect to bluetooth
+- where am I
+- list the files
+- what's in this folder
+- go to documents
+- change directory to projects
+- close the browser
+- kill the terminal
+- uninstall python
+- zip the photos folder
+- search for invoices
+- find my notes
+- read me the file
+- print the document
+- the sky is blue
+- banana
+- asdfgh
+- i like trains
+- my cat is sleeping
+- can you sing
+- what is love
+- write me a poem
+- sudo rm -rf
+- format the drive
+- make me a sandwich
+- create an account on github
+- open my bank account
+- call mom
+- send a text to Paul
+- how old are you
+- the folder is too big
+- I hate this file
+- files are boring
+- what is a markdown file
+- how do folders work
+- explain the terminal
+- is the browser safe
+- which editor is the best
+- I created a folder yesterday
+- my terminal crashed
+- the file is empty
+- share this folder with Eva
+- empty the trash
+- restore the backup
+- download the report
+- turn off the bluetooth
+- turn off notifications
+- close the file
+- how loud is a jet engine
+- what is cpu
+- buy more ram
+- my screen is broken
+- clean the screen
+- what does reboot mean
+- never shut down
+- who turned off the lights
+- the volume of a sphere
+- the music was great yesterday
+- how to free up disk space on windows
+- open the window it's hot
+- open the door
+- show me a picture of a cat
+- play the next song
+- skip this track
+- check my email
+- open my bank app
+- open google.com
+- what's the battery level
+- set an alarm for 7am
+- wake me up at 6
+- what's on my calendar tomorrow
+- add a meeting on friday
+- when is the next train
+- how long does it take to boil an egg
+- what time does the bakery open
+- when was the eiffel tower built
+- time flies
+- I had a long day
+- my timer app is broken
+- who invented the clock
+- delete my reminders
+- what did I do yesterday
+- who built you
+- who created you
+- who is your creator
+- what's your name
+- where do you live
+- what's the name of this song
+- my name is on the door
+- which city is the capital of japan
+- remember the alamo
+
+## Replies
+- say: I didn't understand that. Say help to see what I can do. | That's outside what I can do. Say help for the list.

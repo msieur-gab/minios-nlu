@@ -58,7 +58,7 @@ function parseSkill(md, file) {
     else if (section === "values") {
       // "key: synonym, synonym → output"   (synonyms and output are optional)
       const [left, out] = item.split(/\s*(?:→|->)\s*/);
-      const [key, syn] = left.split(/\s*:\s*/);
+      const [key, syn] = left.split(/:\s+/);
       const words = [key, ...(syn ? syn.split(/\s*,\s*/) : [])].map(w => w.trim()).filter(Boolean);
       list.push({ key: key.trim(), words: [...new Set(words.map(w => w.toLowerCase()))], say: words, out: out === undefined ? null : out.trim() });
     } else if (section === "replies") {

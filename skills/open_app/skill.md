@@ -1,5 +1,6 @@
 ---
 skill: open_app
+help: open apps (“open the terminal”)
 action: run
 command: "{app} &"
 needs: app

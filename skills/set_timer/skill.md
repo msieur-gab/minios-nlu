@@ -1,5 +1,6 @@
 ---
 skill: set_timer
+help: set timers (“timer 10 minutes”)
 train_only: dur
 samples: 10
 ---
@@ -51,4 +52,4 @@ holds a time instead ("timer for 3pm"), the timer becomes a reminder.
 - ask: How long? For example “10 minutes” or “1h30”. | Sure. For how long?
 - done: Timer set for {dur}. It rings at {at}. | {dur}, starting now. Done at {at}.
 - ring: ⏰ {dur} timer is done.
-- is_time: That's a time rather than a duration, so I set a reminder for {at} instead.
+- is_time: That's a time rather than a duration, so here's a reminder instead:

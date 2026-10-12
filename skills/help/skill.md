@@ -1,0 +1,29 @@
+---
+skill: help
+kind: chat
+---
+# Help
+
+Lists what the agent can do, from the help line in each skill's front matter.
+
+## Examples
+- help
+- what can you do
+- what are your commands
+- how does this work
+- show me what you can do
+- options
+- I'm lost
+- what do you know
+- help me
+- list your commands
+- what can I ask you
+- how do I use you
+- what are you able to do
+- any tips
+- commands
+- what can I say
+
+## Replies
+- say: I can {list}.
+- try: Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.

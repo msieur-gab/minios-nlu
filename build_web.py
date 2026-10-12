@@ -25,6 +25,7 @@ page = open("web/template.html").read()
 page = page.replace("/*MODEL*/", open("models/model.json").read().replace("</", "<\\/"))
 page = page.replace("/*RUNTIME*/", open("web/runtime.js").read())
 page = page.replace("/*ENTITIES*/", open("web/entities.js").read())
+page = page.replace("/*SERVICES*/", open("web/services.js").read())
 page = page.replace("/*SKILLS*/", open("web/skills.json").read().replace("</", "<\\/"))
 # each skill's script, wrapped so it can use module.exports exactly as in Node
 skills_rt = json.load(open("web/skills.json"))["skills"]

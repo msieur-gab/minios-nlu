@@ -1,5 +1,6 @@
 ---
 skill: get_time
+help: tell the time, here or in another city
 train_only: city
 samples: 8
 ---

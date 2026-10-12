@@ -19,7 +19,7 @@ def score(rows):
 
 
 def main(new_path, k=5, dup=1):
-    base = load("data/train.md")
+    base = load("data/skills.md")
     new = load(new_path)
     random.Random(1).shuffle(new)
     folds = [new[i::k] for i in range(k)]
