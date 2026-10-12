@@ -402,6 +402,17 @@ const NLUEntities = (() => {
   const SMALL = "thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve";
   const NUM = `(?:\\d+(?:[.,]\\d+)?|(?:twenty|thirty|forty|fifty|sixty)(?:[\\s-](?:one|two|three|four|five|six|seven|eight|nine))?|a\\s+couple\\s+of|couple\\s+of|a\\s+couple|a\\s+few|few|several|${SMALL}|an?)`;
   const HOURW = "one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve";
+  const ORD_N = { first: 1, second: 2, third: 3, fourth: 4, fifth: 5, sixth: 6, seventh: 7, eighth: 8, ninth: 9, tenth: 10,
+    eleventh: 11, twelfth: 12, thirteenth: 13, fourteenth: 14, fifteenth: 15, sixteenth: 16, seventeenth: 17, eighteenth: 18,
+    nineteenth: 19, twentieth: 20, thirtieth: 30 };
+  const ORDW = "(?:twenty|thirty)[\\s-](?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth)|thirtieth|twentieth|nineteenth|eighteenth|seventeenth|sixteenth|fifteenth|fourteenth|thirteenth|twelfth|eleventh|tenth|ninth|eighth|seventh|sixth|fifth|fourth|third|second|first";
+  // "21", "21st", "twenty-first" → 21
+  function ordNum(s) {
+    s = s.toLowerCase().replace(/(st|nd|rd|th)$/, m => (/^\d/.test(s) ? "" : m));
+    if (/^\d+$/.test(s)) return +s;
+    const [a, b] = s.split(/[\s-]/);
+    return b ? (a === "twenty" ? 20 : 30) + ORD_N[b] : ORD_N[a];
+  }
 
   function num(s) {
     s = s.trim().toLowerCase().replace(/\s+/g, " ");
@@ -511,7 +522,7 @@ const NLUEntities = (() => {
   const rule = (src, fn) => R.push({ re: new RegExp(src, "gi"), fn });
 
   rule(`\\b(?:right\\s+)?now\\b`, (m, c) => ({ kind: "instant", date: c.now }));
-  rule(`\\b(?:in|within|after)\\s+(${DUR})`, (m, c) => rel(c, m[1], 1));
+  rule(`\\b(?:in|within|after)\\s+(?:the\\s+next\\s+)?(${DUR})`, (m, c) => rel(c, m[1], 1));
   rule(`(${DUR})\\s+(?:from\\s+now|from\\s+today|later)\\b`, (m, c) => rel(c, m[1], 1));
   rule(`(${DUR})\\s+ago\\b`, (m, c) => rel(c, m[1], -1));
   rule(`\\b(?:for\\s+)?(${DUR})`, (m) => { const d = parseDuration(m[1]); return d && { kind: "duration", dur: d }; });
@@ -564,7 +575,12 @@ const NLUEntities = (() => {
     if (unit === "weekend") {
       const sat = addDays(weekStart(t), 5 + 7 * off);
       const r = { kind: "range", from: sat, to: addDays(sat, 1), grain: "weekend" };
-      if (off === 1 && dow(t) < 5) { r.ambiguous = true; r.alternatives = [addDays(sat, -7)]; } // "next weekend" said on a weekday
+      if (off === 1 && dow(t) < 5) { // "next weekend" said on a weekday: this coming one, or the one after?
+        const coming = c.opts.nextWeekday === "coming";
+        const other = addDays(sat, -7);
+        r.ambiguous = true;
+        if (coming) { r.from = other; r.to = addDays(other, 1); r.alternatives = [sat]; } else r.alternatives = [other];
+      }
       return r;
     }
     if (unit === "month") { const s = new Date(t.getFullYear(), t.getMonth() + off, 1); return { kind: "range", from: s, to: new Date(s.getFullYear(), s.getMonth() + 1, 0), grain: "month" }; }
@@ -585,8 +601,64 @@ const NLUEntities = (() => {
     return { kind: "date", date: new Date(p.from.getFullYear(), 6, 1) };
   });
 
+  // holidays (fixed dates, and Easter computed)
+  function easter(y) { // anonymous Gregorian algorithm
+    const a = y % 19, b = Math.floor(y / 100), c2 = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25),
+      g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c2 / 4), k = c2 % 4,
+      l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+    return new Date(y, Math.floor((h + l - 7 * m + 114) / 31) - 1, ((h + l - 7 * m + 114) % 31) + 1);
+  }
+  const HOLIDAYS = {
+    "christmas eve": [11, 24], "christmas": [11, 25], "christmas day": [11, 25], "xmas": [11, 25], "boxing day": [11, 26],
+    "new year's eve": [11, 31], "new years eve": [11, 31], "new year's day": [0, 1], "new years day": [0, 1], "new year": [0, 1], "new year's": [0, 1],
+    "valentine's day": [1, 14], "valentines day": [1, 14], "halloween": [9, 31], "all saints": [10, 1], "may day": [4, 1],
+    "easter": "easter", "easter sunday": "easter", "easter monday": 1, "good friday": -2,
+  };
+  const HOL_RE = Object.keys(HOLIDAYS).sort((a, b) => b.length - a.length).map(k => k.replace(/'/g, "['’]?")).join("|");
+  rule(`\\b(?:on\\s+)?(${HOL_RE})\\b`, (m, c) => {
+    const key = m[1].toLowerCase().replace(/’/g, "'"), h = HOLIDAYS[key] ?? HOLIDAYS[key.replace("'", "")];
+    const on = y => (Array.isArray(h) ? new Date(y, h[0], h[1]) : addDays(easter(y), h === "easter" ? 0 : h));
+    let d = on(c.now.getFullYear());
+    if (d < day0(c.now)) d = on(c.now.getFullYear() + 1);
+    return { kind: "date", date: d, holiday: key };
+  });
+  // "the first monday of next month", "the last friday of october"
+  rule(`\\b(?:the\\s+)?(first|second|third|fourth|fifth|last|1st|2nd|3rd|4th|5th)\\s+(${WD_RE})\\s+(?:of|in)\\s+(?:(?:the\\s+)?(next|this|last)\\s+month|(${MO_RE})(?:\\s+(\\d{4}))?)`, (m, c) => {
+    const n = m[1].toLowerCase(), wd = WD[m[2].toLowerCase()], now = c.now;
+    let y = now.getFullYear(), mo;
+    if (m[3]) mo = now.getMonth() + { next: 1, this: 0, last: -1 }[m[3].toLowerCase()];
+    else { mo = MONTHS[m[4].toLowerCase()]; if (m[5]) y = +m[5]; else if (mo < now.getMonth()) y++; }
+    const first = new Date(y, mo, 1);
+    if (n === "last") { let d = new Date(y, mo + 1, 0); while (dow(d) !== wd) d = addDays(d, -1); return { kind: "date", date: d }; }
+    const k = { first: 1, "1st": 1, second: 2, "2nd": 2, third: 3, "3rd": 3, fourth: 4, "4th": 4, fifth: 5, "5th": 5 }[n];
+    const d = addDays(first, ((wd - dow(first) + 7) % 7) + 7 * (k - 1));
+    return d.getMonth() === first.getMonth() ? { kind: "date", date: d } : null;
+  });
+  // "the last day of the year", "the first day of next month"
+  rule(`\\b(?:the\\s+)?(first|last)\\s+day\\s+of\\s+(?:the\\s+)?(?:(next|this|last)\\s+)?(week|month|year)\\b`, (m, c) => {
+    const p = period(c, m[3].toLowerCase(), { next: 1, last: -1 }[(m[2] || "").toLowerCase()] || 0);
+    return { kind: "date", date: m[1].toLowerCase() === "first" ? p.from : p.to };
+  });
+  // "tuesday the 20th", "friday the 13th": the next date where both match
+  rule(`\\b(?:on\\s+)?(${WD_RE})\\s+(?:the\\s+)?(\\d{1,2}(?:st|nd|rd|th)?|${ORDW})\\b(?:\\s+of\\s+(${MO_RE}))?`, (m, c) => {
+    const wd = WD[m[1].toLowerCase()], d = ordNum(m[2]), now = c.now;
+    if (!d || d > 31) return null;
+    for (let k = 0; k < 24; k++) {
+      const y = now.getFullYear(), mo = m[3] ? MONTHS[m[3].toLowerCase()] + 12 * k : now.getMonth() + k;
+      const t = new Date(y, mo, d);
+      if (t.getDate() === d && t >= day0(now) && dow(t) === wd) return { kind: "date", date: t };
+    }
+    return null;
+  });
+  // "this time next week", "this time tomorrow"
+  rule(`\\bthis\\s+time\\s+(tomorrow|next\\s+(week|month|year))\\b`, (m, c) => {
+    const n = c.now, u = (m[2] || "day").toLowerCase();
+    const t = new Date(n.getFullYear() + (u === "year"), n.getMonth() + (u === "month"), n.getDate() + (u === "day" ? 1 : u === "week" ? 7 : 0), n.getHours(), n.getMinutes());
+    return { kind: "instant", date: t };
+  });
+
   // absolute dates
-  rule(`\\b(?:on\\s+)?(?:the\\s+)?(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+of)?\\s+(${MO_RE})\\b(?:,?\\s+(\\d{4}))?`, (m, c) => dm(c, +m[1], MONTHS[m[2].toLowerCase()], m[3]));
+  rule(`\\b(?:on\\s+)?(?:the\\s+)?(\\d{1,2}|${ORDW})(?:st|nd|rd|th)?(?:\\s+of)?\\s+(${MO_RE})\\b(?:,?\\s+(\\d{4}))?`, (m, c) => dm(c, ordNum(m[1]), MONTHS[m[2].toLowerCase()], m[3]));
   rule(`\\b(?:on\\s+)?(${MO_RE})\\s+(?:the\\s+)?(\\d{1,2})(?:st|nd|rd|th)?\\b(?:,?\\s+(\\d{4}))?`, (m, c) => dm(c, +m[2], MONTHS[m[1].toLowerCase()], m[3]));
   function dm(c, d, mo, y) {
     const t = futureDate(c.now, mo, d, y && +y);
@@ -602,8 +674,9 @@ const NLUEntities = (() => {
     if (!y && pre === "last") year = mo < now.getMonth() ? now.getFullYear() : now.getFullYear() - 1;
     return { kind: "range", from: new Date(year, mo, 1), to: new Date(year, mo + 1, 0), grain: "month" };
   });
-  rule(`\\b(?:on\\s+)?the\\s+(\\d{1,2})(?:st|nd|rd|th)\\b`, (m, c) => {
-    const d = +m[1], now = c.now;
+  // "the 20th", "on the third" (an ordinal word needs "on": "the first file" is not a date)
+  rule(`\\b(?:on\\s+)?the\\s+(\\d{1,2})(?:st|nd|rd|th)\\b|\\bon\\s+the\\s+(${ORDW})\\b`, (m, c) => {
+    const d = ordNum(m[1] || m[2]), now = c.now;
     for (let k = 0; k < 3; k++) {
       const y = now.getFullYear(), mo = now.getMonth() + k;
       const t = new Date(y, mo, d);
@@ -643,6 +716,10 @@ const NLUEntities = (() => {
   rule(`\\b(?:at|around|by)\\s+(\\d{1,2}|${HOURW})\\b(?![:.h/]\\d)`, (m) => {
     const h = num(m[1]);
     return h <= 23 ? { kind: "time", h, m: 0, mer: null } : null;
+  });
+  rule(`\\b(?:at\\s+)?half\\s+(\\d{1,2}|${HOURW})\\b(?!\\s*(?:an?\\s+)?(?:hour|day|minute|week|month|year|past|after|to|till))`, (m) => {
+    const h = num(m[1]);
+    return h >= 1 && h <= 12 ? { kind: "time", h, m: 30, mer: null } : null;
   });
   rule(`\\b(?:at\\s+)?(noon|midday|midnight)\\b`, (m) => /midnight/i.test(m[1]) ? { kind: "time", h: 0, m: 0, mer: "am", midnight: true } : { kind: "time", h: 12, m: 0, mer: "pm" });
   rule(`\\b(?:at\\s+)?(?:a\\s+)?(half|quarter|\\d{1,2}|${SMALL}|twenty(?:[\\s-](?:one|two|three|four|five|six|seven|eight|nine))?)(?:\\s+minutes?)?\\s+(past|after|to|till|before)\\s+(\\d{1,2}|${HOURW})\\b(?:\\s*${MER})?`, (m) => {
@@ -688,7 +765,9 @@ const NLUEntities = (() => {
         const pm = new Date(date.getFullYear(), date.getMonth(), date.getDate(), (h % 12) + 12, t.m);
         if (am > now) { h = h % 12; amb = true; alt = (h % 12) + 12; }
         else if (pm > now) { h = (h % 12) + 12; }
-        else { h = h % 12; } // both passed, flagged as past by the caller
+        else if (h <= 6) h = (h % 12) + 12;                 // both passed: tomorrow, 1–6 → afternoon
+        else if (h <= 11) { amb = true; alt = h + 12; }      // tomorrow, 7–11 → morning, but ask
+        else h = 12;
       } else if (h <= 6) h += 12;            // 1–6 → afternoon
       else if (h <= 11) { amb = true; alt = h + 12; } // 7–11 → morning, but ask
     }
@@ -700,7 +779,7 @@ const NLUEntities = (() => {
 
   function parse(text, options = {}) {
     const now = options.now || new Date();
-    const c = { now, opts: { nextWeekday: options.nextWeekday || "following-week", dateOrder: options.dateOrder || "DMY" } };
+    const c = { now, opts: { nextWeekday: options.nextWeekday || "coming", dateOrder: options.dateOrder || "DMY" } };
     const low = text.toLowerCase();
     let cands = [];
     for (const { re, fn } of R) {
@@ -715,6 +794,18 @@ const NLUEntities = (() => {
     const taken = [];
     for (const p of cands) if (!taken.some(q => p.start < q.end && q.start < p.end)) taken.push(p);
     taken.sort((a, b) => a.start - b.start);
+    // a duration counted from a date: "a week from tomorrow", "three days before christmas"
+    for (let i = 0; i + 1 < taken.length; i++) {
+      const a = taken[i], b = taken[i + 1];
+      const link = /^\s+(from|after|before)\s+$/i.exec(low.slice(a.end, b.start));
+      if (a.kind !== "duration" || !link || !(b.kind === "date" || b.kind === "instant")) continue;
+      const sign = /before/i.test(link[1]) ? -1 : 1;
+      const base = b.kind === "date" ? b.date : b.date;
+      const t = shift(base, a.dur, sign);
+      taken.splice(i, 2, b.kind === "date" && !subDay(a.dur)
+        ? { kind: "date", date: day0(t), start: a.start, end: b.end }
+        : { kind: "instant", date: t, start: a.start, end: b.end });
+    }
     // group adjacent parts
     const groups = [];
     for (const p of taken) {
