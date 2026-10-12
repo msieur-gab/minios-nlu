@@ -1,7 +1,5 @@
 ---
 skill: recall_me
-action: memory
-mode: get
 samples: 10
 ---
 # What do you know about me

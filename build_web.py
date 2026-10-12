@@ -26,6 +26,12 @@ page = page.replace("/*MODEL*/", open("models/model.json").read().replace("</", 
 page = page.replace("/*RUNTIME*/", open("web/runtime.js").read())
 page = page.replace("/*ENTITIES*/", open("web/entities.js").read())
 page = page.replace("/*SKILLS*/", open("web/skills.json").read().replace("</", "<\\/"))
+# each skill's script, wrapped so it can use module.exports exactly as in Node
+skills_rt = json.load(open("web/skills.json"))["skills"]
+code = "const SKILL_CODE = {};\n" + "".join(
+    "SKILL_CODE[%s] = (() => { const module = { exports: {} };\n%s\nreturn module.exports; })();\n"
+    % (json.dumps(name), open(sk["dir"] + "/skill.js").read()) for name, sk in skills_rt.items() if sk["code"])
+page = page.replace("/*SKILL_CODE*/", code.replace("</", "<\\/"))
 # training data + trainer for on-device retraining (Web Worker)
 manifest = json.load(open("data/manifest.json"))
 data = {"train": "\n".join(open(f, encoding="utf-8").read() for f in manifest["train"]),

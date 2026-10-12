@@ -1,7 +1,5 @@
 ---
 skill: remember_me
-action: memory
-mode: set
 train_only: first, city
 samples: 8
 ---

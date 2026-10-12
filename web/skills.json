@@ -1,15 +1,16 @@
 {
  "skills": {
   "forget_me": {
-   "file": "skills/forget_me.md",
-   "action": "memory",
+   "file": "skills/forget_me/skill.md",
+   "dir": "skills/forget_me",
+   "code": true,
+   "action": "say",
    "params": {
     "skill": "forget_me",
-    "action": "memory",
-    "mode": "forget",
     "samples": "10"
    },
-   "values": {},
+   "request": null,
+   "answer": {},
    "replies": {
     "name": [
      "OK, I've forgotten your name."
@@ -24,18 +25,21 @@
      "There was nothing to forget."
     ]
    },
-   "sentences": 34
+   "sentences": 34,
+   "values": {}
   },
   "get_time": {
-   "file": "skills/get_time.md",
-   "action": "clock",
+   "file": "skills/get_time/skill.md",
+   "dir": "skills/get_time",
+   "code": true,
+   "action": "say",
    "params": {
     "skill": "get_time",
-    "action": "clock",
     "train_only": "city",
     "samples": "8"
    },
-   "values": {},
+   "request": null,
+   "answer": {},
    "replies": {
     "done": [
      "It's {time}.",
@@ -50,19 +54,83 @@
     ],
     "offline": [
      "I can't look up other places right now. Here it's {time}."
+    ],
+    "looking": [
+     "Looking up {place}…"
     ]
    },
-   "sentences": 84
+   "sentences": 84,
+   "values": {}
   },
   "get_weather": {
-   "file": "skills/get_weather.md",
-   "action": "weather",
+   "file": "skills/get_weather/skill.md",
+   "dir": "skills/get_weather",
+   "code": true,
+   "action": "say",
    "params": {
     "skill": "get_weather",
-    "action": "weather",
     "train_only": "city, day",
     "samples": "8"
    },
+   "request": {
+    "method": "GET",
+    "url": "https://api.open-meteo.com/v1/forecast",
+    "query": {
+     "latitude": "{place.lat}",
+     "longitude": "{place.lon}",
+     "current": "temperature_2m,weather_code,wind_speed_10m",
+     "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+     "timezone": "auto",
+     "forecast_days": "16"
+    }
+   },
+   "answer": {
+    "temp": {
+     "path": "current.temperature_2m",
+     "round": true,
+     "via": null
+    },
+    "wind": {
+     "path": "current.wind_speed_10m",
+     "round": true,
+     "via": null
+    },
+    "sky": {
+     "path": "current.weather_code",
+     "round": false,
+     "via": "sky"
+    }
+   },
+   "replies": {
+    "now": [
+     "{place} right now: {sky}, {temp}°C, wind {wind} km/h."
+    ],
+    "day": [
+     "{when} in {place}: {sky}, {min} to {max}°C, {rain}% chance of rain."
+    ],
+    "days": [
+     "{place}, {phrase}:"
+    ],
+    "ask_place": [
+     "Which city? Tip: say “I live in …” and I'll remember it for next time."
+    ],
+    "not_found": [
+     "I couldn't find a place called “{place}”."
+    ],
+    "too_far": [
+     "I can only see 16 days ahead."
+    ],
+    "past": [
+     "I only have the forecast, not past weather."
+    ],
+    "offline": [
+     "I can't reach the weather service right now. Are you online?"
+    ],
+    "checking": [
+     "Checking the weather for {place}…"
+    ]
+   },
+   "sentences": 169,
    "values": {
     "sky": [
      {
@@ -346,40 +414,12 @@
       "out": "thunderstorm with heavy hail"
      }
     ]
-   },
-   "replies": {
-    "now": [
-     "{place} right now: {sky}, {temp}°C, wind {wind} km/h."
-    ],
-    "day": [
-     "{when} in {place}: {sky}, {min} to {max}°C, {rain}% chance of rain."
-    ],
-    "days": [
-     "{place}, {phrase}:"
-    ],
-    "ask_place": [
-     "Which city? Tip: say “I live in …” and I'll remember it for next time."
-    ],
-    "not_found": [
-     "I couldn't find a place called “{place}”."
-    ],
-    "too_far": [
-     "I can only see 16 days ahead."
-    ],
-    "past": [
-     "I only have the forecast, not past weather."
-    ],
-    "offline": [
-     "I can't reach the weather service right now. Are you online?"
-    ],
-    "checking": [
-     "Checking the weather for {place}…"
-    ]
-   },
-   "sentences": 169
+   }
   },
   "open_app": {
-   "file": "skills/open_app.md",
+   "file": "skills/open_app/skill.md",
+   "dir": "skills/open_app",
+   "code": false,
    "action": "run",
    "params": {
     "skill": "open_app",
@@ -388,6 +428,21 @@
     "needs": "app",
     "samples": "16"
    },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "done": [
+     "Opening the {app}.",
+     "Starting the {app}."
+    ],
+    "ask_app": [
+     "Which app? I can open the {choices}."
+    ],
+    "unknown": [
+     "I don't know an app called “{value}”. I can open the {choices}."
+    ]
+   },
+   "sentences": 194,
    "values": {
     "app": [
      {
@@ -521,31 +576,19 @@
       "out": "xfce4-settings-manager"
      }
     ]
-   },
-   "replies": {
-    "done": [
-     "Opening the {app}.",
-     "Starting the {app}."
-    ],
-    "ask_app": [
-     "Which app? I can open the {choices}."
-    ],
-    "unknown": [
-     "I don't know an app called “{value}”. I can open the {choices}."
-    ]
-   },
-   "sentences": 194
+   }
   },
   "recall_me": {
-   "file": "skills/recall_me.md",
-   "action": "memory",
+   "file": "skills/recall_me/skill.md",
+   "dir": "skills/recall_me",
+   "code": true,
+   "action": "say",
    "params": {
     "skill": "recall_me",
-    "action": "memory",
-    "mode": "get",
     "samples": "10"
    },
-   "values": {},
+   "request": null,
+   "answer": {},
    "replies": {
     "name": [
      "Your name is {name}."
@@ -566,19 +609,21 @@
      "I don't know where you live yet. Tell me “I live in …”."
     ]
    },
-   "sentences": 62
+   "sentences": 62,
+   "values": {}
   },
   "remember_me": {
-   "file": "skills/remember_me.md",
-   "action": "memory",
+   "file": "skills/remember_me/skill.md",
+   "dir": "skills/remember_me",
+   "code": true,
+   "action": "say",
    "params": {
     "skill": "remember_me",
-    "action": "memory",
-    "mode": "set",
     "train_only": "first, city",
     "samples": "8"
    },
-   "values": {},
+   "request": null,
+   "answer": {},
    "replies": {
     "name": [
      "Nice to meet you, {name}. I'll remember your name, on this phone only.",
@@ -600,18 +645,21 @@
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
-   "sentences": 109
+   "sentences": 109,
+   "values": {}
   },
   "set_timer": {
-   "file": "skills/set_timer.md",
-   "action": "timer",
+   "file": "skills/set_timer/skill.md",
+   "dir": "skills/set_timer",
+   "code": true,
+   "action": "say",
    "params": {
     "skill": "set_timer",
-    "action": "timer",
     "train_only": "dur",
     "samples": "10"
    },
-   "values": {},
+   "request": null,
+   "answer": {},
    "replies": {
     "ask": [
      "How long? For example “10 minutes” or “1h30”.",
@@ -628,7 +676,8 @@
      "That's a time rather than a duration, so I set a reminder for {at} instead."
     ]
    },
-   "sentences": 120
+   "sentences": 120,
+   "values": {}
   }
  }
 }

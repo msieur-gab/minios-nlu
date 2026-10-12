@@ -1,6 +1,5 @@
 ---
 skill: get_time
-action: clock
 train_only: city
 samples: 8
 ---
@@ -51,3 +50,4 @@ Open-Meteo's place search for that place's time zone, so it needs a connection.
 - elsewhere: In {place} it's {time} on {day}. | It's {time} in {place} ({day}).
 - not_found: I couldn't find a place called “{place}”.
 - offline: I can't look up other places right now. Here it's {time}.
+- looking: Looking up {place}…

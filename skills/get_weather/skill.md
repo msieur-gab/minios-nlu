@@ -1,6 +1,5 @@
 ---
 skill: get_weather
-action: weather
 train_only: city, day
 samples: 8
 ---
@@ -10,7 +9,26 @@ Current weather or the forecast for up to 16 days, from Open-Meteo (open-meteo.c
 no key). Without a place it uses the place you told the agent you live in. The day comes
 from the date parser ("tomorrow", "on friday", "this weekend").
 
+How it works: the request below is everything sent to the weather service. `{place.lat}`
+and `{place.lon}` come from the agent's place lookup, which turns a city name into
+coordinates. "Weather now" needs nothing more than the Answer section; skill.js only
+adds the forecast: finding the asked-for day(s) in the 16 days that come back.
+
 Privacy: the place name and its coordinates are sent to Open-Meteo. Nothing else is.
+
+## Request
+GET https://api.open-meteo.com/v1/forecast
+- latitude: {place.lat}
+- longitude: {place.lon}
+- current: temperature_2m,weather_code,wind_speed_10m
+- daily: weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max
+- timezone: auto
+- forecast_days: 16
+
+## Answer
+- temp: current.temperature_2m round
+- wind: current.wind_speed_10m round
+- sky: current.weather_code → sky
 
 ## Examples
 - what's the weather{ like|}{ today| now|}{?|}

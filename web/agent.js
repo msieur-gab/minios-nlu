@@ -232,14 +232,6 @@ const ME_KEY = "minios.me.v1";
 const norm1 = t => t.toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
 const findValue = (list, raw) => { const v = norm1(cleanValue(raw)); return list.find(x => x.words.includes(v)) || null; };
 const orList = a => a.length > 1 ? a.slice(0, -1).join(", ") + " or " + a[a.length - 1] : a.join("");
-const samePlace = (a, b) => !!a && !!b && a.toLowerCase().replace(/^the\s+/, "") === b.toLowerCase().replace(/^the\s+/, "");
-const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-const isoDay = d => d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
-const placeOf = (slots, text) => {
-  if (slots.place) return cleanValue(slots.place).replace(/^the\s+/i, "");
-  const m = /\b(?:in|at|for)\s+(?!the\s+(?:morning|afternoon|evening)\b)([A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)/.exec(text); // a capitalised name after "in"
-  return m ? m[1] : null;
-};
 
 const ACTIONS = {
   // run a command template with a value from the skill's list, e.g. command: "{app} &"
@@ -260,137 +252,15 @@ const ACTIONS = {
     trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => k === need ? v.out : cleanValue(slots[k] || "")) });
     return { trace, reply: fill(intent + ".done", { [need]: v.key }) };
   },
-
-  timer(intent, sk, slots, trace) {
-    const now = this.now();
-    const ents = ENT.parse(this.lastText, { now });
-    const dur = ents.find(x => x.type === "duration");
-    const at = ents.find(x => x.type === "datetime");
-    if (!dur && at) { // "timer for 3pm": that's a time, so it becomes a reminder
-      trace.push({ type: "entity", e: at });
-      const r2 = this.schedule(null, at, trace);
-      return { trace, reply: fill(intent + ".is_time", { at: whenText(fromIso(at.value), now) }) + (r2.reply.startsWith("I'll") ? "" : " " + r2.reply) };
-    }
-    if (!dur) return this.ask(intent, slots, "duration", intent + ".ask", trace);
-    trace.push({ type: "entity", e: dur });
-    const end = new Date(now.getTime() + dur.seconds * 1000);
-    trace.push({ type: "exec", text: `systemd-run --user --on-active=${dur.seconds}s notify-send "Timer" "${durWords(dur.seconds)} is up"` });
-    this.scheduled.push({ kind: "timer", at: end, seconds: dur.seconds });
-    this.arm(end, fill(intent + ".ring", { dur: durWords(dur.seconds) }));
-    return { trace, reply: fill(intent + ".done", { dur: durWords(dur.seconds), at: clock(end) }) };
-  },
-
-  // the time here, or in another place (its time zone comes from the place search)
-  clock(intent, sk, slots, trace) {
-    const now = this.now(), me = this.mem();
-    const place = placeOf(slots, this.lastText);
-    if (!place || (me.place && samePlace(place, me.place.name))) {
-      trace.push({ type: "exec", text: "date +%H:%M" });
-      return { trace, reply: fill(intent + ".done", { time: clock(now) }) };
-    }
-    trace.push({ type: "exec", text: "GET geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(place) });
-    const later = this.geocode(place).then(g => {
-      if (!g) return { reply: fill(intent + ".not_found", { place }) };
-      const f = o => new Intl.DateTimeFormat("en-GB", { timeZone: g.timezone, ...o }).format(now);
-      return { reply: fill(intent + ".elsewhere", { place: g.name, time: f({ hour: "2-digit", minute: "2-digit", hour12: false }), day: f({ weekday: "long" }) }),
-        trace: [{ type: "state", text: g.name + (g.region ? ", " + g.region : "") + " → " + g.timezone }] };
-    }).catch(err => ({ reply: fill(intent + ".offline", { time: clock(now) }), trace: [{ type: "abstain", text: err.message }] }));
-    return { trace, reply: "Looking up " + place + "…", later };
-  },
-
-  // current weather or the forecast for the days in the sentence, from Open-Meteo
-  weather(intent, sk, slots, trace) {
-    const now = this.now(), me = this.mem();
-    const place = placeOf(slots, this.lastText) || (me.place && me.place.name);
-    if (!place) return this.ask(intent, slots, "place", intent + ".ask_place", trace);
-    const e = ENT.parse(this.lastText, { now }).find(x => ["date", "datetime", "range"].includes(x.type));
-    if (e) trace.push({ type: "entity", e });
-    const today = startOfDay(now);
-    let days = null;
-    if (e && e.type === "range") {
-      days = [];
-      for (let d = fromIso(e.from); d <= fromIso(e.to) && days.length < 7; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) if (d >= today) days.push(d);
-    } else if (e) days = [startOfDay(fromIso(e.value))];
-    if (days && days.length && days[days.length - 1] < today) return { trace, reply: fill(intent + ".past") };
-    if (days && days.some(d => (d - today) / 864e5 > 15)) return { trace, reply: fill(intent + ".too_far") };
-    const sky = code => (sk.values.sky.find(v => v.key === String(code)) || { out: "mixed weather" }).out;
-    const label = d => { const k = Math.round((d - today) / 864e5); return k === 0 ? "today" : k === 1 ? "tomorrow" : dayText(d, now); };
-    const known = me.place && samePlace(place, me.place.name) && me.place.lat != null ? me.place : null;
-    const later = (async () => {
-      const g = known || await this.geocode(place);
-      if (!g) return { reply: fill(intent + ".not_found", { place }) };
-      if (!known && me.place && samePlace(place, me.place.name)) this.setMem({ ...this.mem(), place: g }); // home place found on the map
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}`
-        + "&current=temperature_2m,weather_code,wind_speed_10m"
-        + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16";
-      const r = await this.fetch(url);
-      if (!r.ok) throw new Error("weather service answered " + r.status);
-      const w = await r.json();
-      const t2 = [{ type: "exec", text: "GET " + url.replace("https://", "") }];
-      if (!days) {
-        const c = w.current;
-        return { trace: t2, reply: fill(intent + ".now", { place: g.name, sky: sky(c.weather_code), temp: Math.round(c.temperature_2m), wind: Math.round(c.wind_speed_10m) }) };
-      }
-      const line = d => {
-        const i = w.daily.time.indexOf(isoDay(d));
-        if (i < 0) return null;
-        const p = w.daily.precipitation_probability_max[i];
-        return { when: label(d), sky: sky(w.daily.weather_code[i]), min: Math.round(w.daily.temperature_2m_min[i]), max: Math.round(w.daily.temperature_2m_max[i]), rain: p == null ? "?" : p };
-      };
-      const lines = days.map(line).filter(Boolean);
-      if (!lines.length) return { trace: t2, reply: fill(intent + ".too_far") };
-      if (lines.length === 1) return { trace: t2, reply: fill(intent + ".day", { ...lines[0], when: cap(lines[0].when), place: g.name }) };
-      return { trace: t2, reply: fill(intent + ".days", { place: g.name, phrase: e.text }) + "\n"
-        + lines.map(L => `${cap(L.when)}: ${L.sky}, ${L.min} to ${L.max}°C, ${L.rain}% rain`).join("\n") };
-    })().catch(err => ({ reply: fill(intent + ".offline"), trace: [{ type: "abstain", text: err.message }] }));
-    return { trace, reply: fill(intent + ".checking", { place }), later };
-  },
-
-  // remember / recall / forget your name and where you live (mode set by the skill file)
-  memory(intent, sk, slots, trace) {
-    const me = this.mem(), mode = sk.params.mode, text = this.lastText.toLowerCase();
-    const aboutName = /\b(name|call me|who am i|who i am)\b/.test(text);
-    const aboutPlace = /\b(live|living|city|town|place|location|home|based|moved|address)\b/.test(text);
-    if (mode === "set") {
-      const name = slots.name && cleanValue(slots.name);
-      const place = slots.place && cleanValue(slots.place);
-      if (!name && !place) return { trace, reply: fill(intent + ".ask") };
-      const next = { ...me };
-      if (name) next.name = name;
-      if (place) next.place = { name: place };
-      this.setMem(next);
-      trace.push({ type: "state", text: "saved on this device: " + [name && "name", place && "place"].filter(Boolean).join(" and ") });
-      const said = name ? fill(intent + ".name", { name }) : "";
-      if (!place) return { trace, reply: said };
-      trace.push({ type: "exec", text: "GET geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(place) });
-      const later = this.geocode(place).then(g => {
-        if (!g) return { reply: (said + " " + fill(intent + ".place_not_found", { place })).trim() };
-        const cur = this.mem();
-        if (cur.place && samePlace(cur.place.name, place)) this.setMem({ ...cur, place: g });
-        return { reply: (said + " " + fill(intent + ".place_found", { place: [g.name, g.region].filter(Boolean).join(", ") })).trim(),
-          trace: [{ type: "state", text: g.name + " " + g.lat.toFixed(2) + ", " + g.lon.toFixed(2) + " · " + g.timezone }] };
-      }).catch(() => ({ reply: (said + " " + fill(intent + ".place_offline", { place })).trim() }));
-      return { trace, reply: (said + " " + fill(intent + ".place", { place })).trim(), later };
-    }
-    const placeText = p => [p.name, p.region].filter(Boolean).join(", ");
-    if (mode === "get") {
-      if (aboutName && !aboutPlace) return { trace, reply: me.name ? fill(intent + ".name", { name: me.name }) : fill(intent + ".no_name") };
-      if (aboutPlace && !aboutName) return { trace, reply: me.place ? fill(intent + ".place", { place: placeText(me.place) }) : fill(intent + ".no_place") };
-      const facts = [me.name && "your name is " + me.name, me.place && "you live in " + placeText(me.place)].filter(Boolean);
-      return { trace, reply: facts.length ? fill(intent + ".all", { facts: facts.join(", and ") }) : fill(intent + ".nothing") };
-    }
-    // forget
-    const next = { ...me };
-    let key = "all";
-    if (aboutName && !aboutPlace && !/everything|all about/.test(text)) { delete next.name; key = "name"; }
-    else if (aboutPlace && !aboutName && !/everything|all about/.test(text)) { delete next.place; key = "place"; }
-    else { delete next.name; delete next.place; }
-    const had = key === "all" ? (me.name || me.place) : me[key];
-    this.setMem(next);
-    trace.push({ type: "state", text: "forgot " + key });
-    return { trace, reply: had ? fill(intent + "." + key) : fill(intent + ".nothing") };
-  },
 };
+
+// ---------- skill scripts: skills/<name>/skill.js ----------
+// In the browser the build bundles them into SKILL_CODE; in Node they are required from their folder.
+function loadScript(name, sk) {
+  if (typeof SKILL_CODE !== "undefined") return SKILL_CODE[name];
+  return require(require("path").join(__dirname, "..", sk.dir, "skill.js"));
+}
+const getPath = (obj, path) => path.replace(/\[(\d+)\]/g, ".$1").split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj);
 
 class Agent {
   constructor(nlu, store) {
@@ -524,6 +394,70 @@ class Agent {
     return { trace, reply: fill(key, vars) };
   }
 
+  // ---------- running a skill: the toolbox a skill script receives ----------
+  runScript(intent, sk, slots, trace, script) {
+    const agent = this, now = this.now(), text = this.lastText;
+    let live = trace;                 // trace lines written before the reply goes out
+    const clean = Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, typeof v === "string" ? cleanValue(v) : v]));
+    const ctx = {
+      intent, text, now, slots: clean, values: sk.values, params: sk.params,
+      entities: () => ENT.parse(text, { now }),
+      say: (name, vars = {}) => fill(intent + "." + name, vars),
+      ask: (slot, name, vars = {}) => ({ ask: [slot, name, vars] }),
+      later: (name, vars, work) => ({ later: [name, vars, work] }),
+      log: (line, type = "state") => live.push({ type, text: line }),
+      used: e => live.push({ type: "entity", e }),       // show a parsed date or duration in the trace
+      exec: cmd => live.push({ type: "exec", text: cmd }),
+      me: { get: () => agent.mem(), set: m => agent.setMem(m) },
+      geocode: name => agent.geocode(name),
+      request: vars => agent.request(sk, vars, ctx),
+      lookup: (list, key) => ((sk.values[list] || []).find(v => v.key === String(key)) || {}).out,
+      timers: { schedule: (task, when) => agent.schedule(task, when, live), arm: (at, msg) => agent.arm(at, msg) },
+      fmt: { clock, dayText, whenText, durWords, fromIso, cap, pad2 },
+    };
+    const code = script || loadScript(intent, sk);
+    const res = code.run(ctx);
+    if (res && res.ask) { const [slot, name, vars] = res.ask; return this.ask(intent, slots, slot, intent + "." + name, trace, vars); }
+    if (res && res.later) {
+      const [name, vars, work] = res.later;
+      const late = [];
+      live = late;
+      const later = Promise.resolve().then(work)
+        .then(r => ({ reply: typeof r === "string" ? r : r.reply, trace: late }))
+        .catch(err => { late.push({ type: "abstain", text: err.message }); return { reply: RESPONSES[intent + ".offline"] ? ctx.say("offline", vars) : "Something went wrong: " + err.message, trace: late }; });
+      return { trace, reply: RESPONSES[intent + "." + name] ? ctx.say(name, vars) : "One moment…", later };
+    }
+    return { trace, reply: typeof res === "string" ? res : (res && res.reply) || "" };
+  }
+
+  // the API call declared in a skill's "## Request" section; {place.*} triggers a place lookup
+  async request(sk, vars, ctx) {
+    const r = sk.request;
+    if (!r) throw new Error(sk.file + " has no ## Request section");
+    vars = { ...vars };
+    let place = null;
+    if (Object.values(r.query).some(v => v.includes("{place."))) {
+      place = typeof vars.place === "string" ? await this.geocode(vars.place) : vars.place;
+      if (!place) return { place: null, answer: {}, json: null };
+      vars.place = place;
+    }
+    const q = Object.entries(r.query).map(([k, v]) => k + "=" + encodeURIComponent(v.replace(/\{([\w.]+)\}/g, (_, p) => getPath(vars, p) ?? "")));
+    const url = r.url + (q.length ? "?" + q.join("&") : "");
+    ctx.exec(r.method + " " + url.replace(/^https?:\/\//, "").replace(/%2C/g, ","));
+    if (!this.fetch) throw new Error("no network access");
+    const res = await this.fetch(url);
+    if (!res.ok) throw new Error(new URL(url).host + " answered " + res.status);
+    const json = await res.json();
+    const answer = {};
+    for (const [name, a] of Object.entries(sk.answer || {})) {
+      let v = getPath(json, a.path);
+      if (a.round && typeof v === "number") v = Math.round(v);
+      if (a.via) v = ctx.lookup(a.via, v) ?? v;
+      answer[name] = v;
+    }
+    return { place, answer, json };
+  }
+
   // ---------- what the agent remembers about you: on this device only ----------
   mem() {
     try { return JSON.parse((this.store && this.store.getItem(ME_KEY)) || "null") || this._mem || {}; } catch { return this._mem || {}; }
@@ -548,7 +482,12 @@ class Agent {
 
   run(intent, slots, trace) {
     const sk = SKILLS[intent];
+    if (sk && sk.code) return this.runScript(intent, sk, slots, trace);
     if (sk && ACTIONS[sk.action]) return ACTIONS[sk.action].call(this, intent, sk, slots, trace);
+    if (sk && sk.request) return this.runScript(intent, sk, slots, trace, { run: ctx => ctx.later("checking", ctx.slots, async () => {
+      const r = await ctx.request(ctx.slots);
+      return r.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...r.answer, ...(r.place ? { place: r.place.name } : {}) });
+    }) });
     if (intent === "create_folder") {
       if (!slots.name) return this.ask(intent, slots, "name", "create_folder.ask_name", trace);
       const name = cleanValue(slots.name);

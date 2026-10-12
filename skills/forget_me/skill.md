@@ -1,7 +1,5 @@
 ---
 skill: forget_me
-action: memory
-mode: forget
 samples: 10
 ---
 # Forget me

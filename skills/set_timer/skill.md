@@ -1,6 +1,5 @@
 ---
 skill: set_timer
-action: timer
 train_only: dur
 samples: 10
 ---
