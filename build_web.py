@@ -31,7 +31,11 @@ data = {"train": "\n".join(open(f, encoding="utf-8").read() for f in manifest["t
         "test": open(manifest["test"], encoding="utf-8").read()}
 worker_src = open("web/runtime.js").read() + "\n" + open("web/trainer.js").read() + """
 self.onmessage = e => {
-  const ex = NLUTrainer.parseDataset(e.data.train);
+  // sentences taught in the inbox win over an identical sentence in the shipped data
+  const norm0 = t => t.toLowerCase().replace(/[?!.]+$/, "").split(/\\s+/).filter(Boolean).join(" ");
+  const taught = NLUTrainer.parseDataset(e.data.learned || "");
+  const taughtSet = new Set(taught.map(x => norm0(x.text)));
+  const ex = NLUTrainer.parseDataset(e.data.train).filter(x => !taughtSet.has(norm0(x.text))).concat(taught);
   const model = NLUTrainer.train(ex, { log: m => self.postMessage({ log: m }) });
   // same rule as the build: only test sentences that are not also training sentences
   const norm = t => t.toLowerCase().replace(/\\?/g, "").split(/\\s+/).filter(Boolean).join(" ");
@@ -44,6 +48,7 @@ self.onmessage = e => {
 page = page.replace("/*DATA*/", json.dumps(data).replace("</", "<\\/"))
 page = page.replace("/*WORKER_SRC*/", json.dumps(worker_src).replace("</", "<\\/"))
 page = page.replace("/*AGENT*/", open("web/agent.js").read())
+page = page.replace("/*INBOX*/", open("web/inbox.js").read())
 page = page.replace("/*EVAL*/", json.dumps({"accuracy": acc, "slot_f1": f1, "n": int(n)}))
 open("web/index.html", "w").write(page)
 print("web/index.html %.0f KB  (accuracy %s%%, slot F1 %s, n=%s)" % (len(page) / 1024, acc, f1, n))

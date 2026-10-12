@@ -7,6 +7,7 @@ Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 - **Intent:** TF-IDF features (words, word pairs, character 3–4-grams) and a logistic regression.
 - **Slots:** a linear-chain CRF tagger (BIO labels).
 - **Training:** plain JavaScript, no dependencies (`web/trainer.js`). The same file trains in Node (`node train.js`) and in the browser, so the PWA can retrain itself on the phone. Weak weights are dropped and the rest stored as 1-byte numbers: 317 KB instead of 1,234 KB, with the same held-out accuracy.
+- **Inbox:** every sentence the agent can't handle lands in an inbox on the device (plus any reply you flag as wrong). For each one: add it to an existing skill (tap words to mark values), make a new skill from it, or mark it "not for me". Retrain on the phone, keep the trained model across reloads, and export what was taught as a `.md` training file to commit here. A new skill is recognised straight away but answers that no action is set up yet, until a handler exists in `agent.js`.
 - **Runtime:** dependency-free Python and plain JavaScript, both reading the same exported `model.json`.
 - **Reference:** `train.py` still trains the same models with scikit-learn into `models/model_sklearn.json`, for comparison.
 - **Dates, times, durations:** a rule-based parser (`web/entities.js`), not part of the model. It reads "next friday at 3pm", "in 2 days", "next year", "timer 1h30", "every weekday at 8" and flags what is ambiguous ("next friday" on a Monday, "at 9", "3/4") or already past, so the agent asks instead of guessing. Every skill that needs time shares it; adding one needs no retraining of this layer.
@@ -48,6 +49,7 @@ nlu/
 web/
   runtime.js            JS inference, same model.json
   trainer.js            JS training: TF-IDF + logistic regression (L-BFGS), CRF, pruning, export
+  inbox.js              inbox storage, triage decisions, Markdown export (on the device)
   entities.js           rule-based dates, times, durations, recurrences
   agent.js              dialogue manager and response templates
   template.html         test page

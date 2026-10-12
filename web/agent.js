@@ -53,6 +53,7 @@ const RESPONSES = {
   "deny": ["OK. There's nothing to cancel."],
   "cancel": ["Cancelled.", "OK, I dropped it."],
   "fallback": ["I didn't understand that. Say help to see what I can do.", "That's outside what I can do. Say help for the list."],
+  "learned": ["I recognise this as “{intent}”{got}, but no action is set up for it yet."],
   "empty_value": ["I didn't catch a name. Try again, or say cancel."],
 };
 
@@ -340,13 +341,19 @@ class Agent {
     }
     if (r.confidence < THRESHOLD) {
       trace.push({ type: "abstain", text: "confidence " + r.confidence.toFixed(2) + " < " + THRESHOLD + ", abstaining" });
-      return { trace, reply: fill("fallback") };
+      return { trace, reply: fill("fallback"), unknown: true };
     }
     if (r.intent === "out_of_scope") {
       trace.push({ type: "abstain", text: "out of scope, no action" });
-      return { trace, reply: fill("fallback") };
+      return { trace, reply: fill("fallback"), unknown: true };
     }
-    if (!ACTIONABLE.has(r.intent)) return { trace, reply: fill(r.intent) };
+    if (!ACTIONABLE.has(r.intent)) {
+      if (RESPONSES[r.intent]) return { trace, reply: fill(r.intent) };
+      // a skill taught through the inbox: recognised, but nothing is wired to it yet
+      const got = Object.entries(r.slots).map(([k, v]) => k + " “" + cleanValue(v) + "”").join(", ");
+      trace.push({ type: "state", text: "learned skill " + r.intent + ", no action bound" });
+      return { trace, reply: fill("learned", { intent: r.intent.replace(/_/g, " "), got: got ? " (" + got + ")" : "" }) };
+    }
     return this.run(r.intent, r.slots, trace);
   }
 

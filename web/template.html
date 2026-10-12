@@ -103,6 +103,45 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
 .retrain { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0 4px; }
 .retrain button:disabled { opacity: 0.5; cursor: progress; }
 .rlog { font: 12px var(--font-mono); color: var(--dim, #777); min-width: 0; overflow-wrap: anywhere; }
+
+/* Inbox: a sheet over the console */
+.actions { display: flex; gap: 6px; }
+.count { display: inline-block; min-width: 1.5em; margin-left: 5px; padding: 0 5px; border-radius: 999px; background: var(--user); color: var(--user-ink); font: 500 11px/1.6 var(--font-mono); text-align: center; }
+.sheet { position: fixed; inset: 0; z-index: 10; background: var(--bg); display: grid; grid-template-rows: auto minmax(0, 1fr); max-width: 720px; margin: 0 auto; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+.sheet-head h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.sheet-body { overflow-y: auto; padding: 14px 16px 32px; display: flex; flex-direction: column; gap: 14px; overscroll-behavior: contain; }
+.hint { margin: 0; font-size: 13px; color: var(--muted); max-width: 62ch; }
+.empty { font-size: 13px; color: var(--muted); padding: 18px 0; text-align: center; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.said { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.meta { margin: 0; font: 11.5px var(--font-mono); color: var(--muted); }
+.card-actions, .ed-buttons, .sheet-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 11px; font-size: 13px; cursor: pointer; }
+.btn.primary, .primary { background: var(--fg); color: var(--bg); border-color: var(--fg); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 500; cursor: pointer; }
+.btn.quiet { color: var(--muted); }
+.primary:disabled, .btn:disabled { opacity: 0.45; cursor: default; }
+.btn:focus-visible, .primary:focus-visible, .word:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.editor { border-top: 1px dashed var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+.editor label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.editor select, .editor input, .editor textarea { font: 14px var(--font-ui); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; min-width: 0; }
+.editor textarea { resize: vertical; font-size: 13px; }
+.words { display: flex; flex-wrap: wrap; gap: 5px; }
+.word { border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 3px 7px; font: 13.5px var(--font-ui); cursor: pointer; }
+.word.sel { background: var(--user); border-color: var(--user); }
+.word.marked { background: var(--slot-name); border-color: var(--slot-name); }
+.word sub { font: 10px var(--font-mono); color: var(--accent); margin-left: 3px; }
+.mark-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.preview { font: 12.5px var(--font-mono); background: var(--trace); border-radius: 6px; padding: 6px 8px; overflow-wrap: anywhere; }
+.err { color: var(--warn); font-size: 12.5px; min-height: 1em; }
+.learned h3 { margin: 6px 0 8px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.lrow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.lrow span { min-width: 0; overflow-wrap: anywhere; }
+.lrow em { font: normal 11.5px var(--font-mono); color: var(--muted); margin-left: 6px; }
+.tag-new { color: var(--exec); }
+.inboxed { font: 11.5px var(--font-mono); color: var(--muted); }
+.send-inbox { margin-top: 8px; font-size: 12px; }
+.notice { align-self: stretch; font-size: 13px; color: var(--warn); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
 @media (prefers-reduced-motion: no-preference) { .turn { animation: rise 0.18s ease-out; } }
 @keyframes rise { from { transform: translateY(4px); } to { transform: none; } }
 </style>
@@ -111,7 +150,10 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
   <header>
     <div class="top">
       <h1>MiniOS Agent<span id="ver"></span></h1>
-      <button class="ghost" id="reset" type="button">Clear</button>
+      <div class="actions">
+        <button class="ghost" id="inboxBtn" type="button" aria-label="Open the inbox">Inbox<span class="count" id="inboxCount" hidden></span></button>
+        <button class="ghost" id="reset" type="button">Clear</button>
+      </div>
     </div>
     <details id="about">
       <summary id="sum"></summary>
@@ -133,11 +175,30 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
   </div>
 </div>
 
+
+<section class="sheet" id="sheet" hidden aria-label="Inbox">
+  <div class="sheet-head"><h2>Inbox</h2><button class="ghost" id="sheetClose" type="button">Close</button></div>
+  <div class="sheet-body">
+    <p class="hint">Sentences the agent didn't understand. Teach it what they mean, or tell it they're not for it. Everything stays on this phone.</p>
+    <div id="waiting"></div>
+    <div class="learned">
+      <h3>Taught on this phone <span id="learnedN"></span></h3>
+      <div id="learned"></div>
+      <div class="sheet-actions" style="margin-top:10px">
+        <button class="primary" id="ibTrain" type="button">Retrain</button>
+        <button class="btn" id="ibExport" type="button">Export .md</button>
+        <button class="btn quiet" id="ibShipped" type="button">Use the shipped model</button>
+      </div>
+      <p class="rlog" id="ibLog"></p>
+    </div>
+  </div>
+</section>
 <script type="application/json" id="model">/*MODEL*/</script>
 <script>/*RUNTIME*/</script>
 <script>/*ENTITIES*/</script>
 <script>const DATA = /*DATA*/; const WORKER_SRC = /*WORKER_SRC*/;</script>
 <script>/*AGENT*/</script>
+<script>/*INBOX*/</script>
 <script>
 const MODEL = JSON.parse(document.getElementById("model").textContent);
 const EVAL = /*EVAL*/;
@@ -164,27 +225,222 @@ function showModel(m, ev, where) {
 }
 showModel(MODEL, EVAL, "(build)");
 
-// On-device retraining: the trainer runs in a Web Worker so the page stays responsive.
+// ---------- inbox + on-device retraining ----------
+const store = (() => { try { return window.localStorage; } catch { return null; } })();
+const inbox = new NLUInbox.Inbox(store);
+const SHIPPED = agent.nlu;
+const SLOTS = NLUInbox.slotsByIntent(DATA.train);
+let current = MODEL;
+
+// a model trained on this phone earlier is used until the app itself is updated
+const saved = inbox.loadModel(MODEL.version);
+if (saved.model) {
+  current = saved.model;
+  agent.nlu = new NLURuntime.NLU(saved.model);
+  showModel(saved.model, saved.model.stats.ev, "(this device)");
+} else if (saved.outdated) {
+  for (const i of inbox.decided()) i.trained = false;
+  inbox.save();
+}
+
+// The trainer runs in a Web Worker so the page stays responsive.
 let worker = null;
-$("retrain").addEventListener("click", () => {
+function retrain(statusEl) {
   if (worker) return;
-  const btn = $("retrain"), rlog = $("rlog");
-  btn.disabled = true; btn.textContent = "Training…";
   const t0 = performance.now();
   worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: "text/javascript" })));
+  setTraining(true);
   worker.onmessage = e => {
-    if (e.data.log) { rlog.textContent = e.data.log; return; }
+    if (e.data.log) { statusEl.textContent = e.data.log; return; }
     const { model, ev } = e.data;
     worker.terminate(); worker = null;
-    model.stats.train_seconds = ((performance.now() - t0) / 1000).toFixed(1);
+    const secs = ((performance.now() - t0) / 1000).toFixed(1);
+    model.stats.train_seconds = secs;
+    model.stats.ev = { accuracy: ev.accuracy.toFixed(1), slot_f1: ev.slotF1.toFixed(2), n: ev.n };
+    current = model;
     agent.nlu = new NLURuntime.NLU(model);
-    showModel(model, { accuracy: ev.accuracy.toFixed(1), slot_f1: ev.slotF1.toFixed(2), n: ev.n }, "(this device)");
-    rlog.textContent = "Now using the model trained here. Reload to go back.";
-    btn.disabled = false; btn.textContent = "Retrain on this device";
+    showModel(model, model.stats.ev, "(this device)");
+    const kept = inbox.saveModel(model, MODEL.version);
+    inbox.markTrained();
+    statusEl.textContent = `Trained in ${secs} s. Now using the model trained here` + (kept ? ", saved on this phone." : " (could not be saved: it lasts until you reload).");
+    setTraining(false);
+    renderInbox();
   };
-  worker.onerror = err => { rlog.textContent = "Training failed: " + err.message; worker = null; btn.disabled = false; btn.textContent = "Retrain on this device"; };
-  worker.postMessage(DATA);
+  worker.onerror = err => { statusEl.textContent = "Training failed: " + err.message; worker = null; setTraining(false); renderInbox(); };
+  worker.postMessage({ train: DATA.train, test: DATA.test, learned: inbox.markdown() });
+}
+function setTraining(on) {
+  $("retrain").disabled = on;
+  $("retrain").textContent = on ? "Training…" : "Retrain on this device";
+  $("ibTrain").disabled = on;
+  if (on) $("ibTrain").textContent = "Training…";
+}
+$("retrain").addEventListener("click", () => retrain($("rlog")));
+
+function updateCount() {
+  const n = inbox.waiting().length;
+  $("inboxCount").hidden = !n;
+  $("inboxCount").textContent = n;
+}
+const skillNames = () => [...new Set([...current.intents, ...inbox.decided().filter(i => i.isNew).map(i => i.intent)])]
+  .filter(i => i !== "out_of_scope").sort();
+const hhmm = t => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+const dayTime = t => new Date(t).toDateString() === new Date().toDateString() ? hhmm(t) : new Date(t).toLocaleDateString([], { day: "numeric", month: "short" }) + " " + hhmm(t);
+
+function renderInbox() {
+  updateCount();
+  const w = inbox.waiting();
+  $("waiting").innerHTML = w.length ? w.map(i => `
+    <article class="card" data-id="${i.id}">
+      <p class="said">“${esc(i.text)}”</p>
+      <p class="meta">${i.reason === "manual" ? "sent by you" : "not understood"} · guessed ${esc(i.guess)} ${Number(i.confidence).toFixed(2)} · ${dayTime(i.at)}${i.count > 1 ? " · asked " + i.count + "×" : ""}</p>
+      <div class="card-actions">
+        <button class="btn" type="button" data-act="add">Add to a skill</button>
+        <button class="btn" type="button" data-act="new">New skill</button>
+        <button class="btn" type="button" data-act="reject">Not for me</button>
+        <button class="btn quiet" type="button" data-act="delete">Delete</button>
+      </div>
+      <div class="editor" hidden></div>
+    </article>`).join("")
+    : `<div class="empty">Nothing waiting. Sentences the agent doesn't understand land here.</div>`;
+  const d = inbox.decided();
+  $("learnedN").textContent = d.length ? "(" + d.length + ")" : "";
+  $("learned").innerHTML = d.length ? d.map(i => `
+    <div class="lrow"><span>“${esc(i.text)}”<em>→ ${i.intent === "out_of_scope" ? "not for me" : esc(i.intent)}${i.isNew ? ' <b class="tag-new">new skill</b>' : ""}${i.examples.length > 1 ? " · +" + (i.examples.length - 1) + " phrasing" + (i.examples.length > 2 ? "s" : "") : ""}${i.trained ? "" : " · not trained yet"}</em></span>
+    <button class="btn quiet" type="button" data-undo="${i.id}">Undo</button></div>`).join("")
+    : `<div class="empty">Nothing taught yet.</div>`;
+  const u = inbox.untrained();
+  if (!worker) { $("ibTrain").textContent = u ? `Retrain with ${u} new` : "Retrain"; $("ibTrain").disabled = !d.length; }
+  $("ibExport").disabled = !d.length;
+  $("ibShipped").hidden = agent.nlu === SHIPPED;
+}
+
+// ----- triage editor: pick or name a skill, tap words to mark slot values, add phrasings -----
+const editors = new Map();
+const SPAN_RE = /\[([^\]]+)\]\(([a-z_]+)\)/g;
+function parseLine(line) {
+  let text = "", pos = 0;
+  const spans = [];
+  for (const m of line.matchAll(SPAN_RE)) { text += line.slice(pos, m.index); const st = text.length; text += m[1]; spans.push([st, text.length, m[2]]); pos = m.index + m[0].length; }
+  return { text: (text + line.slice(pos)).trim(), spans };
+}
+function openEditor(card, item, mode) {
+  const st = { mode, spans: [], sel: null, toks: NLURuntime.tokenize(item.text) };
+  editors.set(item.id, st);
+  const ed = card.querySelector(".editor");
+  const names = skillNames();
+  const guess = names.includes(item.guess) ? item.guess : "";
+  ed.innerHTML = (mode === "add"
+      ? `<label>Which skill<select class="ed-intent"><option value="">Choose…</option>${names.map(n => `<option${n === guess ? " selected" : ""}>${esc(n)}</option>`).join("")}</select></label>`
+      : `<label>Name of the new skill<input class="ed-name" placeholder="for example set_alarm" autocapitalize="none" spellcheck="false"></label>`)
+    + `<div><p class="hint" style="margin-bottom:6px">If part of the sentence is a value (a name, a place, an app, a task…), tap its words, then say what it is. Otherwise skip this.</p><div class="words"></div></div>
+       <div class="mark-row" hidden><input class="ed-slot" list="sl-${item.id}" placeholder="what is it? e.g. task" autocapitalize="none" spellcheck="false"><datalist id="sl-${item.id}"></datalist><button class="btn ed-mark" type="button">Mark</button></div>
+       <div class="preview"></div>
+       <label>Other ways to say it (optional, one per line)<textarea class="ed-more" rows="3" placeholder="${mode === "new" ? "wake me up at 6\nset my alarm for tomorrow" : "another phrasing"}"></textarea></label>
+       <p class="err"></p>
+       <div class="ed-buttons"><button class="primary ed-save" type="button">Save</button><button class="btn ed-cancel" type="button">Cancel</button></div>`;
+  ed.hidden = false;
+  card.querySelector(".card-actions").hidden = true;
+  drawEditor(card, item);
+  (ed.querySelector(".ed-intent") || ed.querySelector(".ed-name")).focus();
+}
+function drawEditor(card, item) {
+  const st = editors.get(item.id), ed = card.querySelector(".editor");
+  const inSpan = i => st.spans.find(([s, e]) => st.toks[i][1] >= s && st.toks[i][2] <= e);
+  ed.querySelector(".words").innerHTML = st.toks.map(([w, s], i) => {
+    const sp = inSpan(i), sel = st.sel && i >= st.sel[0] && i <= st.sel[1];
+    return `<button class="word${sp ? " marked" : ""}${sel ? " sel" : ""}" type="button" data-w="${i}" aria-pressed="${!!(sp || sel)}">${esc(w)}${sp && sp[0] === s ? `<sub>${esc(sp[2])}</sub>` : ""}</button>`;
+  }).join("");
+  ed.querySelector(".mark-row").hidden = !st.sel;
+  const intent = st.mode === "add" ? ed.querySelector(".ed-intent").value : "";
+  ed.querySelector("datalist").innerHTML = (SLOTS[intent] || []).map(n => `<option value="${esc(n)}">`).join("");
+  ed.querySelector(".preview").textContent = "→ " + NLUInbox.annotate(item.text, st.spans);
+}
+function onEditorClick(card, item, e) {
+  const st = editors.get(item.id), ed = card.querySelector(".editor"), err = ed.querySelector(".err");
+  err.textContent = "";
+  const w = e.target.closest("[data-w]");
+  if (w) {
+    const i = +w.dataset.w;
+    const sp = st.spans.find(([s, en]) => st.toks[i][1] >= s && st.toks[i][2] <= en);
+    if (sp) st.spans = st.spans.filter(x => x !== sp);              // tap a marked word: unmark it
+    else if (st.sel && st.sel[0] === st.sel[1] && st.sel[0] !== i) { // second tap: extend to a range
+      const a = Math.min(st.sel[0], i), b = Math.max(st.sel[0], i);
+      const clash = st.spans.some(([s, en]) => st.toks[a][1] < en && s < st.toks[b][2]);
+      st.sel = clash ? [i, i] : [a, b];
+    } else st.sel = st.sel && st.sel[0] === i && st.sel[1] === i ? null : [i, i];
+    drawEditor(card, item);
+    if (st.sel) ed.querySelector(".ed-slot").focus();
+    return;
+  }
+  if (e.target.closest(".ed-mark")) {
+    const name = ed.querySelector(".ed-slot").value.trim().toLowerCase().replace(/\s+/g, "_");
+    if (!NLUInbox.NAME_RE.test(name)) { err.textContent = "Give the value a short name, like task or app."; return; }
+    st.spans.push([st.toks[st.sel[0]][1], st.toks[st.sel[1]][2], name]);
+    st.sel = null;
+    ed.querySelector(".ed-slot").value = "";
+    drawEditor(card, item);
+    return;
+  }
+  if (e.target.closest(".ed-cancel")) { editors.delete(item.id); renderInbox(); return; }
+  if (e.target.closest(".ed-save")) {
+    let intent;
+    if (st.mode === "add") {
+      intent = ed.querySelector(".ed-intent").value;
+      if (!intent) { err.textContent = "Choose the skill this sentence belongs to."; return; }
+    } else {
+      intent = ed.querySelector(".ed-name").value.trim().toLowerCase().replace(/[\s-]+/g, "_");
+      if (!NLUInbox.NAME_RE.test(intent)) { err.textContent = "Use a short name with letters and underscores, like set_alarm."; return; }
+      if (skillNames().includes(intent)) { err.textContent = "That skill already exists: use “Add to a skill” instead."; return; }
+    }
+    const more = ed.querySelector(".ed-more").value.split("\n").map(l => l.trim()).filter(Boolean).map(parseLine);
+    if (st.mode === "new" && !more.length) { err.textContent = "Add at least one other way to say it: a new skill needs a few examples to be recognised."; return; }
+    inbox.accept(item.id, intent, [{ text: item.text, spans: st.spans }, ...more], st.mode === "new");
+    editors.delete(item.id);
+    $("ibLog").textContent = "Saved. Retrain to apply it.";
+    renderInbox();
+  }
+}
+$("waiting").addEventListener("click", e => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const item = inbox.get(card.dataset.id);
+  if (!item) return;
+  if (editors.has(item.id) && e.target.closest(".editor")) return onEditorClick(card, item, e);
+  const act = e.target.closest("[data-act]")?.dataset.act;
+  if (act === "add" || act === "new") openEditor(card, item, act);
+  else if (act === "reject") { inbox.reject(item.id); $("ibLog").textContent = "Marked as not for me. Retrain to apply it."; renderInbox(); }
+  else if (act === "delete") { inbox.remove(item.id); renderInbox(); }
 });
+$("waiting").addEventListener("change", e => {
+  const card = e.target.closest(".card");
+  if (card && e.target.matches(".ed-intent")) drawEditor(card, inbox.get(card.dataset.id));
+});
+$("learned").addEventListener("click", e => {
+  const id = e.target.closest("[data-undo]")?.dataset.undo;
+  if (id) { inbox.undo(id); renderInbox(); }
+});
+$("ibTrain").addEventListener("click", () => retrain($("ibLog")));
+$("ibExport").addEventListener("click", () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([inbox.exportFile()], { type: "text/markdown" }));
+  a.download = "inbox-" + new Date().toISOString().slice(0, 10) + ".md";
+  document.body.appendChild(a); a.click(); a.remove();
+});
+$("ibShipped").addEventListener("click", () => {
+  agent.nlu = SHIPPED; current = MODEL;
+  inbox.clearModel();
+  for (const i of inbox.decided()) i.trained = false;
+  inbox.save();
+  showModel(MODEL, EVAL, "(build)");
+  $("ibLog").textContent = "Back to the shipped model. What you taught is kept: retrain to apply it again.";
+  renderInbox();
+});
+const sheet = $("sheet");
+$("inboxBtn").addEventListener("click", () => { renderInbox(); sheet.hidden = false; $("sheetClose").focus(); });
+$("sheetClose").addEventListener("click", () => { sheet.hidden = true; $("inboxBtn").focus(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !sheet.hidden) { sheet.hidden = true; $("inboxBtn").focus(); } });
+updateCount();
 
 function tagged(text, r) {
   const toks = NLURuntime.tokenize(text);
@@ -224,8 +480,15 @@ function renderAgent(el, text, out) {
   const dot = kinds.includes("abstain") ? "skip" : kinds.includes("exec") ? "" : "ask";
   const icon = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   el.querySelector(".typing")?.remove();
+  const send2inbox = out.inboxed ? "" : `<button class="btn quiet send-inbox" type="button">Not right? Send to the inbox</button>`;
   el.insertAdjacentHTML("beforeend", `<div class="reply">${esc(out.reply)}</div>`
-    + `<details class="why"><summary aria-label="Show what the agent did">${icon}<span class="dot ${dot}"></span>${esc(r.intent)} ${r.confidence.toFixed(2)}</summary><div class="trace">${t}</div></details>`);
+    + (out.inboxed ? `<div class="inboxed">added to the inbox</div>` : "")
+    + `<details class="why"><summary aria-label="Show what the agent did">${icon}<span class="dot ${dot}"></span>${esc(r.intent)} ${r.confidence.toFixed(2)}</summary><div class="trace">${t}${send2inbox}</div></details>`);
+  el.querySelector(".send-inbox")?.addEventListener("click", ev => {
+    inbox.add(text, r.intent, r.confidence, "manual");
+    ev.target.replaceWith(Object.assign(document.createElement("div"), { className: "inboxed", textContent: "sent to the inbox" }));
+    updateCount();
+  });
   const why = el.querySelector(".why");
   why.addEventListener("toggle", () => { if (why.open) why.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
   log.scrollTop = log.scrollHeight;
@@ -254,6 +517,11 @@ function send(text, instant = false) {
   if (!text || busy) return false;
   const out = agent.handle(text);
   updatePending();
+  if (out.unknown && !instant) {
+    const item = inbox.add(text, out.trace[0].r.intent, out.trace[0].r.confidence);
+    out.inboxed = !!item && item.status === "new"; // already decided sentences don't come back
+    updateCount();
+  }
   if (instant) { renderAgent(renderUser(text, false), text, out); return true; }
   busy = true;
   const el = renderUser(text, true);
@@ -291,4 +559,6 @@ const d = document.createElement("div");
 d.className = "divider";
 d.textContent = "examples above · your turn";
 log.appendChild(d);
+if (saved.outdated && inbox.decided().length) log.insertAdjacentHTML("beforeend",
+  `<div class="notice">The app was updated. The ${inbox.decided().length} sentences you taught are kept: open the inbox and retrain to apply them.</div>`);
 </script>
