@@ -150,3 +150,47 @@
 - close the browser
 - shut the door please
 - my laptop has no space
+
+## intent: get_time
+- hey what's the time
+- got the time?
+- what time do we have
+- time check
+- is it past midnight already
+- what's the clock saying
+
+## intent: get_date
+- what's the date today
+- which day is it
+- remind me what day it is
+- what date is next thursday
+- what day is the 14th
+- how many days until december 31
+- is it friday yet
+- what's the date in two weeks
+
+## intent: set_timer
+- 3 minute timer
+- start a timer, 25 minutes
+- give me a ten minute countdown
+- set a timer of 1 hour
+- can you time 8 minutes for the eggs
+- timer please
+
+## intent: set_reminder
+- remind me to [send the quote to Dowgo](task) on friday
+- don't forget to remind me to [take the cake out](task) in 40 minutes
+- tomorrow at 9 remind me to [call the school](task)
+- set a reminder to [renew the car insurance](task) next month
+- remind me in an hour
+- can you remind me to [water the bonsai](task) every sunday
+- I have to [pick up the parcel](task) tomorrow, remind me
+- add a reminder for next tuesday at 3
+
+## intent: out_of_scope
+- set an alarm for 6:30
+- what's on my agenda tomorrow
+- schedule a meeting with Eva on monday
+- how long is a marathon
+- when does the shop close
+- time to go home

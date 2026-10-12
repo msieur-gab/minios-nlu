@@ -3,7 +3,10 @@
 
 const THRESHOLD = 0.45;
 const ACTIONABLE = new Set(["create_folder", "create_file", "open_app", "open_file",
-  "adjust_volume", "adjust_brightness", "system_status", "power"]);
+  "adjust_volume", "adjust_brightness", "system_status", "power",
+  "get_time", "get_date", "set_timer", "set_reminder"]);
+// Rule-based dates, times and durations (web/entities.js): shared by every time skill, no training.
+const ENT = typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js");
 
 // Editable response sets. {slot} placeholders are filled at runtime; one variant is picked at random.
 const RESPONSES = {
@@ -26,7 +29,26 @@ const RESPONSES = {
   "confirm.dropped": ["I'll take that as a no for the {what}."],
   "greet": ["Hi. Tell me what to create or open.", "Hello. I can create folders and files, or open apps."],
   "thanks": ["You're welcome.", "Anytime."],
-  "help": ["I can create folders and files, open files and apps, change volume and brightness, check the system (disk, CPU, temperature, memory, network) and shut down or restart. Try “make a folder called drafts in documents”, “is the pi overheating?” or “volume to 30%”."],
+  "help": ["I can create folders and files, open files and apps, change volume and brightness, check the system (disk, CPU, temperature, memory, network), shut down or restart, tell the time and date, and set timers and reminders. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm” or “timer 10 minutes”."],
+  "time.done": ["It's {time}.", "{time}."],
+  "time.elsewhere": ["I only know the time here: it's {time}."],
+  "date.today": ["Today is {date}.", "It's {date}."],
+  "date.other": ["{phrase} is {date}.", "That's {date}."],
+  "date.range": ["{phrase} runs from {from} to {to}."],
+  "date.until": ["{n} until {date}.", "{date} is in {n}."],
+  "date.since": ["{date} was {n} ago."],
+  "timer.ask": ["How long? For example “10 minutes” or “1h30”.", "Sure. For how long?"],
+  "timer.done": ["Timer set for {dur}. It rings at {at}.", "{dur}, starting now. Done at {at}."],
+  "timer.ring": ["⏰ {dur} timer is done."],
+  "timer.is_time": ["That's a time rather than a duration, so I set a reminder for {at} instead."],
+  "reminder.ask_when": ["When should I remind you?", "OK. When?"],
+  "reminder.ask_day": ["{phrase} runs from {from} to {to}. Which day?"],
+  "reminder.done": ["I'll remind you{what} {at}.", "Reminder set{what} {at}.", "OK, I'll remind you{what} {at}."],
+  "reminder.repeat": ["OK, I'll remind you{what}{rule}. First one {next}."],
+  "reminder.no_time": [" You didn't give a time, so I used {t}."],
+  "reminder.ring": ["⏰ Reminder: {what}"],
+  "choose": ["{q}"],
+  "past": ["{at} has already passed. Shall I make it {next}?"],
   "affirm": ["OK. What would you like to do?"],
   "deny": ["OK. There's nothing to cancel."],
   "cancel": ["Cancelled.", "OK, I dropped it."],
@@ -52,6 +74,7 @@ const APPS = [
   { id: "settings", label: "settings", cmd: "xfce4-settings-manager", words: ["settings", "system settings", "preferences", "control panel"] },
 ];
 
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const fill = (key, vars = {}) => pick(RESPONSES[key]).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
 const cleanValue = v => v.trim().replace(/^["'“”‘’`]+|["'“”‘’`.!?,]+$/g, "").trim();
@@ -142,6 +165,71 @@ function resolvePower(slot, text) {
   if (/\b(off|of|down|dwn|dw|halt)\b|pwr|plug|juice|kill power|drop power/i.test(text)) return "shutdown";
   return null;
 }
+
+// ---------- time skills ----------
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS_N = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const pad2 = n => String(n).padStart(2, "0");
+const fromIso = s => { const [d, t] = s.split("T"); const [y, m, dd] = d.split("-").map(Number); const [h, mi] = (t || "0:0").split(":").map(Number); return new Date(y, m - 1, dd, h, mi); };
+const clock = d => pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+function dayText(d, now) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const k = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - today) / 864e5);
+  void k;
+  return DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS_N[d.getMonth()] + (d.getFullYear() !== now.getFullYear() ? " " + d.getFullYear() : "");
+}
+// "today at 20:30", "tomorrow at 9:00", "on Friday 23 October at 15:00"
+function whenText(d, now) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const k = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - today) / 864e5);
+  return (k === 0 ? "today" : k === 1 ? "tomorrow" : "on " + dayText(d, now)) + " at " + clock(d);
+}
+function plural(n, w) { return n + " " + w + (n === 1 ? "" : "s"); }
+function durWords(sec) {
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60, out = [];
+  if (h) out.push(plural(h, "hour")); if (m) out.push(plural(m, "minute")); if (s) out.push(plural(s, "second"));
+  return out.join(" ") || "0 seconds";
+}
+const RR_WORD = { MO: "Monday", TU: "Tuesday", WE: "Wednesday", TH: "Thursday", FR: "Friday", SA: "Saturday", SU: "Sunday" };
+function ruleWords(rrule) {
+  const p = Object.fromEntries(rrule.split(";").map(x => x.split("=")));
+  const every = p.INTERVAL ? "every " + (p.INTERVAL === "2" ? "other " : p.INTERVAL + " ") : "every ";
+  let what = { DAILY: "day", WEEKLY: "week", MONTHLY: "month", YEARLY: "year", HOURLY: "hour", MINUTELY: "minute" }[p.FREQ];
+  if (p.BYDAY) what = p.BYDAY === "MO,TU,WE,TH,FR" ? "weekday" : p.BYDAY.split(",").map(d => RR_WORD[d]).join(" and ");
+  if (p.INTERVAL && p.INTERVAL !== "2" && !p.BYDAY) what += "s";
+  return " " + every + what + (p.BYHOUR ? " at " + pad2(p.BYHOUR) + ":" + pad2(p.BYMINUTE) : "");
+}
+function onCalendar(rrule) { // systemd OnCalendar form of simple rules
+  const p = Object.fromEntries(rrule.split(";").map(x => x.split("=")));
+  if (p.INTERVAL) return null;
+  const t = " " + pad2(p.BYHOUR || 9) + ":" + pad2(p.BYMINUTE || 0) + ":00";
+  if (p.FREQ === "DAILY") return "*-*-*" + t;
+  if (p.FREQ === "WEEKLY" && p.BYDAY) return p.BYDAY.split(",").map(d => RR_WORD[d].slice(0, 3)).join(",") + " *-*-*" + t;
+  return null;
+}
+// "the 16th", "this one", "morning", "yes" → which of the offered options
+function pickOption(answer, options) {
+  const a = " " + answer.toLowerCase().replace(/[^a-z0-9:]+/g, " ") + " ";
+  for (let i = 0; i < options.length; i++) if (options[i].keys.some(k => a.includes(" " + k + " "))) return i;
+  if (/ (second|other|latter|2nd|the other one) /.test(a)) return 1;
+  if (/ (first|former|1st) /.test(a) || YES_RE.test(answer.trim())) return 0;
+  return -1;
+}
+function optionKeys(d, other, now) {
+  const keys = [];
+  if (d.toDateString() !== other.toDateString()) {
+    const n = d.getDate(), suf = n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th";
+    keys.push(String(n), n + suf, MONTHS_N[d.getMonth()].toLowerCase() + " " + n);
+    keys.push(...(d < other ? ["this", "this one", "coming", "this week"] : ["next", "next one", "next week", "later", "the following"]));
+  }
+  if (d.getHours() !== other.getHours()) {
+    const h = d.getHours();
+    keys.push(clock(d), String(h));
+    keys.push(...(h < 12 ? ["am", "morning", "a m"] : ["pm", "evening", "afternoon", "night", "tonight", "p m", String(h - 12)]));
+  }
+  return keys;
+}
+
 const YES_RE = /^(y|yes|yeah|yep|yup|sure|ok|okay|confirm|do it|go|go ahead|please do|absolutely|of course)\b/i;
 const NO_RE = /^(n|no|nope|nah|nvm|cancel|stop|don'?t|never ?mind|abort|not now)\b/i;
 const stripVerb = t => t.replace(/^(please\s+)?((can|could|would) you\s+)?/i, "")
@@ -151,7 +239,17 @@ const stripVerb = t => t.replace(/^(please\s+)?((can|could|would) you\s+)?/i, ""
 class Agent {
   constructor(nlu) { this.nlu = nlu; this.reset(); }
 
-  reset() { this.pending = null; this.volume = 50; this.muted = false; this.brightness = 80; }
+  reset() {
+    this.pending = null; this.volume = 50; this.muted = false; this.brightness = 80;
+    for (const t of this.timers || []) clearTimeout(t);
+    this.timers = []; this.scheduled = [];
+  }
+  now() { return this.clock ? this.clock() : new Date(); }
+  // In the PWA, timers and short reminders really ring while the page is open (onAlert renders the message).
+  arm(at, message) {
+    const ms = at - this.now();
+    if (this.onAlert && ms > 0 && ms < 2 ** 31 - 1) this.timers.push(setTimeout(() => this.onAlert(message), ms));
+  }
 
   handle(text) {
     const trace = [];
@@ -175,6 +273,18 @@ class Agent {
         return { trace, reply: fill("power.cancel") };
       }
       trace.push({ type: "state", text: "no clear yes, dropped " + p.what + " and read this as a new command" });
+    }
+
+    if (this.pending && this.pending.type === "choose") {
+      const p = this.pending;
+      this.pending = null;
+      const i = NO_RE.test(text.trim()) ? -2 : pickOption(text, p.options);
+      if (i >= 0) {
+        trace.push({ type: "state", text: "picked “" + p.options[i].label + "”" });
+        return this.schedule(p.task, p.options[i].when, trace, p.noteNoTime);
+      }
+      if (i === -2) { trace.push({ type: "state", text: "declined, nothing scheduled" }); return { trace, reply: fill("cancel") }; }
+      trace.push({ type: "state", text: "answer matched no option, read it as a new command" });
     }
 
     if (this.pending) {
@@ -346,7 +456,119 @@ class Agent {
       trace.push({ type: "state", text: "risky action (" + act + "), waiting for confirmation" });
       return { trace, reply: fill("power.confirm", { action_q: P.q }) };
     }
+    if (intent === "get_time") {
+      const now = this.now();
+      const elsewhere = /\bin\s+(?!the\b)([a-z][a-z .'-]+)\??$/i.exec(this.lastText);
+      trace.push({ type: "exec", text: "date +%H:%M" });
+      return { trace, reply: fill(elsewhere ? "time.elsewhere" : "time.done", { time: clock(now) }) };
+    }
+    if (intent === "get_date") {
+      const now = this.now(), text = this.lastText;
+      const e = ENT.parse(text, { now }).find(x => x.type === "date" || x.type === "datetime" || x.type === "range");
+      if (e) trace.push({ type: "entity", e });
+      if (/what (month|year)/i.test(text) && !e) {
+        const year = /year/i.test(text);
+        return { trace, reply: year ? "It's " + now.getFullYear() + "." : "It's " + MONTHS_N[now.getMonth()] + " " + now.getFullYear() + "." };
+      }
+      const unknown = /\b(?:is|until|till|before)\s+(?!it\b|today\b|we\b)([a-z][a-z' -]*?)\s*\??$/i.exec(text);
+      if (!e && unknown) {
+        trace.push({ type: "abstain", text: "no date found in “" + unknown[1] + "”" });
+        return { trace, reply: "I don't know which date “" + unknown[1] + "” is. Try a date like “december 25” or “next friday”." };
+      }
+      if (!e) return { trace, reply: fill("date.today", { date: dayText(now, now) }) };
+      if (e.type === "range") return { trace, reply: fill("date.range", { phrase: cap(e.text), from: dayText(fromIso(e.from), now), to: dayText(fromIso(e.to), now) }) };
+      const d = fromIso(e.value);
+      const day0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const k = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - day0) / 864e5);
+      let reply;
+      if (/how (many days|long)|until|till|before/i.test(text)) reply = k >= 0 ? fill("date.until", { n: plural(k, "day"), date: dayText(d, now) }) : fill("date.since", { n: plural(-k, "day"), date: dayText(d, now) });
+      else if (/^(is (it|today))\b/i.test(text.trim())) reply = (k === 0 ? "Yes, " : "No, ") + "today is " + dayText(now, now) + ".";
+      else reply = fill("date.other", { phrase: cap(e.text), date: dayText(d, now) });
+      if (e.ambiguous && e.alternatives.length) reply += " If you meant the other one, that's " + dayText(fromIso(e.alternatives[0].split("/")[0]), now) + ".";
+      return { trace, reply };
+    }
+    if (intent === "set_timer") {
+      const now = this.now();
+      const ents = ENT.parse(this.lastText, { now });
+      const dur = ents.find(x => x.type === "duration");
+      const at = ents.find(x => x.type === "datetime");
+      if (!dur && at) { // "timer for 3pm" → it's a time
+        trace.push({ type: "entity", e: at });
+        const r2 = this.schedule(null, at, trace);
+        return { trace, reply: fill("timer.is_time", { at: whenText(fromIso(at.value), now) }) + (r2.reply.startsWith("I'll") ? "" : " " + r2.reply) };
+      }
+      if (!dur) return this.ask(intent, slots, "duration", "timer.ask", trace);
+      trace.push({ type: "entity", e: dur });
+      const end = new Date(now.getTime() + dur.seconds * 1000);
+      trace.push({ type: "exec", text: `systemd-run --user --on-active=${dur.seconds}s notify-send "Timer" "${durWords(dur.seconds)} is up"` });
+      this.scheduled.push({ kind: "timer", at: end, seconds: dur.seconds });
+      this.arm(end, fill("timer.ring", { dur: durWords(dur.seconds) }));
+      return { trace, reply: fill("timer.done", { dur: durWords(dur.seconds), at: clock(end) }) };
+    }
+    if (intent === "set_reminder") {
+      const now = this.now();
+      const task = slots.task ? cleanValue(slots.task) : null;
+      const ents = ENT.parse(this.lastText, { now }).filter(x => x.type !== "duration");
+      const e = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range");
+      if (!e) return this.ask(intent, { ...slots }, "when", "reminder.ask_when", trace);
+      trace.push({ type: "entity", e });
+      if (e.type === "range") {
+        this.pending = { intent, slots, need: "when" };
+        trace.push({ type: "state", text: "a whole " + e.grain + ", waiting for a day" });
+        return { trace, reply: fill("reminder.ask_day", { phrase: cap(e.text), from: dayText(fromIso(e.from), now), to: dayText(fromIso(e.to), now) }) };
+      }
+      let when = e, noTime = false;
+      if (e.type === "date") { // a day without a time: 9:00, and say so
+        noTime = true;
+        const d = fromIso(e.value);
+        const mk = iso => ({ type: "datetime", value: iso + "T09:00" });
+        when = { ...mk(e.value), alternatives: (e.alternatives || []).map(a => a + "T09:00"), ambiguous: e.ambiguous,
+          past: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 9) < now };
+      }
+      if (when.ambiguous && when.alternatives && when.alternatives.length) {
+        const opts = [when.type === "recurrence" ? when.time : when.value, when.alternatives[0]].map((v, i, arr) => {
+          if (when.type === "recurrence") {
+            const [h, m] = v.split(":");
+            const rr = when.rrule.replace(/BYHOUR=\d+;BYMINUTE=\d+/, "BYHOUR=" + +h + ";BYMINUTE=" + +m);
+            const keys = +h < 12 ? ["am", "morning", v, String(+h)] : ["pm", "evening", "afternoon", "night", v, String(+h), String(+h - 12)];
+            return { label: i === 0 ? ruleWords(rr).trim() : "at " + v, keys, when: { ...when, rrule: rr, time: v, ambiguous: false } };
+          }
+          const d = fromIso(v), o = fromIso(arr[1 - i]);
+          return { label: whenText(d, now), keys: optionKeys(d, o, now), when: { type: "datetime", value: v } };
+        });
+        this.pending = { type: "choose", intent, task, options: opts, need: "choice", noteNoTime: noTime };
+        trace.push({ type: "state", text: "ambiguous, asking: " + opts.map(o => o.label).join(" / ") });
+        return { trace, reply: fill("choose", { q: cap(opts[0].label) + ", or " + opts[1].label + "?" }) };
+      }
+      return this.schedule(task, when, trace, noTime);
+    }
     return { trace, reply: fill("fallback") };
+  }
+
+  schedule(task, when, trace, noTime) {
+    const now = this.now();
+    const what = task || "";
+    if (when.type === "recurrence") {
+      const cal = onCalendar(when.rrule);
+      trace.push({ type: "exec", text: cal ? `systemd-run --user --on-calendar="${cal}" notify-send "Reminder" "${what || "Reminder"}"` : "# rule " + when.rrule + " (needs a small scheduler, not a single systemd timer)" });
+      this.scheduled.push({ kind: "reminder", rrule: when.rrule, what });
+      return { trace, reply: fill("reminder.repeat", { what: what ? " to " + what : "", rule: ruleWords(when.rrule), next: when.next ? whenText(fromIso(when.next), now) : "soon" }) };
+    }
+    const at = fromIso(when.value);
+    if (at < now) { // already passed: offer the same time tomorrow
+      const next = new Date(at.getTime());
+      while (next < now) next.setDate(next.getDate() + 1);
+      const iso = next.getFullYear() + "-" + pad2(next.getMonth() + 1) + "-" + pad2(next.getDate()) + "T" + clock(next);
+      this.pending = { type: "choose", intent: "set_reminder", task, need: "choice",
+        options: [{ label: whenText(next, now), keys: ["tomorrow", "yes"], when: { type: "datetime", value: iso } }] };
+      trace.push({ type: "state", text: "time already passed, offering " + iso });
+      return { trace, reply: fill("past", { at: cap(whenText(at, now)), next: whenText(next, now) }) };
+    }
+    const stamp = at.getFullYear() + "-" + pad2(at.getMonth() + 1) + "-" + pad2(at.getDate()) + " " + clock(at) + ":00";
+    trace.push({ type: "exec", text: `systemd-run --user --on-calendar="${stamp}" notify-send "Reminder" "${what || "Reminder"}"` });
+    this.scheduled.push({ kind: "reminder", at, what });
+    this.arm(at, fill("reminder.ring", { what: what || "time's up" }));
+    return { trace, reply: fill("reminder.done", { what: what ? " to " + what : "", at: whenText(at, now) }) + (noTime ? fill("reminder.no_time", { t: "09:00" }) : "") };
   }
 }
 if (typeof module !== "undefined") module.exports = { Agent };

@@ -7,7 +7,8 @@ Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 - **Intent:** TF-IDF features (words, word pairs, character 3–4-grams) and a logistic regression.
 - **Slots:** a linear-chain CRF tagger (BIO labels).
 - **Runtime:** dependency-free Python and plain JavaScript, both reading the same exported `model.json`. Parity with scikit-learn is checked at every training run.
-- **Dialogue:** asks for missing slots, confirms risky actions (power), abstains below a confidence threshold, and falls back on small dictionaries (apps, directions, metrics) when the model is unsure.
+- **Dates, times, durations:** a rule-based parser (`web/entities.js`), not part of the model. It reads "next friday at 3pm", "in 2 days", "next year", "timer 1h30", "every weekday at 8" and flags what is ambiguous ("next friday" on a Monday, "at 9", "3/4") or already past, so the agent asks instead of guessing. Every skill that needs time shares it; adding one needs no retraining of this layer.
+- **Dialogue:** asks for missing slots, confirms risky actions (power), offers a choice when a date or time is ambiguous, abstains below a confidence threshold, and falls back on small dictionaries (apps, directions, metrics) when the model is unsure.
 
 Try it: the `docs/` folder is a Progressive Web App that runs the model fully offline. Commands are simulated: the trace shows the shell command that would run on the device.
 
@@ -23,6 +24,10 @@ Try it: the `docs/` folder is a Progressive Web App that runs the model fully of
 | `adjust_brightness` | direction, level |
 | `system_status` | metric |
 | `power` | power_action |
+| `get_time` | none |
+| `get_date` | none (date read by the parser) |
+| `set_timer` | none (duration read by the parser) |
+| `set_reminder` | task (when read by the parser) |
 | `greet`, `thanks`, `help`, `affirm`, `deny`, `out_of_scope` | none |
 
 ## Layout
@@ -31,6 +36,7 @@ Try it: the `docs/` folder is a Progressive Web App that runs the model fully of
 data/
   train.md              template-generated seed (seed_data.py)
   synth_*.md            externally generated batches, cleaned
+  synth_moved.md        time requests that were labelled out_of_scope before the time skills
   test.md               handwritten held-out set
   raw/                  batches as received, plus the cleaning log
 nlu/
@@ -39,6 +45,7 @@ nlu/
   runtime.py            dependency-free inference
 web/
   runtime.js            JS inference, same model.json
+  entities.js           rule-based dates, times, durations, recurrences
   agent.js              dialogue manager and response templates
   template.html         test page
 pwa/                    PWA assets (manifest, icons, service worker template)
@@ -65,6 +72,8 @@ python train.py                  # train, export models/model.json, check parity
 python evaluate.py               # held-out metrics and error list
 python cv.py data/synth_x.md     # 5-fold before/after for a new dataset
 python build_web.py              # build web/index.html and the PWA in docs/
+node test_entities.js            # date/time parser against fixed phrases (TZ=Europe/Berlin)
+node test_dialogue.js            # scripted conversations through model + agent, fixed clock
 ```
 
 Training takes a few seconds on a laptop. Inference runs in well under a millisecond per sentence.

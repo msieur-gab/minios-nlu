@@ -58,6 +58,26 @@ METRICS = ["disk space", "disk", "storage", "space left", "cpu", "cpu usage", "p
            "network", "wifi", "ip address", "ip", "uptime", "performance", "load", "free space"]
 POWER = ["shut down", "shutdown", "power off", "turn off", "reboot", "restart", "sleep", "suspend"]
 
+# time skills: dates and times are NOT slots, the rule-based parser (web/entities.js) reads them.
+# They appear here only so the classifier sees them as context and the tagger learns to leave them out of <task>.
+TASKS = ["call mum", "buy milk", "water the plants", "pick up the kids", "send the invoice", "take the bread out",
+         "check the oven", "pay the rent", "book the dentist", "back up the photos", "reply to Eva", "charge the camera",
+         "feed the cat", "stretch", "drink some water", "move the car", "submit the report", "glue the box",
+         "oil the cedar box", "take a break", "call the bank", "order more wood", "print the tickets",
+         "bring the bikes in", "renew my passport", "ask Romain about the demo", "clean the workshop",
+         "check the laundry", "start dinner", "go to bed"]
+WHEN = ["tomorrow", "next friday", "in 2 days", "at 3pm", "tonight at 8", "tomorrow morning", "on monday at 9",
+        "in 10 minutes", "next week", "on the 20th", "in an hour", "every monday at 9", "every day at 7am",
+        "at noon", "this evening", "on december 24", "in half an hour", "next year", "friday at 18h", "later",
+        "the day after tomorrow at 10:30", "in three days", "on sunday", "at 6:45", "next tuesday afternoon",
+        "every weekday at 8", "in 2 weeks", "at midnight", "this weekend", "on the 3rd of november"]
+DURS = ["10 minutes", "5 min", "an hour", "half an hour", "1h30", "90 seconds", "three minutes", "2 hours",
+        "45 seconds", "an hour and a half", "20 mins", "a minute", "twenty five minutes", "15 minutes",
+        "7 minutes", "40 min", "2 and a half hours", "30 seconds", "12 minutes", "a quarter of an hour"]
+DAYEXPR = ["tomorrow", "next friday", "the 20th", "december 24", "in 3 weeks", "next monday",
+           "the day after tomorrow", "in 10 days", "this saturday", "yesterday", "march 3", "next sunday",
+           "in a month", "the 1st of january", "last friday", "in 100 days"]
+
 ALT = re.compile(r"\{([^{}]*)\}")
 
 
@@ -118,6 +138,14 @@ def fill(t):
             t = t.replace("<target>", "the [" + random.choice(NAMES) + "](name) folder", 1)
     while "<app>" in t:
         t = t.replace("<app>", "[" + random.choice(APPS) + "](app)", 1)
+    while "<task>" in t:
+        t = t.replace("<task>", "[" + random.choice(TASKS) + "](task)", 1)
+    while "<when>" in t:
+        t = t.replace("<when>", random.choice(WHEN), 1)
+    while "<dur>" in t:
+        t = t.replace("<dur>", random.choice(DURS), 1)
+    while "<day>" in t:
+        t = t.replace("<day>", random.choice(DAYEXPR), 1)
     t = re.sub(r"\s+", " ", t).strip()
     return t
 
@@ -294,6 +322,71 @@ T = {
         "{let's|lets} open the <app>",
         "{switch to|go to} the <app>",
     ],
+    "get_time": [
+        "what time is it{ now| right now| at the moment|}{?|}",
+        "what's the time{ now| please|}{?|}",
+        "{tell me|give me} the time{ please|}",
+        "{can|could} you tell me the time{?|}",
+        "{the |}time{ please|?|}",
+        "do you have the time{?|}",
+        "{current|local} time{?|}",
+        "what hour is it{?|}",
+        "how late is it{?|}",
+        "{is it|it's} {already |}{late|early}{?|}",
+        "what time is it in {tokyo|new york|paris|london}{?|}",
+        "{check|show me} the {time|clock}",
+    ],
+    "get_date": [
+        "what's the date{ today|}{?|}",
+        "what is {today's|the} date{?|}",
+        "what day is it{ today|}{?|}",
+        "{which|what} day {is it|are we}{ today|}{?|}",
+        "what's today{?|}",
+        "what day of the week is it{?|}",
+        "{what's|what is} the date {<day>}{?|}",
+        "what {day|date} is <day>{?|}",
+        "{which|what} date {is|will it be} <day>{?|}",
+        "what day {does|is} <day> fall on{?|}",
+        "how many days until <day>{?|}",
+        "how {long|many days} {is it |}{until|till|before} <day>{?|}",
+        "{tell me|give me} the date{ please|}",
+        "{is today|is it} {monday|friday|the weekend|sunday}{?|}",
+        "what month is it{?|}",
+        "what year is it{?|}",
+    ],
+    "set_timer": [
+        "{set|start|make} a timer for <dur>{ please|}",
+        "{set|start} a <dur> timer{ please|}",
+        "{set|start|put} {the |a |}timer {on |}{for |to }<dur>",
+        "timer {for |}<dur>",
+        "<dur> timer{ please|}",
+        "{start|begin|run} a countdown {of|for} <dur>",
+        "countdown {for |}<dur>",
+        "{can|could} you {set|start} a timer{ for <dur>|}{?|}",
+        "{set|start} a timer{ please|}",
+        "time {me|this} for <dur>",
+        "{alert|ping|buzz} me in <dur>",
+        "{let me know|tell me} when <dur> {are|is} up",
+        "{set|start} a {pasta|tea|egg|glue|baking|break} timer for <dur>",
+        "I need a timer{ for <dur>|}",
+    ],
+    "set_reminder": [
+        "remind me to <task> <when>",
+        "remind me <when> to <task>",
+        "<when> remind me to <task>",
+        "{please |}remind me to <task>{ please|}",
+        "{set|create|add|make} a reminder {to|for} <task> <when>",
+        "{set|create|add|make} a reminder {for|on|at} <when>",
+        "{set|create|add|make} a reminder{ please|}",
+        "{new|add a} reminder: <task> <when>",
+        "{can|could} you remind me to <task>{ <when>|}{?|}",
+        "{don't let me|make sure I don't} forget to <task>{ <when>|}",
+        "{ping|nudge} me <when> {to|about} <task>",
+        "remind me about <task> <when>",
+        "remind me <when>",
+        "I {need|want} a reminder to <task>{ <when>|}",
+        "{set|add} a reminder {to|that I need to} <task>",
+    ],
 }
 
 SMALL = {
@@ -314,7 +407,7 @@ SMALL = {
              "don't", "no thanks", "abort", "no way", "not now", "cancel that",
              "leave it", "n", "scratch that", "actually no", "drop it"],
     "out_of_scope": [
-        "what's the weather like", "tell me a joke", "what time is it", "play some music",
+        "what's the weather like", "tell me a joke", "play some music",
         "how much is 12 times 7", "send an email to my boss", "delete the reports folder", "remove notes.md", "rename the folder to drafts",
         "move invoices to the archive", "delete everything", "what is the capital of france",
         "who are you", "set an alarm for 7", "turn off the wifi", "how are you", "order a pizza", "copy the file to desktop",
@@ -327,7 +420,7 @@ SMALL = {
         "banana", "asdfgh", "i like trains", "my cat is sleeping", "can you sing",
         "what is love", "write me a poem", "sudo rm -rf", "format the drive",
         "make me a sandwich", "create an account on github", "open my bank account",
-        "call mom", "send a text to Paul", "remind me tomorrow", "how old are you",
+        "call mom", "send a text to Paul", "how old are you",
         "the folder is too big", "I hate this file", "files are boring",
         "what is a markdown file", "how do folders work", "explain the terminal",
         "is the browser safe", "which editor is the best", "I created a folder yesterday",
@@ -339,13 +432,18 @@ SMALL = {
         "who turned off the lights", "the volume of a sphere", "the music was great yesterday",
         "how to free up disk space on windows", "open the window it's hot", "open the door",
         "show me a picture of a cat", "what's the temperature in Paris", "is it hot outside",
-        "set the timer to 10 minutes", "play the next song", "skip this track",
+        "play the next song", "skip this track",
         "check my email", "open my bank app", "open google.com", "what's the battery level",
+        "set an alarm for 7am", "wake me up at 6", "what's on my calendar tomorrow", "add a meeting on friday",
+        "will it rain tomorrow", "when is the next train", "how long does it take to boil an egg",
+        "what time does the bakery open", "when was the eiffel tower built", "time flies", "I had a long day",
+        "my timer app is broken", "who invented the clock", "delete my reminders", "what did I do yesterday",
     ],
 }
 
 PER_TEMPLATE = {"create_folder": 14, "create_file": 12, "open_app": 16, "open_file": 22,
-                "adjust_volume": 9, "adjust_brightness": 10, "system_status": 18, "power": 20}
+                "adjust_volume": 9, "adjust_brightness": 10, "system_status": 18, "power": 20,
+                "get_time": 6, "get_date": 8, "set_timer": 10, "set_reminder": 14}
 
 
 def main():

@@ -105,7 +105,8 @@ def fit_export(ex, out_path, verify=True):
 
 
 TRAIN_FILES = ["data/train.md", "data/synth_v1.md", "data/synth_batch_A.md",
-               "data/synth_batch_A1.md", "data/synth_batch_B.md", "data/synth_batch_C.md"]
+               "data/synth_batch_A1.md", "data/synth_batch_B.md", "data/synth_batch_C.md",
+               "data/synth_moved.md"]
 
 if __name__ == "__main__":
     main(TRAIN_FILES, "models/model.json")

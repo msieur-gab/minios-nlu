@@ -365,8 +365,6 @@
 - open spotify and play rock
 - send an email to my boss
 - what is on my calendar for today
-- set a timer for 10 minutes
-- remind me to buy milk later
 - open netflix on the tv
 - call mom on speaker
 - read my new messages
@@ -389,7 +387,6 @@
 - roll a dice
 - start a stopwatch
 - wake me up at 7 am
-- what time is it in tokyo
 - translate hello to spanish
 - how many ounces in a cup
 - what is 15 percent of 80

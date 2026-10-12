@@ -113,7 +113,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
     <details id="about">
       <summary id="sum"></summary>
       <div class="stats" id="stats"></div>
-      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both were trained in Python and run here in plain JavaScript, on this phone, with no network calls. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures.</p>
+      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both were trained in Python and run here in plain JavaScript, on this phone, with no network calls. Dates, times and durations are read by a small rule-based parser, not by the model. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures. Timers and reminders do ring here while the page stays open.</p>
     </details>
   </header>
 
@@ -131,6 +131,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
 
 <script type="application/json" id="model">/*MODEL*/</script>
 <script>/*RUNTIME*/</script>
+<script>/*ENTITIES*/</script>
 <script>/*AGENT*/</script>
 <script>
 const MODEL = JSON.parse(document.getElementById("model").textContent);
@@ -185,6 +186,9 @@ function renderAgent(el, text, out) {
     if (x.type === "exec") t += row("exec", `$ ${esc(x.text)}<em>simulated</em>`, "exec");
     else if (x.type === "state") t += row("state", esc(x.text), "state");
     else if (x.type === "abstain") t += row("skip", esc(x.text), "abstain");
+    else if (x.type === "entity") t += row("time", `<b>${esc(x.e.type)}</b> ${esc(x.e.value || x.e.rrule)}`
+      + (x.e.text ? ` <span class="dim">← “${esc(x.e.text)}” · rules, no model</span>` : "")
+      + (x.e.ambiguous ? ` <span class="dim">· ambiguous</span>` : ""), "state");
   }
   const kinds = out.trace.slice(1).map(x => x.type);
   const dot = kinds.includes("abstain") ? "skip" : kinds.includes("exec") ? "" : "ask";
@@ -230,9 +234,20 @@ function send(text, instant = false) {
 
 const CHIPS = ["is the pi overheating?", "turn the volume up", "brightness 40%", "open budget.csv",
   "make a folder called drafts in documents", "new markdown file", "shut down", "how's the system doing",
-  "it's too loud", "open the terminal", "delete the reports folder", "help"];
+  "it's too loud", "open the terminal", "delete the reports folder", "help",
+  "what time is it", "what day is next friday", "timer 1 minute", "remind me to call mum next friday at 3pm",
+  "remind me to stretch every weekday at 3pm", "how many days until december 24"];
 $("chips").innerHTML = CHIPS.map((c, i) => `<button class="chip" type="button" id="chip${i}">${esc(c)}</button>`).join("");
 CHIPS.forEach((c, i) => $("chip" + i).addEventListener("click", () => send(c)));
+
+agent.onAlert = message => {
+  const el = document.createElement("section");
+  el.className = "turn";
+  el.innerHTML = `<div class="reply">${esc(message)}</div>`;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+};
 
 $("form").addEventListener("submit", e => {
   e.preventDefault();
