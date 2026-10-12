@@ -100,6 +100,9 @@ input { flex: 1; min-width: 0; font: 16px var(--font-ui); color: var(--fg); back
 input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: transparent; }
 .send { background: var(--user); color: var(--user-ink); border: 0; border-radius: 10px; padding: 0 16px; font-weight: 600; cursor: pointer; }
 .pending { font: 12px var(--font-mono); color: var(--warn); }
+.retrain { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0 4px; }
+.retrain button:disabled { opacity: 0.5; cursor: progress; }
+.rlog { font: 12px var(--font-mono); color: var(--dim, #777); min-width: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: no-preference) { .turn { animation: rise 0.18s ease-out; } }
 @keyframes rise { from { transform: translateY(4px); } to { transform: none; } }
 </style>
@@ -113,7 +116,8 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
     <details id="about">
       <summary id="sum"></summary>
       <div class="stats" id="stats"></div>
-      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both were trained in Python and run here in plain JavaScript, on this phone, with no network calls. Dates, times and durations are read by a small rule-based parser, not by the model. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures. Timers and reminders do ring here while the page stays open.</p>
+      <div class="retrain"><button class="ghost" id="retrain" type="button">Retrain on this device</button><span class="rlog" id="rlog"></span></div>
+      <p class="note">Intent: TF-IDF features and logistic regression. Slots: a CRF tagger. Both are trained by the same plain JavaScript that runs them, with no network calls and no dependencies: the button above retrains the whole model on this phone from the bundled training sentences. Weak weights are dropped and the rest stored as 1-byte numbers, which keeps the model small. Dates, times and durations are read by a small rule-based parser, not by the model. Commands are simulated: the trace shows what would run on the Orange Pi, and system values are example figures. Timers and reminders do ring here while the page stays open.</p>
     </details>
   </header>
 
@@ -132,6 +136,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
 <script type="application/json" id="model">/*MODEL*/</script>
 <script>/*RUNTIME*/</script>
 <script>/*ENTITIES*/</script>
+<script>const DATA = /*DATA*/; const WORKER_SRC = /*WORKER_SRC*/;</script>
 <script>/*AGENT*/</script>
 <script>
 const MODEL = JSON.parse(document.getElementById("model").textContent);
@@ -143,18 +148,43 @@ const log = $("log");
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-$("ver").textContent = "model " + MODEL.version;
-$("sum").textContent = (JSON.stringify(MODEL).length / 1024).toFixed(0) + " KB model · " + MODEL.intents.length + " intents · runs offline";
-const stats = [
-  [MODEL.stats.examples, "training sentences"],
-  [MODEL.stats.features.toLocaleString("en"), "intent features"],
-  [MODEL.stats.train_seconds + " s", "training time"],
-  [EVAL.accuracy + " %", "intent accuracy*"],
-  [EVAL.slot_f1, "slot F1*"],
-  [EVAL.n, "held-out sentences*"],
-];
-$("stats").innerHTML = stats.map(([v, l]) => `<div><b>${esc(v)}</b><small>${esc(l)}</small></div>`).join("")
-  + `<div style="grid-column:1/-1"><small>* measured on handwritten sentences the model never saw</small></div>`;
+function showModel(m, ev, where) {
+  $("ver").textContent = "model " + m.version;
+  $("sum").textContent = (JSON.stringify(m).length / 1024).toFixed(0) + " KB model · " + m.intents.length + " intents · runs offline";
+  const stats = [
+    [m.stats.examples, "training sentences"],
+    [m.stats.features.toLocaleString("en"), "intent features"],
+    [m.stats.train_seconds + " s", "training time " + where],
+    [ev.accuracy + " %", "intent accuracy*"],
+    [ev.slot_f1, "slot F1*"],
+    [ev.n, "held-out sentences*"],
+  ];
+  $("stats").innerHTML = stats.map(([v, l]) => `<div><b>${esc(v)}</b><small>${esc(l)}</small></div>`).join("")
+    + `<div style="grid-column:1/-1"><small>* measured on handwritten sentences the model never saw</small></div>`;
+}
+showModel(MODEL, EVAL, "(build)");
+
+// On-device retraining: the trainer runs in a Web Worker so the page stays responsive.
+let worker = null;
+$("retrain").addEventListener("click", () => {
+  if (worker) return;
+  const btn = $("retrain"), rlog = $("rlog");
+  btn.disabled = true; btn.textContent = "Training…";
+  const t0 = performance.now();
+  worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: "text/javascript" })));
+  worker.onmessage = e => {
+    if (e.data.log) { rlog.textContent = e.data.log; return; }
+    const { model, ev } = e.data;
+    worker.terminate(); worker = null;
+    model.stats.train_seconds = ((performance.now() - t0) / 1000).toFixed(1);
+    agent.nlu = new NLURuntime.NLU(model);
+    showModel(model, { accuracy: ev.accuracy.toFixed(1), slot_f1: ev.slotF1.toFixed(2), n: ev.n }, "(this device)");
+    rlog.textContent = "Now using the model trained here. Reload to go back.";
+    btn.disabled = false; btn.textContent = "Retrain on this device";
+  };
+  worker.onerror = err => { rlog.textContent = "Training failed: " + err.message; worker = null; btn.disabled = false; btn.textContent = "Retrain on this device"; };
+  worker.postMessage(DATA);
+});
 
 function tagged(text, r) {
   const toks = NLURuntime.tokenize(text);

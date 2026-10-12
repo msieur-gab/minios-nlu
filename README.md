@@ -6,7 +6,9 @@ Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 
 - **Intent:** TF-IDF features (words, word pairs, character 3–4-grams) and a logistic regression.
 - **Slots:** a linear-chain CRF tagger (BIO labels).
-- **Runtime:** dependency-free Python and plain JavaScript, both reading the same exported `model.json`. Parity with scikit-learn is checked at every training run.
+- **Training:** plain JavaScript, no dependencies (`web/trainer.js`). The same file trains in Node (`node train.js`) and in the browser, so the PWA can retrain itself on the phone. Weak weights are dropped and the rest stored as 1-byte numbers: 317 KB instead of 1,234 KB, with the same held-out accuracy.
+- **Runtime:** dependency-free Python and plain JavaScript, both reading the same exported `model.json`.
+- **Reference:** `train.py` still trains the same models with scikit-learn into `models/model_sklearn.json`, for comparison.
 - **Dates, times, durations:** a rule-based parser (`web/entities.js`), not part of the model. It reads "next friday at 3pm", "in 2 days", "next year", "timer 1h30", "every weekday at 8" and flags what is ambiguous ("next friday" on a Monday, "at 9", "3/4") or already past, so the agent asks instead of guessing. Every skill that needs time shares it; adding one needs no retraining of this layer.
 - **Dialogue:** asks for missing slots, confirms risky actions (power), offers a choice when a date or time is ambiguous, abstains below a confidence threshold, and falls back on small dictionaries (apps, directions, metrics) when the model is unsure.
 
@@ -45,6 +47,7 @@ nlu/
   runtime.py            dependency-free inference
 web/
   runtime.js            JS inference, same model.json
+  trainer.js            JS training: TF-IDF + logistic regression (L-BFGS), CRF, pruning, export
   entities.js           rule-based dates, times, durations, recurrences
   agent.js              dialogue manager and response templates
   template.html         test page
@@ -64,11 +67,12 @@ DATASET_BRIEF.md        brief given to the model that generates training data
 ## Commands
 
 ```
-pip install -r requirements-train.txt
+pip install -r requirements-train.txt   # only for the Python reference tools
 python seed_data.py              # regenerate the template seed
 python clean_batches.py          # clean raw external batches into data/synth_*.md
 python lint.py data/raw/x.md     # duplicates, conflicts, structure diversity
-python train.py                  # train, export models/model.json, check parity
+node train.js                    # train the shipped model (no dependencies), print held-out scores
+python train.py                  # optional reference: scikit-learn → models/model_sklearn.json
 python evaluate.py               # held-out metrics and error list
 python cv.py data/synth_x.md     # 5-fold before/after for a new dataset
 python build_web.py              # build web/index.html and the PWA in docs/
@@ -76,4 +80,11 @@ node test_entities.js            # date/time parser against fixed phrases (TZ=Eu
 node test_dialogue.js            # scripted conversations through model + agent, fixed clock
 ```
 
-Training takes a few seconds on a laptop. Inference runs in well under a millisecond per sentence.
+Training takes about 20 seconds on a laptop, in Node or in the browser (training files are listed in `data/manifest.json`). Inference runs in well under a millisecond per sentence.
+
+| | size | intent accuracy | slot F1 |
+|---|---|---|---|
+| scikit-learn reference | 1,234 KB | 95.5% | 0.97 |
+| JavaScript trainer, pruned | 317 KB | 96.2% | 0.97 |
+
+(held-out set of 157 handwritten sentences; the page shows the 124 that never appear in training)

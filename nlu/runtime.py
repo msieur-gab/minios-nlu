@@ -14,6 +14,19 @@ def _f32(s):
     return a
 
 
+def _unpack(m, nf):
+    """Format 2: only kept weights, 1 byte each. Per feature: count, then (intent, value) pairs."""
+    raw = base64.b64decode(m["weights"])
+    coef = array("f", [0.0]) * (len(m["intents"]) * nf)
+    o = 0
+    for j in range(nf):
+        n = raw[o]; o += 1
+        for _ in range(n):
+            k, v = raw[o], raw[o + 1]; o += 2
+            coef[k * nf + j] = (v - 256 if v > 127 else v) * m["scale"]
+    return coef
+
+
 class NLU:
     def __init__(self, path):
         with open(path) as fh:
@@ -21,7 +34,7 @@ class NLU:
         self.intents = m["intents"]
         self.vocab = {f: i for i, f in enumerate(m["vocab"])}
         self.idf = _f32(m["idf"])
-        self.coef = _f32(m["coef"])
+        self.coef = _unpack(m, len(m["vocab"])) if m.get("format") == 2 else _f32(m["coef"])
         self.intercept = m["intercept"]
         self.labels = m["labels"]
         self.state = m["state"]

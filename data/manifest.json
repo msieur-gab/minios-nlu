@@ -1,0 +1,5 @@
+{
+  "train": ["data/train.md", "data/synth_v1.md", "data/synth_batch_A.md", "data/synth_batch_A1.md",
+            "data/synth_batch_B.md", "data/synth_batch_C.md", "data/synth_moved.md"],
+  "test": "data/test.md"
+}

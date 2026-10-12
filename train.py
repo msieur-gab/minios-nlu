@@ -1,7 +1,7 @@
 """Train intent classifier (TF-IDF + logistic regression) and slot tagger (CRF),
 then export everything the runtime needs to a single JSON file.
 
-    python train.py data/train.md models/model.json
+    python train.py [models/model_sklearn.json]
 """
 import base64
 import json
@@ -104,9 +104,8 @@ def fit_export(ex, out_path, verify=True):
     print("parity: intent mismatches=%d slot mismatches=%d max prob diff=%.2e" % (bad_i, bad_s, maxdiff))
 
 
-TRAIN_FILES = ["data/train.md", "data/synth_v1.md", "data/synth_batch_A.md",
-               "data/synth_batch_A1.md", "data/synth_batch_B.md", "data/synth_batch_C.md",
-               "data/synth_moved.md"]
+TRAIN_FILES = json.load(open("data/manifest.json"))["train"]
 
 if __name__ == "__main__":
-    main(TRAIN_FILES, "models/model.json")
+    # Reference trainer (scikit-learn). The shipped model comes from train.js; this one is for comparison.
+    main(TRAIN_FILES, sys.argv[1] if len(sys.argv) > 1 else "models/model_sklearn.json")

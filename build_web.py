@@ -25,6 +25,24 @@ page = open("web/template.html").read()
 page = page.replace("/*MODEL*/", open("models/model.json").read().replace("</", "<\\/"))
 page = page.replace("/*RUNTIME*/", open("web/runtime.js").read())
 page = page.replace("/*ENTITIES*/", open("web/entities.js").read())
+# training data + trainer for on-device retraining (Web Worker)
+manifest = json.load(open("data/manifest.json"))
+data = {"train": "\n".join(open(f, encoding="utf-8").read() for f in manifest["train"]),
+        "test": open(manifest["test"], encoding="utf-8").read()}
+worker_src = open("web/runtime.js").read() + "\n" + open("web/trainer.js").read() + """
+self.onmessage = e => {
+  const ex = NLUTrainer.parseDataset(e.data.train);
+  const model = NLUTrainer.train(ex, { log: m => self.postMessage({ log: m }) });
+  // same rule as the build: only test sentences that are not also training sentences
+  const norm = t => t.toLowerCase().replace(/\\?/g, "").split(/\\s+/).filter(Boolean).join(" ");
+  const seen = new Set(ex.map(x => norm(x.text)));
+  const test = NLUTrainer.parseDataset(e.data.test).filter(x => !seen.has(norm(x.text)));
+  const ev = NLUTrainer.evaluate(new NLURuntime.NLU(model), test);
+  self.postMessage({ model, ev: { accuracy: ev.accuracy, slotF1: ev.slotF1, n: ev.n } });
+};
+"""
+page = page.replace("/*DATA*/", json.dumps(data).replace("</", "<\\/"))
+page = page.replace("/*WORKER_SRC*/", json.dumps(worker_src).replace("</", "<\\/"))
 page = page.replace("/*AGENT*/", open("web/agent.js").read())
 page = page.replace("/*EVAL*/", json.dumps({"accuracy": acc, "slot_f1": f1, "n": int(n)}))
 open("web/index.html", "w").write(page)

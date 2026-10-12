@@ -69,6 +69,20 @@ const NLURuntime = (() => {
     return new Float32Array(bytes.buffer);
   }
 
+  // format 2: only the kept weights, 1 byte each. Per feature: count, then (intent, value) pairs.
+  function unpack(m, nf) {
+    const bin = atob(m.weights), K = m.intents.length, coef = new Float32Array(K * nf);
+    let o = 0;
+    for (let j = 0; j < nf; j++) {
+      const n = bin.charCodeAt(o++);
+      for (let q = 0; q < n; q++) {
+        const k = bin.charCodeAt(o++), v = bin.charCodeAt(o++);
+        coef[k * nf + j] = (v > 127 ? v - 256 : v) * m.scale;
+      }
+    }
+    return coef;
+  }
+
   function spansFromLabels(text, toks, labels) {
     const out = [];
     let cur = null;
@@ -89,8 +103,8 @@ const NLURuntime = (() => {
       this.m = m;
       this.vocab = new Map(m.vocab.map((f, i) => [f, i]));
       this.idf = f32(m.idf);
-      this.coef = f32(m.coef);
       this.nf = m.vocab.length;
+      this.coef = m.format === 2 ? unpack(m, this.nf) : f32(m.coef);
       this.L = m.labels.length;
     }
     classify(text) {
@@ -153,6 +167,6 @@ const NLURuntime = (() => {
         slots, labels, ms: performance.now() - t0 };
     }
   }
-  return { NLU, tokenize };
+  return { NLU, tokenize, intentFeatures, tokenFeatures };
 })();
 if (typeof module !== "undefined") module.exports = NLURuntime;
