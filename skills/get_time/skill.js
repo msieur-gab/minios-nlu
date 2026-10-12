@@ -6,7 +6,7 @@ module.exports = {
     const me = ctx.me.get();
     // a capitalised name after "in" also counts, if the model didn't mark a place
     const m = /\b(?:in|at)\s+([A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)/.exec(ctx.text);
-    const place = ctx.slots.place || (m && m[1]);
+    const place = ctx.place() || (m && m[1]);
     if (!place || (me.place && same(place, me.place.name))) {
       ctx.exec("date +%H:%M");
       return ctx.say("done", { time: ctx.fmt.clock(ctx.now) });

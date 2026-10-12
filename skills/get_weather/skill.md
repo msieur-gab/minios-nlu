@@ -78,6 +78,13 @@ GET https://api.open-meteo.com/v1/forecast
 - Rome
 - the Alps
 - Garmisch
+- Hong Kong
+- Rio de Janeiro
+- Buenos Aires
+- Cape Town
+- San Francisco
+- Kuala Lumpur
+- New Delhi
 
 ## Values: day
 - today

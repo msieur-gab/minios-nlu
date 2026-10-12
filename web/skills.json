@@ -627,7 +627,7 @@
      "Looking up {place}…"
     ]
    },
-   "sentences": 107,
+   "sentences": 111,
    "values": {}
   },
   "get_weather": {
@@ -1405,7 +1405,7 @@
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
-   "sentences": 178,
+   "sentences": 181,
    "values": {}
   },
   "set_reminder": {

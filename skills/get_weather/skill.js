@@ -7,7 +7,7 @@ const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0
 module.exports = {
   run(ctx) {
     const me = ctx.me.get();
-    const place = ctx.slots.place || (me.place && me.place.name);
+    const place = ctx.place() || (me.place && me.place.name);
     if (!place) return ctx.ask("place", "ask_place");
 
     // the day or days asked for, from the date parser ("tomorrow", "this weekend")

@@ -45,6 +45,13 @@ Open-Meteo's place search for that place's time zone, so it needs a connection.
 - Nairobi
 - Reykjavik
 - Mexico City
+- Hong Kong
+- Rio de Janeiro
+- Buenos Aires
+- Cape Town
+- San Francisco
+- Kuala Lumpur
+- New Delhi
 
 ## Replies
 - done: It's {time}. | {time}.

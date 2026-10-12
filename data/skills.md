@@ -1090,73 +1090,77 @@
 - show me the time
 - show me the clock
 - check the clock
-- what time is it in [Bangkok](place) now
+- what time is it in [Rio de Janeiro](place) now
 - what time is it in [Tokyo](place)
-- what time is it in [Shenzhen](place) right now
-- what time is it in [shenzhen](place) right now
-- what time is it in [Berlin](place)?
+- what time is it in [Sydney](place) right now
+- what time is it in [sydney](place) right now
+- what time is it in [Reykjavik](place)?
 - what time is it in [New York](place)
 - what time is it in [new york](place)
-- what time is it in [Los Angeles](place) now?
-- what time is it in [los angeles](place) now?
 - what time is it in [São Paulo](place) now?
 - what time is it in [são paulo](place) now?
-- what time is it in [Kyoto](place) now?
-- what time is it in [kyoto](place) now?
-- what's the time in [Sydney](place)?
-- what's the time in [sydney](place)?
+- what time is it in [Hong Kong](place) now?
+- what time is it in [hong kong](place) now?
+- what time is it in [Mexico City](place) now?
+- what time is it in [mexico city](place) now?
 - what's the time in [Berlin](place)?
-- what's the time in [Lisbon](place)
-- what's the time in [New York](place)?
-- what's the time in [new york](place)?
-- what's the time in [Kyoto](place)
+- what's the time in [berlin](place)?
+- what's the time in [Nairobi](place)?
+- what's the time in [Montreal](place)
+- what's the time in [Paris](place)?
+- what's the time in [paris](place)?
+- what's the time in [Reykjavik](place)
 - what's the time in [Tokyo](place)?
 - what's the time in [tokyo](place)?
-- what's the time in [Paris](place)?
-- what's the time in [Reykjavik](place)?
-- what's the time in [reykjavik](place)?
+- what's the time in [Shenzhen](place)?
+- what's the time in [San Francisco](place)?
+- what's the time in [san francisco](place)?
+- give me the local time in [Montreal](place)
+- tell me the time in [Kyoto](place)
+- tell me the time in [Los Angeles](place)
+- tell me the local time in [Montreal](place)
+- tell me the local time in [montreal](place)
+- give me the local time in [Mexico City](place)
+- give me the local time in [mexico city](place)
+- give me the local time in [Nairobi](place)
+- give me the local time in [nairobi](place)
 - give me the local time in [Shenzhen](place)
-- tell me the time in [Montreal](place)
-- tell me the time in [Sydney](place)
-- tell me the local time in [Lisbon](place)
-- tell me the local time in [lisbon](place)
-- give me the local time in [Kyoto](place)
-- give me the local time in [kyoto](place)
-- give me the local time in [Berlin](place)
-- give me the local time in [berlin](place)
-- give me the local time in [London](place)
-- give me the time in [Nairobi](place)
-- what hour is it over at [Paris](place)
-- what hour is it over at [paris](place)
-- what hour is it over in [Los Angeles](place)?
-- what hour is it at [New York](place)?
-- what time is it in [Reykjavik](place)
+- give me the time in [Buenos Aires](place)
+- what hour is it over at [Shenzhen](place)
+- what hour is it over at [shenzhen](place)
+- what hour is it over in [Bangkok](place)?
+- what hour is it at [Paris](place)?
+- what time is it in [Kuala Lumpur](place)
 - what hour is it over in [Tokyo](place)?
-- what hour is it at [Mexico City](place)?
-- what hour is it at [mexico city](place)?
-- what time is it over in [Sydney](place)
-- what hour is it in [Berlin](place)?
-- is it night in [Kyoto](place)
-- is it night in [kyoto](place)
-- is it morning in [São Paulo](place)
-- is it morning in [são paulo](place)
-- is it night in [Mexico City](place)?
-- is it night in [mexico city](place)?
-- is it morning in [Kyoto](place)
-- is it morning in [Lisbon](place)
-- is it morning in [lisbon](place)
-- is it night in [Bangkok](place)
-- is it late in [Nairobi](place)?
+- what hour is it at [Kuala Lumpur](place)?
+- what hour is it at [kuala lumpur](place)?
+- what time is it over in [Berlin](place)
+- what hour is it in [Reykjavik](place)?
+- is it night in [Mexico City](place)
+- is it night in [mexico city](place)
+- is it morning in [Rio de Janeiro](place)
+- is it morning in [rio de janeiro](place)
+- is it night in [New Delhi](place)?
+- is it night in [new delhi](place)?
+- is it morning in [Mexico City](place)
+- is it morning in [Montreal](place)
+- is it morning in [montreal](place)
+- is it night in [Reykjavik](place)
+- is it night in [reykjavik](place)
+- is it night in [Rio de Janeiro](place)
+- is it late in [Cape Town](place)?
+- time in [Berlin](place)
+- time in [Berlin](place)?
+- time in [berlin](place)?
 - time in [Sydney](place)
+- time in [sydney](place)
+- time in [Kuala Lumpur](place)
+- time in [kuala lumpur](place)
+- time in [Los Angeles](place)?
+- time in [los angeles](place)?
 - time in [Sydney](place)?
-- time in [sydney](place)?
-- time in [Shenzhen](place)
-- time in [shenzhen](place)
-- time in [Reykjavik](place)
-- time in [reykjavik](place)
-- time in [Shenzhen](place)?
-- time in [São Paulo](place)?
-- time in [London](place)?
+- time in [Rio de Janeiro](place)?
+- time in [Lisbon](place)?
 
 ## intent: get_weather
 - what's the weather now
@@ -1165,26 +1169,26 @@
 - what's the weather now?
 - what's the weather like now?
 - what's the weather like now
-- how's the weather in [Lyon](place) now?
+- how's the weather in [Vienna](place) now?
 - what's the weather in [Munich](place)
-- what's the weather at [Montreal](place) now?
-- what's the weather in [New York](place) now
-- what's the weather in [new york](place) now
-- what's the weather at [Hamburg](place)
+- what's the weather at [the Alps](place) now?
+- what's the weather in [London](place) now
+- what's the weather in [london](place) now
+- what's the weather at [Marseille](place)
 - what's the weather in [Paris](place) now
-- what's the weather at [Garmisch](place) today?
+- what's the weather at [New Delhi](place) today?
 - how's the weather in [Paris](place) now
 - how's the weather in [paris](place) now
-- what's the weather like at [Tokyo](place) next week?
-- what's the weather like in [London](place) tomorrow
-- what's the weather at [Tokyo](place) this weekend?
-- what's the weather like in [Barcelona](place) today?
+- what's the weather like at [Lisbon](place) next week?
+- what's the weather like in [Kyoto](place) tomorrow
+- what's the weather at [Lisbon](place) this weekend?
+- what's the weather like in [Montreal](place) today?
 - what's the weather like at [Tokyo](place) on saturday?
-- what's the weather at [Lyon](place) this evening?
-- what's the weather at [lyon](place) this evening?
-- what's the weather at [Shenzhen](place) on monday?
-- what's the weather at [shenzhen](place) on monday?
-- what's the weather at [Shenzhen](place) tomorrow
+- what's the weather at [Zurich](place) this evening?
+- what's the weather at [zurich](place) this evening?
+- what's the weather at [Lyon](place) on monday?
+- what's the weather at [lyon](place) on monday?
+- what's the weather at [Barcelona](place) tomorrow
 - is it going to rain on saturday
 - is it going to rain next week?
 - is it going to snow tomorrow?
@@ -1193,17 +1197,17 @@
 - will snow later
 - is it going to snow next week?
 - will rain this afternoon?
-- will rain in [Barcelona](place) tomorrow morning
-- will snow in [Paris](place) tonight
-- will rain in [Rome](place) next week
-- is it going to rain in [Shenzhen](place) this afternoon?
-- is it going to rain in [shenzhen](place) this afternoon?
-- is it going to rain in [Paris](place) on saturday
-- is it going to rain in [paris](place) on saturday
-- will snow in [Paris](place) on friday
-- will rain in [Berlin](place) tomorrow morning?
-- is it going to rain in [the Alps](place) this evening
-- is it going to rain in [the alps](place) this evening
+- will rain in [Zurich](place) tomorrow morning
+- will snow in [Tokyo](place) tonight
+- will rain in [San Francisco](place) next week
+- is it going to rain in [Lyon](place) this afternoon?
+- is it going to rain in [lyon](place) this afternoon?
+- is it going to rain in [Tokyo](place) on saturday
+- is it going to rain in [tokyo](place) on saturday
+- will snow in [Tokyo](place) on friday
+- will rain in [Shenzhen](place) tomorrow morning?
+- is it going to rain in [Kuala Lumpur](place) this evening
+- is it going to rain in [kuala lumpur](place) this evening
 - should I take an umbrella later?
 - do I need an umbrella tomorrow
 - should I take an umbrella this morning
@@ -1225,17 +1229,17 @@
 - weather
 - forecast today
 - weather please
-- forecast in [Hamburg](place)
-- weather in [Lisbon](place) the day after tomorrow
+- forecast in [Marseille](place)
+- weather in [New York](place) the day after tomorrow
 - weather for [Tokyo](place) this morning
-- weather in [Marseille](place)
-- weather in [marseille](place)
-- weather in [New York](place) on saturday
-- forecast for [Garmisch](place) tomorrow
-- forecast for [garmisch](place) tomorrow
-- weather in [Shenzhen](place)
-- weather in [shenzhen](place)
-- weather for [New York](place) this afternoon
+- weather in [Rio de Janeiro](place)
+- weather in [rio de janeiro](place)
+- weather in [Berlin](place) on saturday
+- forecast for [New Delhi](place) tomorrow
+- forecast for [new delhi](place) tomorrow
+- weather in [Barcelona](place)
+- weather in [barcelona](place)
+- weather for [London](place) this afternoon
 - what's the weather forecast on friday
 - what's the weather forecast this morning
 - what's the weather forecast tonight?
@@ -1244,16 +1248,16 @@
 - what's the forecast today
 - what's the forecast this morning
 - what's the forecast in 3 days
-- what's the forecast for [London](place) next week?
-- what's the forecast for [Hamburg](place)?
-- what's the forecast for [the Alps](place) this evening?
-- what's the forecast for [the alps](place) this evening?
-- what's the weather forecast for [Zurich](place)?
-- what's the forecast for [Vienna](place)
-- what's the forecast for [New York](place) on saturday?
-- what's the forecast for [new york](place) on saturday?
+- what's the forecast for [Lyon](place) next week?
+- what's the forecast for [Marseille](place)?
+- what's the forecast for [San Francisco](place) this evening?
+- what's the forecast for [san francisco](place) this evening?
+- what's the weather forecast for [the Alps](place)?
 - what's the forecast for [Oslo](place)
-- what's the weather forecast for [Munich](place) this afternoon?
+- what's the forecast for [Berlin](place) on saturday?
+- what's the forecast for [berlin](place) on saturday?
+- what's the forecast for [Buenos Aires](place)
+- what's the weather forecast for [Paris](place) this afternoon?
 - how's it hot is it out there?
 - how's it warm is it out there
 - how hot is it out there
@@ -1262,37 +1266,37 @@
 - how's it warm out there?
 - how warm out there?
 - how's it hot is it out there
-- how's it cold is it in [Oslo](place)
+- how's it cold is it in [Buenos Aires](place)
 - how hot is it in [Munich](place)?
-- how warm is it in [Zurich](place)
-- how's it hot is it in [Rome](place)
-- how's it hot is it in [rome](place)
-- how's it warm is it in [Rome](place)?
-- how warm is it in [Montreal](place)?
-- how's it hot is it in [the Alps](place)
-- how's it hot is it in [Berlin](place)
+- how warm is it in [the Alps](place)
+- how's it hot is it in [Cape Town](place)
+- how's it hot is it in [cape town](place)
+- how's it warm is it in [Cape Town](place)?
+- how warm is it in [Hong Kong](place)?
+- how's it hot is it in [San Francisco](place)
+- how's it hot is it in [Shenzhen](place)
 - what's the temperature out there?
 - what's the temperature out there
 - what's the temperature outside
 - what's the temperature outside?
-- what's the temperature in [Garmisch](place)
-- what's the temperature in [Lisbon](place)
-- what's the temperature in [Rome](place) on monday
-- what's the temperature in [rome](place) on monday
-- what's the temperature in [Tokyo](place) this afternoon?
-- what's the temperature in [tokyo](place) this afternoon?
-- what's the temperature in [Marseille](place)?
-- what's the temperature in [Zurich](place)?
-- what's the temperature in [Kyoto](place)
-- what's the temperature in [kyoto](place)
+- what's the temperature in [New Delhi](place)
+- what's the temperature in [Berlin](place)
+- what's the temperature in [Cape Town](place) on monday
+- what's the temperature in [cape town](place) on monday
+- what's the temperature in [Lisbon](place) this afternoon?
+- what's the temperature in [lisbon](place) this afternoon?
+- what's the temperature in [Hong Kong](place)?
+- what's the temperature in [Rome](place)?
+- what's the temperature in [Hamburg](place)
+- what's the temperature in [hamburg](place)
 - is it sunny in [Munich](place)?
-- is it sunny in [Lyon](place)?
-- is it windy in [Marseille](place)
-- is it windy in [marseille](place)
-- is it sunny in [Hamburg](place)
-- is it cold in [Tokyo](place)?
-- is it sunny in [Shenzhen](place)
-- is it sunny in [shenzhen](place)
+- is it sunny in [Vienna](place)?
+- is it windy in [Rio de Janeiro](place)
+- is it windy in [rio de janeiro](place)
+- is it sunny in [Marseille](place)
+- is it cold in [Lisbon](place)?
+- is it sunny in [Lyon](place)
+- is it sunny in [lyon](place)
 - is it sunny outside?
 - is it snowing outside?
 - will it be sunny on monday?
@@ -1303,23 +1307,23 @@
 - is it sunny tomorrow morning
 - is it warm tomorrow?
 - is it cold on friday?
-- give me the weather for [Oslo](place)
-- tell me the weather for [Berlin](place)
-- tell me the weather for [berlin](place)
+- give me the weather for [Rio de Janeiro](place)
+- tell me the weather for [Shenzhen](place)
+- tell me the weather for [shenzhen](place)
 - give me the weather
-- give me the weather for [Lisbon](place)
+- give me the weather for [Berlin](place)
 - tell me the weather on friday
-- give me the weather for [Rome](place)
-- tell me the weather for [Oslo](place)
+- give me the weather for [San Francisco](place)
+- tell me the weather for [Buenos Aires](place)
 - tell me the weather on monday
 - could you check the weather?
-- can you check the weather in [the Alps](place)?
+- can you check the weather in [Kuala Lumpur](place)?
 - could you check the weather
-- can you check the weather in [Garmisch](place)
-- can you check the weather in [garmisch](place)
-- can you check the weather in [Lyon](place)
+- can you check the weather in [New Delhi](place)
+- can you check the weather in [new delhi](place)
+- can you check the weather in [Zurich](place)
 - can you check the weather
-- could you check the weather in [Rome](place)
+- could you check the weather in [Cape Town](place)
 - should I go for a walk on saturday?
 - should i go for a walk on saturday?
 - can I ride my bike this morning
@@ -1348,12 +1352,12 @@
 - is it going to snow today
 - is it going to be cold in 3 days
 - is there any rain forecast
-- any wind forecast in [Kyoto](place) on monday?
+- any wind forecast in [Hamburg](place) on monday?
 - is there any wind forecast?
 - any sun coming this morning
 - any snow coming
-- is there any wind forecast in [Paris](place) on saturday
-- is there any wind forecast in [paris](place) on saturday
+- is there any wind forecast in [Tokyo](place) on saturday
+- is there any wind forecast in [tokyo](place) on saturday
 - any rain coming?
 - any sun coming?
 - what's it like out there?
@@ -2212,112 +2216,115 @@
 - my name is [gab](name)
 - remember that my name is [Romain](name)
 - remember that my name is [Léa](name)
-- I live in [Lyon](place)
-- i live in [lyon](place)
-- I live in [Berlin](place)
-- I live in [Barcelona](place)
+- I live in [Montreal](place)
+- i live in [montreal](place)
 - I live in [New York](place)
-- I live in [Vienna](place)
-- I live in [Shenzhen](place)
-- I live in [Munich](place)
-- remember that I live in [Hamburg](place)
-- please remember I live in [Berlin](place)
-- please remember i live in [berlin](place)
-- remember that I live in [Berlin](place)
-- remember that i live in [berlin](place)
-- please remember I live in [Vienna](place)
-- please remember i live in [vienna](place)
-- remember that I live in [Lyon](place)
-- remember that i live in [lyon](place)
-- remember that I live in [New York](place)
-- remember that i live in [new york](place)
+- I live in [San Francisco](place)
+- I live in [Barcelona](place)
+- I live in [Buenos Aires](place)
+- I live in [Hamburg](place)
+- I live in [Paris](place)
+- remember that I live in [Kuala Lumpur](place)
+- please remember I live in [New York](place)
+- please remember i live in [new york](place)
+- remember that I live in [Shenzhen](place)
+- remember that i live in [shenzhen](place)
+- please remember I live in [Buenos Aires](place)
+- please remember i live in [buenos aires](place)
+- remember that I live in [Vienna](place)
+- remember that i live in [vienna](place)
 - remember that I live in [Munich](place)
-- my home is [Barcelona](place)
-- my home is [Munich](place)
-- my home is [munich](place)
-- my home town is [Montreal](place)
-- my home town is [Hamburg](place)
-- my home town is [Paris](place)
-- my home is [Vienna](place)
-- my home is [Lisbon](place)
+- my home is [San Francisco](place)
+- my home is [Paris](place)
+- my home is [paris](place)
+- my home town is [Rio de Janeiro](place)
+- my home town is [New Delhi](place)
+- my home town is [Lisbon](place)
+- my home is [Buenos Aires](place)
+- my home is [Tokyo](place)
 - my city is [Munich](place)
-- I'm living in [New York](place)
-- I'm based in [Tokyo](place)
-- I'm living in [Vienna](place)
-- i'm living in [vienna](place)
-- I'm based in [New York](place)
-- I'm living in [Lyon](place)
-- I'm based in [Lisbon](place)
-- I moved to [New York](place)
+- I'm living in [Barcelona](place)
+- I'm based in [Lyon](place)
+- I'm living in [Cape Town](place)
+- i'm living in [cape town](place)
+- I'm living in [Buenos Aires](place)
+- I'm based in [Barcelona](place)
+- I'm living in [Shenzhen](place)
+- I'm based in [Berlin](place)
+- I moved to [Barcelona](place)
+- we moved to [Barcelona](place)
+- we moved to [barcelona](place)
 - we moved to [New York](place)
 - we moved to [new york](place)
-- we moved to [Berlin](place)
-- we moved to [berlin](place)
 - we moved to [Paris](place)
-- I moved to [Lyon](place)
-- we moved to [Lyon](place)
-- we moved to [lyon](place)
+- I moved to [Montreal](place)
 - we moved to [Montreal](place)
 - we moved to [montreal](place)
-- change my location to [Tokyo](place)
-- change my location to [tokyo](place)
-- set my city to [Vienna](place)
-- change my location to [Munich](place)
-- set my location to [Lisbon](place)
-- change my home to [Lisbon](place)
-- change my city to [Shenzhen](place)
-- change my city to [shenzhen](place)
-- change my city to [Berlin](place)
-- my location is [Lisbon](place)
-- my location is [Lyon](place)
-- my location is [lyon](place)
-- my location is [Munich](place)
-- I'm located in [Tokyo](place)
-- my location is [Shenzhen](place)
-- my location is [shenzhen](place)
+- we moved to [Hong Kong](place)
+- we moved to [hong kong](place)
+- change my location to [Lyon](place)
+- change my location to [lyon](place)
+- set my city to [Cape Town](place)
+- change my location to [Paris](place)
+- set my location to [Tokyo](place)
+- change my home to [Berlin](place)
+- change my city to [Hamburg](place)
+- change my city to [hamburg](place)
+- change my city to [New York](place)
 - my location is [Tokyo](place)
-- I'm [Léa](name) and I live in [Hamburg](place)
-- i'm [léa](name) and i live in [hamburg](place)
-- I'm [Noah](name) and I live in [Shenzhen](place)
-- i'm [noah](name) and i live in [shenzhen](place)
-- I'm [Lucas](name) and I live in [Shenzhen](place)
-- I'm [Kiki](name) and I live in [Lyon](place)
-- I'm [Boss](name) and I live in [Vienna](place)
-- I'm [Lucas](name) and I live in [Vienna](place)
-- I'm [Professor](name) and I live in [Lisbon](place)
-- my name is [Romain](name) and I live in [Vienna](place)
-- my name is [romain](name) and i live in [vienna](place)
-- my name is [Lucas](name) and I live in [Vienna](place)
-- my name is [lucas](name) and i live in [vienna](place)
-- my name is [Kiki](name) and I live in [Barcelona](place)
-- my name is [Doc](name) and I live in [Lyon](place)
-- my name is [doc](name) and i live in [lyon](place)
-- my name is [Boss](name) and I live in [Vienna](place)
-- my name is [boss](name) and i live in [vienna](place)
-- my name is [Gabriel](name) and I live in [Barcelona](place)
-- my name is [gabriel](name) and i live in [barcelona](place)
-- my name is [Noah](name) and I live in [Shenzhen](place)
-- I live in [Tokyo](place) and my name is [Chief](name)
-- I live in [Lyon](place) and my name is [Eva](name)
-- I live in [New York](place) and my name is [Ines](name)
-- i live in [new york](place) and my name is [ines](name)
-- I live in [Barcelona](place) and my name is [Chief](name)
-- i live in [barcelona](place) and my name is [chief](name)
-- I live in [Lisbon](place) and my name is [Chloé](name)
-- i live in [lisbon](place) and my name is [chloé](name)
+- my location is [Vienna](place)
+- my location is [vienna](place)
+- my location is [Munich](place)
+- I'm located in [Berlin](place)
+- my location is [Hong Kong](place)
+- my location is [hong kong](place)
+- my location is [Lyon](place)
+- my location is [Montreal](place)
+- my location is [montreal](place)
+- my location is [Hamburg](place)
+- I'm [Léa](name) and I live in [New Delhi](place)
+- i'm [léa](name) and i live in [new delhi](place)
+- I'm [Noah](name) and I live in [Hamburg](place)
+- i'm [noah](name) and i live in [hamburg](place)
+- I'm [Lucas](name) and I live in [Hamburg](place)
+- I'm [Kiki](name) and I live in [Vienna](place)
+- I'm [Boss](name) and I live in [Cape Town](place)
+- I'm [Lucas](name) and I live in [Buenos Aires](place)
+- I'm [Professor](name) and I live in [Tokyo](place)
+- my name is [Romain](name) and I live in [Buenos Aires](place)
+- my name is [romain](name) and i live in [buenos aires](place)
+- my name is [Lucas](name) and I live in [Cape Town](place)
+- my name is [lucas](name) and i live in [cape town](place)
+- my name is [Kiki](name) and I live in [San Francisco](place)
+- my name is [Romain](name) and I live in [Cape Town](place)
+- my name is [Doc](name) and I live in [Montreal](place)
+- my name is [doc](name) and i live in [montreal](place)
+- my name is [Boss](name) and I live in [Buenos Aires](place)
+- my name is [boss](name) and i live in [buenos aires](place)
+- my name is [Gabriel](name) and I live in [San Francisco](place)
+- my name is [gabriel](name) and i live in [san francisco](place)
+- my name is [Noah](name) and I live in [Hamburg](place)
+- I live in [Lyon](place) and my name is [Chief](name)
 - I live in [Montreal](place) and my name is [Eva](name)
-- I live in [Hamburg](place) and my name is [Doc](name)
-- I live in [Shenzhen](place) and my name is [Chief](name)
-- I live in [Berlin](place), call me [Chloé](name)
-- I live in [New York](place) and call me [Léa](name)
-- i live in [new york](place) and call me [léa](name)
-- I live in [Lisbon](place), call me [Ines](name)
-- I live in [Vienna](place) and call me [Professor](name)
-- i live in [vienna](place) and call me [professor](name)
-- I live in [Montreal](place) and call me [Boss](name)
-- I live in [Tokyo](place) and call me [Amara](name)
+- I live in [Vienna](place) and my name is [Ines](name)
+- i live in [vienna](place) and my name is [ines](name)
+- I live in [San Francisco](place) and my name is [Chief](name)
+- i live in [san francisco](place) and my name is [chief](name)
+- I live in [Berlin](place) and my name is [Chloé](name)
+- i live in [berlin](place) and my name is [chloé](name)
+- I live in [Rio de Janeiro](place) and my name is [Eva](name)
+- I live in [New Delhi](place) and my name is [Doc](name)
+- I live in [Hamburg](place) and my name is [Chief](name)
+- I live in [Shenzhen](place), call me [Chloé](name)
+- I live in [Barcelona](place) and call me [Léa](name)
+- i live in [barcelona](place) and call me [léa](name)
+- I live in [Berlin](place), call me [Ines](name)
+- I live in [Cape Town](place) and call me [Professor](name)
+- i live in [cape town](place) and call me [professor](name)
+- I live in [Rio de Janeiro](place) and call me [Boss](name)
+- I live in [Lyon](place) and call me [Amara](name)
 - I live in [Paris](place) and I'm [Yuki](name)
-- I live in [Paris](place), call me [Romain](name)
+- I live in [Tokyo](place), call me [Romain](name)
 - save my location
 - store my name
 - store my location
@@ -2335,17 +2342,17 @@
 - from now on call me [Ines](name)
 - from now on call me [ines](name)
 - from today call me [Doc](name)
-- I'm staying in [Berlin](place)
-- i'm staying in [berlin](place)
-- I'm living in [Shenzhen](place)
-- we're now living in [Shenzhen](place)
-- we're now living in [shenzhen](place)
-- I'm now staying in [Montreal](place)
-- I'm living in [Paris](place)
-- i'm living in [paris](place)
-- I'm staying in [New York](place)
-- we're now staying in [Lyon](place)
-- we're now living in [Hamburg](place)
+- I'm staying in [Shenzhen](place)
+- i'm staying in [shenzhen](place)
+- I'm living in [Hong Kong](place)
+- we're now living in [Hong Kong](place)
+- we're now living in [hong kong](place)
+- I'm now staying in [Rio de Janeiro](place)
+- I'm living in [Tokyo](place)
+- i'm living in [tokyo](place)
+- I'm staying in [Vienna](place)
+- we're now staying in [Montreal](place)
+- we're now living in [Kuala Lumpur](place)
 
 ## intent: set_reminder
 - remind me to [call mum](task) in 10 minutes

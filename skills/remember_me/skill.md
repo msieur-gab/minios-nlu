@@ -65,6 +65,13 @@ weather and time skills then use.
 - Vienna
 - Barcelona
 - Hamburg
+- Hong Kong
+- Rio de Janeiro
+- Buenos Aires
+- Cape Town
+- San Francisco
+- Kuala Lumpur
+- New Delhi
 
 ## Replies
 - name: Nice to meet you, {name}. I'll remember your name, on this phone only. | Got it, {name}. Saved on this phone.

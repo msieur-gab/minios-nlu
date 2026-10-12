@@ -260,6 +260,7 @@ class Agent {
       state: { get: (k, d) => (k in agent.levels ? agent.levels[k] : d), set: (k, v) => { agent.levels[k] = v; } },
       me: { get: () => agent.mem(), set: m => agent.setMem(m) },
       geocode: name => agent.geocode(name),
+      place: () => SV.places.placeIn(text, ctx.slots.place),  // the place named, whole ("hong kong")
       request: vars => agent.request(sk, vars, ctx),
       arm: (at, message) => agent.arm(at, message),
       skills: () => Object.values(SKILLS).filter(s => s.params.help).map(s => s.params.help),

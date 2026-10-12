@@ -71,9 +71,10 @@ const NLUServices = (() => {
     agent.geoCache = agent.geoCache || {};
     if (key in agent.geoCache) return agent.geoCache[key];
     if (!agent.fetch) throw new Error("no network access");
-    const r = await agent.fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=" + encodeURIComponent(name));
+    const r = await agent.fetch("https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&format=json&name=" + encodeURIComponent(name));
     if (!r.ok) throw new Error("place search answered " + r.status);
-    const g = ((await r.json()).results || [])[0];
+    // several places share a name ("Paris", "Hong"): prefer the most populated one
+    const g = ((await r.json()).results || []).reduce((best, x) => (!best || (x.population || 0) > (best.population || 0) ? x : best), null);
     const out = g ? { name: g.name, region: [g.admin1, g.country].filter(x => x && x !== g.name).join(", "), lat: g.latitude, lon: g.longitude, timezone: g.timezone } : null;
     agent.geoCache[key] = out;
     return out;
@@ -107,6 +108,19 @@ const NLUServices = (() => {
     return { place, answer, json };
   }
 
+  // the place a sentence names: the tagged words, extended to the rest of a multi-word name
+  // ("hong" in "time in hong kong now" → "hong kong"), stopping at words that aren't part of it
+  const NOT_PLACE = /^(now|right|today|tonight|tomorrow|please|on|at|this|next|in|for|and|then|later|morning|afternoon|evening|weekend|monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d.*)$/i;
+  function placeIn(text, tagged) {
+    if (!tagged) return null;
+    const at = text.toLowerCase().indexOf(tagged.toLowerCase());
+    if (at < 0) return tagged;
+    const words = text.slice(at + tagged.length).replace(/[?!.,;].*$/, "").split(/\s+/).filter(Boolean);
+    const more = [];
+    for (const w of words) { if (NOT_PLACE.test(w)) break; more.push(w); }
+    return [text.slice(at, at + tagged.length), ...more].join(" ").trim();
+  }
+
   // ---------- what the agent remembers about the person: on this device only ----------
   const ME_KEY = "minios.me.v1";
   const me = {
@@ -114,7 +128,7 @@ const NLUServices = (() => {
     set: (store, agent, m) => { agent._mem = m; try { if (store) store.setItem(ME_KEY, JSON.stringify(m)); } catch { /* kept in memory only */ } },
   };
 
-  return { net: { geocode, request }, me, fmt: { DAYS, MONTHS, pad2, cap, plural, day0, daysApart, fromIso, isoMinute, clock, dayText, whenText, durWords, ruleWords, onCalendar },
+  return { net: { geocode, request }, me, places: { placeIn }, fmt: { DAYS, MONTHS, pad2, cap, plural, day0, daysApart, fromIso, isoMinute, clock, dayText, whenText, durWords, ruleWords, onCalendar },
     files: { where, quote } };
 })();
 if (typeof module !== "undefined") module.exports = NLUServices;
