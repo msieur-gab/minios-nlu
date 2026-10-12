@@ -47,6 +47,8 @@ def fit_export(ex, out_path, verify=True):
 
     X_seq, y_seq = [], []
     for e in ex:
+        if e["intent"] == "out_of_scope":  # no slots to learn there; see web/trainer.js
+            continue
         toks, labels = bio(e["text"], e["spans"])
         X_seq.append([{f: 1.0 for f in fs} for fs in token_features(e["text"], toks)])
         y_seq.append(labels)
@@ -92,7 +94,7 @@ def fit_export(ex, out_path, verify=True):
     from nlu.runtime import NLU
     nlu = NLU(out_path)
     ref_int = clf.predict(X)
-    ref_slots = crf.predict(X_seq)
+    ref_slots = iter(crf.predict(X_seq))
     bad_i = bad_s = 0
     maxdiff = 0.0
     probs = clf.predict_proba(X)
@@ -100,7 +102,8 @@ def fit_export(ex, out_path, verify=True):
         r = nlu.parse(e["text"])
         bad_i += r["intent"] != ref_int[k]
         maxdiff = max(maxdiff, abs(r["confidence"] - probs[k].max()))
-        bad_s += r["_labels"] != ref_slots[k]
+        if e["intent"] != "out_of_scope":
+            bad_s += r["_labels"] != next(ref_slots)
     print("parity: intent mismatches=%d slot mismatches=%d max prob diff=%.2e" % (bad_i, bad_s, maxdiff))
 
 

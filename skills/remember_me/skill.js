@@ -2,7 +2,10 @@
 // The place is looked up once to get its coordinates and time zone, used by weather and time.
 module.exports = {
   run(ctx) {
-    const { name, place } = ctx.slots;
+    const { place } = ctx.slots;
+    // typed in lowercase on a phone: "gab" → "Gab"
+    const name = ctx.slots.name && (ctx.slots.name === ctx.slots.name.toLowerCase()
+      ? ctx.slots.name.replace(/(^|[\s-])\p{L}/gu, c => c.toUpperCase()) : ctx.slots.name);
     if (!name && !place) return ctx.say("ask");
     const me = ctx.me.get();
     ctx.me.set({ ...me, ...(name ? { name } : {}), ...(place ? { place: { name: place } } : {}) });

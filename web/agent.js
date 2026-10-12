@@ -2,6 +2,7 @@
 // shell command the agent would run on the device, nothing is executed.
 
 const THRESHOLD = 0.45;
+const SPLIT_CONFIDENCE = 0.7; // each part of a multi-command sentence must be at least this sure
 const ACTIONABLE = new Set(["create_folder", "create_file", "open_app", "open_file",
   "adjust_volume", "adjust_brightness", "system_status", "power",
   "get_time", "get_date", "set_timer", "set_reminder"]);
@@ -271,7 +272,7 @@ class Agent {
   }
 
   reset() {
-    this.pending = null; this.volume = 50; this.muted = false; this.brightness = 80;
+    this.pending = null; this.queue = null; this.volume = 50; this.muted = false; this.brightness = 80;
     for (const t of this.timers || []) clearTimeout(t);
     this.timers = []; this.scheduled = [];
   }
@@ -282,7 +283,69 @@ class Agent {
     if (this.onAlert && ms > 0 && ms < 2 ** 31 - 1) this.timers.push(setTimeout(() => this.onAlert(message), ms));
   }
 
+  // "turn the volume up and open firefox": split into commands when every part, on its own,
+  // is confidently something the agent can do. Otherwise the sentence stays whole
+  // ("make a folder called salt and pepper").
+  splitCommands(text) {
+    if (this.pending) return null;
+    const parts = text.split(/\s*(?:,\s*)?\b(?:and then|and also|then|and)\b\s*|\s*;\s*/i).map(p => p.trim()).filter(Boolean);
+    if (parts.length < 2 || parts.length > 4) return null;
+    const ok = r => ACTIONABLE.has(r.intent) && r.confidence >= SPLIT_CONFIDENCE;
+    const rs = parts.map(p => this.nlu.parse(p));
+    // a part without its own verb borrows the previous part's: "open the terminal and the browser"
+    for (let i = 1; i < parts.length; i++) {
+      if (ok(rs[i])) continue;
+      const verb = parts[i - 1].split(/\s+/)[0];
+      const r = this.nlu.parse(verb + " " + parts[i]);
+      if (ok(r) && r.intent === rs[i - 1].intent) { parts[i] = verb + " " + parts[i]; rs[i] = r; }
+    }
+    if (!rs.every(ok)) return null;
+    // the same skill twice ("I live in Munich and my name is Gab"): keep it whole if the whole sentence already carries all the values
+    const whole = this.nlu.parse(text);
+    const partSlots = rs.reduce((n, r) => n + Object.keys(r.slots).length, 0);
+    if (rs.every(r => r.intent === whole.intent) && Object.keys(whole.slots).length >= partSlots) return null;
+    return parts;
+  }
+
   handle(text) {
+    const parts = this.splitCommands(text);
+    if (parts) return this.runSequence(parts, text);
+    this.dropQueue = false;
+    const out = this.handleOne(text);
+    // the answer to a question asked in the middle of a sequence: carry on with the rest
+    if (this.queue && !this.pending) {
+      const rest = this.queue;
+      this.queue = null;
+      if (!this.dropQueue) return this.runSequence(rest, text, out);
+      out.trace.push({ type: "state", text: "dropped the rest: " + rest.map(p => "“" + p + "”").join(", ") });
+    }
+    return out;
+  }
+
+  runSequence(parts, text, first = null) {
+    const outs = first ? [first] : [];
+    let i = 0;
+    for (; i < parts.length; i++) {
+      outs.push(this.handleOne(parts[i]));
+      if (this.pending) { i++; break; } // a part asked a question: the rest waits for the answer
+    }
+    this.queue = i < parts.length ? parts.slice(i) : null;
+    const trace = [{ type: "nlu", r: first ? first.trace[0].r : this.nlu.parse(text) },
+      { type: "state", text: (first ? "answer received, continuing with " : "split into commands: ") + parts.map(p => "“" + p + "”").join(" + ") }];
+    outs.forEach((o, k) => {
+      const r = o.trace[0].r;
+      trace.push({ type: "state", text: "→ " + (k + 1) + ". " + r.intent + " " + r.confidence.toFixed(2) });
+      trace.push(...o.trace.slice(1));
+    });
+    if (this.queue) trace.push({ type: "state", text: "waiting for an answer; then: " + this.queue.map(p => "“" + p + "”").join(", ") });
+    const reply = outs.map(o => o.reply).join("\n");
+    if (!outs.some(o => o.later)) return { trace, reply };
+    const later = Promise.all(outs.map(o => o.later ? o.later : Promise.resolve({ reply: o.reply, trace: [] })))
+      .then(rs => ({ reply: rs.map(r => r.reply).join("\n"), trace: rs.flatMap(r => r.trace || []) }));
+    return { trace, reply, later };
+  }
+
+  handleOne(text) {
     const trace = [];
     this.lastText = text;
     const r = this.nlu.parse(text);
@@ -314,7 +377,7 @@ class Agent {
         trace.push({ type: "state", text: "picked “" + p.options[i].label + "”" });
         return this.schedule(p.task, p.options[i].when, trace, p.noteNoTime);
       }
-      if (i === -2) { trace.push({ type: "state", text: "declined, nothing scheduled" }); return { trace, reply: fill("cancel") }; }
+      if (i === -2) { this.dropQueue = true; trace.push({ type: "state", text: "declined, nothing scheduled" }); return { trace, reply: fill("cancel") }; }
       trace.push({ type: "state", text: "answer matched no option, read it as a new command" });
     }
 
@@ -322,7 +385,7 @@ class Agent {
       const p = this.pending;
       if ((r.intent === "deny" && r.confidence >= 0.5) || NO_RE.test(text.trim())) {
         this.pending = null;
-        trace.push({ type: "state", text: "cancelled pending " + p.intent });
+        this.dropQueue = true; trace.push({ type: "state", text: "cancelled pending " + p.intent });
         return { trace, reply: fill("cancel") };
       }
       if (r.intent === p.intent && r.slots[p.need]) {
@@ -331,10 +394,10 @@ class Agent {
         return this.run(p.intent, { ...p.slots, ...r.slots }, trace);
       }
       if (r.intent === "out_of_scope" && r.confidence >= 0.55 && text.trim().split(/\s+/).length >= 4) {
-        trace.push({ type: "state", text: "off-topic sentence, dropped pending " + p.intent });
+        this.dropQueue = true; trace.push({ type: "state", text: "off-topic sentence, dropped pending " + p.intent });
         this.pending = null;
       } else if (ACTIONABLE.has(r.intent) && r.confidence >= 0.8 && Object.keys(r.slots).length) {
-        trace.push({ type: "state", text: "new command, dropped pending " + p.intent });
+        this.dropQueue = true; trace.push({ type: "state", text: "new command, dropped pending " + p.intent });
         this.pending = null;
       } else {
         let answer = text;
@@ -475,7 +538,7 @@ class Agent {
     const r = await this.fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=" + encodeURIComponent(name));
     if (!r.ok) throw new Error("place search answered " + r.status);
     const g = ((await r.json()).results || [])[0];
-    const out = g ? { name: g.name, region: [g.admin1, g.country].filter(Boolean).join(", "), lat: g.latitude, lon: g.longitude, timezone: g.timezone } : null;
+    const out = g ? { name: g.name, region: [g.admin1, g.country].filter(x => x && x !== g.name).join(", "), lat: g.latitude, lon: g.longitude, timezone: g.timezone } : null;
     this.geoCache[key] = out;
     return out;
   }

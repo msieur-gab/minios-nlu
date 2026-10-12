@@ -102,10 +102,16 @@ function compile(dir = "skills") {
   for (const s of skills) {
     const rand = rng(hash(s.skill));
     const n = +(s.params.samples || 6);
+    const lower = s.params.lowercase !== undefined ? +s.params.lowercase : 0.35;
     const lines = new Set();
     for (const tpl of s.examples) {
       const hasChoice = /\{/.test(tpl);
-      for (let k = 0; k < (hasChoice ? n : 1); k++) lines.add(expand(tpl, s, rand));
+      for (let k = 0; k < (hasChoice ? n : 1); k++) {
+        const line = expand(tpl, s, rand);
+        lines.add(line);
+        // phones often type in lowercase: add a lowercase copy of some sentences
+        if (line !== line.toLowerCase() && rand() < lower) lines.add(line.toLowerCase());
+      }
     }
     md += `\n## intent: ${s.skill}\n` + [...lines].map(l => "- " + l).join("\n") + "\n";
     const { skill, file, dir, code, action, params, values, replies, request, answer } = s;

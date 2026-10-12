@@ -291,7 +291,9 @@ const NLUTrainer = (() => {
     // slots
     const t1 = now();
     const labelSet = new Set(["O"]);
-    const seqs = examples.map(e => {
+    // out-of-scope sentences carry no values the agent will use; left in, they teach the tagger
+    // that words like "reports" after "called" are not names ("delete the folder called reports")
+    const seqs = examples.filter(e => e.intent !== "out_of_scope").map(e => {
       const { toks, labels } = bio(e.text, e.spans);
       labels.forEach(l => labelSet.add(l));
       return { feats: tokenFeatures(e.text, toks), labels };

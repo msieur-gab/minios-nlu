@@ -1,5 +1,5 @@
 // Offline cache for the MiniOS Agent PWA. VERSION changes with every build, which replaces the cache.
-const VERSION = "6f92b317f7";
+const VERSION = "55bde99a86";
 const CACHE = "minios-" + VERSION;
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable.png", "apple-touch-icon.png"];
 

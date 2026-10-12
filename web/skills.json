@@ -25,7 +25,7 @@
      "There was nothing to forget."
     ]
    },
-   "sentences": 34,
+   "sentences": 33,
    "values": {}
   },
   "get_time": {
@@ -59,7 +59,7 @@
      "Looking up {place}…"
     ]
    },
-   "sentences": 84,
+   "sentences": 107,
    "values": {}
   },
   "get_weather": {
@@ -130,7 +130,7 @@
      "Checking the weather for {place}…"
     ]
    },
-   "sentences": 169,
+   "sentences": 203,
    "values": {
     "sky": [
      {
@@ -442,7 +442,7 @@
      "I don't know an app called “{value}”. I can open the {choices}."
     ]
    },
-   "sentences": 194,
+   "sentences": 204,
    "values": {
     "app": [
      {
@@ -609,7 +609,7 @@
      "I don't know where you live yet. Tell me “I live in …”."
     ]
    },
-   "sentences": 62,
+   "sentences": 78,
    "values": {}
   },
   "remember_me": {
@@ -645,7 +645,7 @@
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
-   "sentences": 109,
+   "sentences": 178,
    "values": {}
   },
   "set_timer": {
@@ -676,7 +676,7 @@
      "That's a time rather than a duration, so I set a reminder for {at} instead."
     ]
    },
-   "sentences": 120,
+   "sentences": 123,
    "values": {}
   }
  }

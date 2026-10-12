@@ -3,36 +3,35 @@
 ## intent: forget_me
 - forget my name
 - forget where I live
-- forget my location
+- forget where i live
 - forget my city
 - forget my home
-- forget everything
+- forget my location
 - forget all about me
+- forget everything
 - forget what you know about me
-- erase my name
-- erase my details
-- remove what you know about me
-- remove my city
+- forget everything about me
+- delete my city
 - remove my data
-- remove my location
-- clear my city
-- clear my name
-- don't remember me
-- do not remember my name
+- clear my data
+- erase my details
+- remove my details
+- delete my details
+- erase what you know about me
+- do not remember me
 - don't remember where I live anymore
 - don't remember me anymore
-- do not remember me
 - don't remember my name anymore
 - do not remember where I live
-- unlearn my name
-- unlearn me
+- don't remember me
+- don't remember where I live
 - stop remembering my name
-- stop remembering me
+- unlearn me
+- unlearn where I live
 - stop remembering where I live
+- unlearn my name
 - reset my profile
-- wipe what you know
 - reset what you know
-- wipe my profile
 - reset your memory
 - wipe your memory
 
@@ -78,49 +77,72 @@
 - show me the clock
 - check the clock
 - what time is it in [Bangkok](place) now
-- what time is it in [Berlin](place) right now
-- what time is it in [Lisbon](place) right now
-- what time is it in [New York](place)
+- what time is it in [Tokyo](place)
 - what time is it in [Shenzhen](place) right now
-- what time is it in [New York](place)?
-- what's the time in [Lisbon](place)?
-- what's the time in [Kyoto](place)?
-- what's the time in [Montreal](place)?
-- what's the time in [London](place)?
+- what time is it in [shenzhen](place) right now
+- what time is it in [Berlin](place)?
+- what time is it in [New York](place)
+- what time is it in [new york](place)
+- what time is it in [Los Angeles](place) now?
+- what time is it in [los angeles](place) now?
+- what time is it in [São Paulo](place) now?
+- what time is it in [são paulo](place) now?
+- what time is it in [Kyoto](place) now?
+- what time is it in [kyoto](place) now?
+- what's the time in [Sydney](place)?
+- what's the time in [sydney](place)?
 - what's the time in [Berlin](place)?
-- what's the time in [Nairobi](place)?
-- give me the local time in [Bangkok](place)
-- tell me the local time in [Paris](place)
-- tell me the time in [Shenzhen](place)
-- give me the local time in [London](place)
+- what's the time in [Lisbon](place)
+- what's the time in [New York](place)?
+- what's the time in [new york](place)?
+- what's the time in [Kyoto](place)
+- what's the time in [Tokyo](place)?
+- what's the time in [tokyo](place)?
+- what's the time in [Paris](place)?
+- what's the time in [Reykjavik](place)?
+- what's the time in [reykjavik](place)?
 - give me the local time in [Shenzhen](place)
-- tell me the time in [Lisbon](place)
-- give me the local time in [Paris](place)
-- tell me the time in [Los Angeles](place)
-- what hour is it over at [Shenzhen](place)
-- what hour is it over in [Nairobi](place)
-- what hour is it over at [São Paulo](place)
-- what hour is it in [Nairobi](place)?
+- tell me the time in [Montreal](place)
+- tell me the time in [Sydney](place)
+- tell me the local time in [Lisbon](place)
+- tell me the local time in [lisbon](place)
+- give me the local time in [Kyoto](place)
+- give me the local time in [kyoto](place)
+- give me the local time in [Berlin](place)
+- give me the local time in [berlin](place)
+- give me the local time in [London](place)
+- give me the time in [Nairobi](place)
 - what hour is it over at [Paris](place)
-- what time is it in [London](place)
-- what time is it at [Nairobi](place)?
-- what time is it over at [London](place)?
-- is it late in [New York](place)
-- is it morning in [New York](place)?
-- is it night in [Shenzhen](place)
-- is it morning in [Nairobi](place)
-- is it night in [Paris](place)?
-- is it night in [Sydney](place)
-- is it late in [Berlin](place)?
-- is it morning in [Montreal](place)
-- time in [London](place)?
-- time in [Berlin](place)?
-- time in [São Paulo](place)
-- time in [London](place)
-- time in [Lisbon](place)?
-- time in [Montreal](place)
+- what hour is it over at [paris](place)
+- what hour is it over in [Los Angeles](place)?
+- what hour is it at [New York](place)?
+- what time is it in [Reykjavik](place)
+- what hour is it over in [Tokyo](place)?
+- what hour is it at [Mexico City](place)?
+- what hour is it at [mexico city](place)?
+- what time is it over in [Sydney](place)
+- what hour is it in [Berlin](place)?
+- is it night in [Kyoto](place)
+- is it night in [kyoto](place)
+- is it morning in [São Paulo](place)
+- is it morning in [são paulo](place)
+- is it night in [Mexico City](place)?
+- is it night in [mexico city](place)?
+- is it morning in [Kyoto](place)
+- is it morning in [Lisbon](place)
+- is it morning in [lisbon](place)
+- is it night in [Bangkok](place)
+- is it late in [Nairobi](place)?
+- time in [Sydney](place)
+- time in [Sydney](place)?
+- time in [sydney](place)?
+- time in [Shenzhen](place)
+- time in [shenzhen](place)
+- time in [Reykjavik](place)
+- time in [reykjavik](place)
+- time in [Shenzhen](place)?
 - time in [São Paulo](place)?
-- time in [Lisbon](place)
+- time in [London](place)?
 
 ## intent: get_weather
 - what's the weather now
@@ -130,364 +152,408 @@
 - what's the weather like now?
 - what's the weather like now
 - how's the weather in [Lyon](place) now?
-- what's the weather at [Berlin](place) now
-- what's the weather at [Montreal](place)
-- how's the weather in [Rome](place) today?
-- what's the weather at [Vienna](place)
-- what's the weather in [Rome](place)
-- how's the weather in [Paris](place)
+- what's the weather in [Munich](place)
+- what's the weather at [Montreal](place) now?
+- what's the weather in [New York](place) now
+- what's the weather in [new york](place) now
+- what's the weather at [Hamburg](place)
+- what's the weather in [Paris](place) now
 - what's the weather at [Garmisch](place) today?
-- what's the weather in [Paris](place) this morning
-- what's the weather like in [Hamburg](place) tomorrow?
-- what's the weather like at [Tokyo](place) this weekend?
-- what's the weather at [Zurich](place) on saturday?
-- what's the weather like at [Tokyo](place) this weekend
-- what's the weather in [Rome](place) later
-- what's the weather like in [Vienna](place) tomorrow
-- what's the weather in [Tokyo](place) this weekend?
-- is it going to snow on friday?
-- will rain tonight
-- will snow tomorrow
-- will snow next week?
-- is it going to snow tonight?
-- will snow tomorrow morning
-- will rain on monday?
-- will rain in [Barcelona](place) this morning
-- is it going to rain in [Barcelona](place) tonight?
-- is it going to rain in [Paris](place) next week
-- will snow in [Barcelona](place) the day after tomorrow
-- will snow in [Zurich](place) tonight
-- will rain in [New York](place) on friday?
-- will rain in [New York](place) next week
-- will rain in [Montreal](place) this evening?
-- do I need an umbrella?
-- should I take an umbrella next week?
-- do I need an umbrella this weekend?
-- should I take an umbrella on monday
-- should I take an umbrella this afternoon
-- do I need an umbrella tomorrow
+- how's the weather in [Paris](place) now
+- how's the weather in [paris](place) now
+- what's the weather like at [Tokyo](place) next week?
+- what's the weather like in [London](place) tomorrow
+- what's the weather at [Tokyo](place) this weekend?
+- what's the weather like in [Barcelona](place) today?
+- what's the weather like at [Tokyo](place) on saturday?
+- what's the weather at [Lyon](place) this evening?
+- what's the weather at [lyon](place) this evening?
+- what's the weather at [Shenzhen](place) on monday?
+- what's the weather at [shenzhen](place) on monday?
+- what's the weather at [Shenzhen](place) tomorrow
+- is it going to rain on saturday
+- is it going to rain next week?
+- is it going to snow tomorrow?
+- is it going to rain this evening?
+- will rain on saturday?
+- will snow later
+- is it going to snow next week?
+- will rain this afternoon?
+- will rain in [Barcelona](place) tomorrow morning
+- will snow in [Paris](place) tonight
+- will rain in [Rome](place) next week
+- is it going to rain in [Shenzhen](place) this afternoon?
+- is it going to rain in [shenzhen](place) this afternoon?
+- is it going to rain in [Paris](place) on saturday
+- is it going to rain in [paris](place) on saturday
+- will snow in [Paris](place) on friday
+- will rain in [Berlin](place) tomorrow morning?
+- is it going to rain in [the Alps](place) this evening
+- is it going to rain in [the alps](place) this evening
 - should I take an umbrella later?
-- how's the weather this afternoon?
-- how's the weather this weekend
-- how weather on monday
-- how's the weather in 3 days?
-- how's the weather on friday
-- how weather on friday
-- how's the weather tomorrow morning
+- do I need an umbrella tomorrow
+- should I take an umbrella this morning
+- should i take an umbrella this morning
+- should I take an umbrella this weekend?
+- do I need an umbrella
+- do I need an umbrella today
+- how's the weather the day after tomorrow?
+- how weather on saturday
+- how weather in 3 days
+- how's the weather tomorrow?
+- how's the weather next week
+- how's the weather this morning
 - how weather this morning?
+- how's the weather in 3 days?
 - forecast please
-- weather
-- weather for in 3 days
-- forecast today
 - forecast
+- weather today
+- weather
+- forecast today
 - weather please
-- forecast for [Rome](place)
-- weather in [Lisbon](place)
+- forecast in [Hamburg](place)
+- weather in [Lisbon](place) the day after tomorrow
 - weather for [Tokyo](place) this morning
-- weather in [Garmisch](place) this afternoon
-- weather for [Oslo](place)
-- weather for [Paris](place)
-- weather for [Hamburg](place) this weekend
-- what's the forecast on saturday
-- what's the weather forecast later?
-- what's the forecast this morning
-- what's the weather forecast today
+- weather in [Marseille](place)
+- weather in [marseille](place)
+- weather in [New York](place) on saturday
+- forecast for [Garmisch](place) tomorrow
+- forecast for [garmisch](place) tomorrow
+- weather in [Shenzhen](place)
+- weather in [shenzhen](place)
+- weather for [New York](place) this afternoon
+- what's the weather forecast on friday
+- what's the weather forecast this morning
 - what's the weather forecast tonight?
-- what's the forecast this weekend?
-- what's the forecast today?
-- what's the forecast for [Munich](place)?
-- what's the weather forecast for [Montreal](place)
-- what's the weather forecast for [Hamburg](place) tonight?
-- what's the weather forecast for [Garmisch](place)
-- what's the weather forecast for [Lyon](place) the day after tomorrow?
-- what's the forecast for [Barcelona](place) today?
-- what's the weather forecast for [New York](place) tonight?
-- how warm out there
-- how cold is it out there
-- how warm is it out there?
-- how's it cold out there
-- how warm out there?
+- what's the forecast later?
+- what's the forecast tomorrow morning
+- what's the forecast today
+- what's the forecast this morning
+- what's the forecast in 3 days
+- what's the forecast for [London](place) next week?
+- what's the forecast for [Hamburg](place)?
+- what's the forecast for [the Alps](place) this evening?
+- what's the forecast for [the alps](place) this evening?
+- what's the weather forecast for [Zurich](place)?
+- what's the forecast for [Vienna](place)
+- what's the forecast for [New York](place) on saturday?
+- what's the forecast for [new york](place) on saturday?
+- what's the forecast for [Oslo](place)
+- what's the weather forecast for [Munich](place) this afternoon?
+- how's it hot is it out there?
+- how's it warm is it out there
 - how hot is it out there
-- how's it hot is it in [Paris](place)
-- how hot is it in [Oslo](place)?
-- how warm is it in [Paris](place)
-- how warm is it in [Oslo](place)?
-- how cold is it in [the Alps](place)?
-- how's it cold is it in [Marseille](place)?
-- how hot is it in [the Alps](place)
-- how's it cold is it in [Paris](place)
+- how hot out there
+- how's it hot is it outside
+- how's it warm out there?
+- how warm out there?
+- how's it hot is it out there
+- how's it cold is it in [Oslo](place)
+- how hot is it in [Munich](place)?
+- how warm is it in [Zurich](place)
+- how's it hot is it in [Rome](place)
+- how's it hot is it in [rome](place)
+- how's it warm is it in [Rome](place)?
+- how warm is it in [Montreal](place)?
+- how's it hot is it in [the Alps](place)
+- how's it hot is it in [Berlin](place)
+- what's the temperature out there?
 - what's the temperature out there
 - what's the temperature outside
 - what's the temperature outside?
-- what's the temperature out there?
-- what's the temperature in [Munich](place) tonight
+- what's the temperature in [Garmisch](place)
+- what's the temperature in [Lisbon](place)
+- what's the temperature in [Rome](place) on monday
+- what's the temperature in [rome](place) on monday
+- what's the temperature in [Tokyo](place) this afternoon?
+- what's the temperature in [tokyo](place) this afternoon?
+- what's the temperature in [Marseille](place)?
 - what's the temperature in [Zurich](place)?
-- what's the temperature in [Rome](place)
-- what's the temperature in [Rome](place) this afternoon
-- what's the temperature in [Montreal](place)?
-- what's the temperature in [the Alps](place)?
-- what's the temperature in [Berlin](place)?
-- what's the temperature in [Barcelona](place) this afternoon
-- is it windy outside
-- is it cold in [Kyoto](place)
-- is it sunny in [New York](place)
-- is it raining outside
-- is it cold in [Oslo](place)?
+- what's the temperature in [Kyoto](place)
+- what's the temperature in [kyoto](place)
+- is it sunny in [Munich](place)?
+- is it sunny in [Lyon](place)?
+- is it windy in [Marseille](place)
+- is it windy in [marseille](place)
+- is it sunny in [Hamburg](place)
+- is it cold in [Tokyo](place)?
+- is it sunny in [Shenzhen](place)
+- is it sunny in [shenzhen](place)
+- is it sunny outside?
 - is it snowing outside?
-- is it raining outside?
-- is it raining in [Marseille](place)
-- will it be nice on monday?
-- will it be cold tomorrow morning
-- is it warm this weekend
-- will it be nice tomorrow morning
-- will it be warm this morning?
-- is it nice in 3 days
-- is it nice tonight?
-- will it be warm in 3 days
+- will it be sunny on monday?
+- will it be sunny on saturday?
+- is it cold next week?
+- will it be warm later?
+- will it be cold today?
+- is it sunny tomorrow morning
+- is it warm tomorrow?
+- is it cold on friday?
+- give me the weather for [Oslo](place)
+- tell me the weather for [Berlin](place)
+- tell me the weather for [berlin](place)
 - give me the weather
-- tell me the weather
-- tell me the weather later
-- tell me the weather for [Kyoto](place)
-- tell me the weather for [Tokyo](place) on monday
-- tell me the weather for [Garmisch](place) on saturday
-- can you check the weather?
-- could you check the weather in [Tokyo](place)?
-- could you check the weather in [Shenzhen](place)
+- give me the weather for [Lisbon](place)
+- tell me the weather on friday
+- give me the weather for [Rome](place)
+- tell me the weather for [Oslo](place)
+- tell me the weather on monday
 - could you check the weather?
-- could you check the weather in [Rome](place)?
+- can you check the weather in [the Alps](place)?
 - could you check the weather
-- can you check the weather in [Barcelona](place)
-- should I ride my bike this afternoon
-- should I ride my bike the day after tomorrow?
-- should I go for a walk later
-- should I go for a walk this morning?
-- should I hang the laundry outside tomorrow morning?
-- can I ride my bike on monday?
-- can I go for a walk on friday?
-- should I wear boots on saturday
-- will I need sunscreen?
-- will I need a jacket this weekend?
-- should I wear sunscreen?
-- should I bring boots
-- should I bring a coat?
-- should I wear gloves on saturday
-- do I need a jacket
-- is it going to snow later
-- is it going to be sunny later?
-- is it going to be warm later
-- is it going to be windy next week?
-- is it going to be sunny this afternoon
-- is it going to be windy in 3 days
-- any wind expected
-- is there any snow coming in [Montreal](place)
-- any rain forecast in [Kyoto](place) on monday?
-- is there any sun forecast on monday
-- is there any wind coming next week?
-- any sun expected today?
-- any snow coming in [Rome](place)
-- any snow coming?
+- can you check the weather in [Garmisch](place)
+- can you check the weather in [garmisch](place)
+- can you check the weather in [Lyon](place)
+- can you check the weather
+- could you check the weather in [Rome](place)
+- should I go for a walk on saturday?
+- should i go for a walk on saturday?
+- can I ride my bike this morning
+- can I go for a walk later?
+- can I go for a walk this morning
+- should I hang the laundry outside next week?
+- should I go for a walk in 3 days
+- should i go for a walk in 3 days
+- can I hang the laundry outside in 3 days
+- can i hang the laundry outside in 3 days
+- can I go for a walk on friday
+- will I need gloves on saturday
+- should I wear sunglasses
+- should i wear sunglasses
+- do I need boots on monday?
+- do I need sunglasses
+- will I need sunglasses
+- should I bring boots this morning
+- do I need a coat the day after tomorrow
+- do I need sunscreen tonight?
+- is it going to be windy this afternoon
+- is it going to be cold on monday?
+- is it going to be windy the day after tomorrow
+- is it going to rain in 3 days
+- is it going to be warm next week
+- is it going to snow today
+- is it going to be cold in 3 days
+- is there any rain forecast
+- any wind forecast in [Kyoto](place) on monday?
+- is there any wind forecast?
+- any sun coming this morning
+- any snow coming
+- is there any wind forecast in [Paris](place) on saturday
+- is there any wind forecast in [paris](place) on saturday
+- any rain coming?
+- any sun coming?
 - what's it like out there?
-- what's it like outside this morning?
-- what's it like out there next week
-- what's it like out there
-- what's it like outside tomorrow morning?
-- what's it like outside on monday?
+- what's it like outside
+- what's it like outside next week?
+- what's it like outside later?
+- what's it like outside?
+- what's it like out there tomorrow morning?
 
 ## intent: open_app
 - launch my [console](app)
 - run the [calc](app)
 - start [Chromium browser](app)
-- launch my [calc](app)
-- launch [editor](app)
-- start the [shell](app)
-- start the [cli](app)
-- start the [chromium](app)
-- launch [calc](app)
-- open the [file manager](app)
-- start the [Firefox browser](app)
-- start my [internet](app)
-- launch [Chromium browser](app)
-- run [system settings](app)
-- start the [editor](app)
-- open my [calc](app)
-- please start [calc](app)
-- start the [calculator](app) please
-- open [editor](app)
-- please open [notepad](app) please
-- please open [notepad](app)
-- launch the [calc](app) please
-- launch [chrome browser](app) please
-- launch [explorer](app)
-- open [chrome browser](app)
-- launch the [firefox](app) please
-- open the [console](app) please
-- start [browser](app) please
-- open [notepad](app)
-- launch the [control panel](app) please
-- please start [term](app) please
-- can you launch a [chrome browser](app)?
-- would you launch [Terminal](app) please
-- would you launch [files](app)?
-- can you start [explorer](app)
-- can you launch the [system settings](app) please?
-- would you open a [file manager](app) please
-- can you open a [text editor](app) please?
-- would you open the [Firefox browser](app)
+- start [calculator](app)
+- run [firefox](app)
+- open the [explorer](app)
+- open the [calc](app)
+- open my [chromium](app)
+- run [calculator](app)
+- open my [command line](app)
+- open my [internet](app)
+- launch the [file explorer](app)
+- run my [web](app)
+- start [firefox](app)
+- launch my [Firefox browser](app)
+- start [calc](app)
+- please start the [command line](app)
+- please launch the [calc](app) please
+- start the [file explorer](app) please
+- launch [Firefox browser](app) please
+- launch [file explorer](app) please
+- start the [calc](app)
+- please start the [notepad](app)
+- launch [settings](app)
+- please start [file explorer](app) please
+- please launch the [system settings](app) please
+- please open the [finder](app)
+- please open the [file manager](app)
+- launch [explorer](app) please
+- start the [chrome browser](app)
+- please start the [shell](app)
+- could you start a [firefox](app) please
+- can you open the [finder](app)
 - could you open a [Firefox browser](app)
-- could you start a [settings](app) please
-- can you start a [control panel](app) please
-- would you open [notepad](app) please
-- would you open the [settings](app)?
-- would you start the [firefox](app) please
+- could you launch a [web browser](app) please
+- could you open a [text editor](app)
+- can you open [terminal](app)
+- can you open the [calculator](app) please?
+- could you start [Firefox browser](app) please?
+- would you start a [system settings](app)?
+- can you start the [notepad](app)
+- can you launch [firefox](app)
+- can you launch [Firefox browser](app)?
+- can you start [Firefox browser](app)?
 - can you start a [notepad](app) please?
 - could you open the [file manager](app)
-- bring up [settings](app)
-- fire up the [finder](app)
-- show the [settings](app)
-- fire up [calc](app)
-- fire up [term](app)
-- fire up the [web browser](app)
+- can you start [shell](app) please
+- pull up [term](app)
+- bring up my [control panel](app)
+- show my [text editor](app)
+- show the [Firefox browser](app)
 - bring up [finder](app)
 - show my [chromium](app)
 - show [cli](app)
-- show the [Firefox browser](app)
-- fire up the [notepad](app)
-- show the [files](app)
-- fire up [preferences](app)
-- fire up the [settings](app)
-- show [control panel](app)
-- bring up the [system settings](app)
-- I need the [editor](app)
-- I need [files](app)
-- I want the [system settings](app)
-- I want [command line](app)
+- show the [firefox browser](app)
+- bring up [mousepad](app)
+- bring up my [Firefox browser](app)
+- show my [Chromium browser](app)
+- bring up [control panel](app)
+- show the [web](app)
+- fire up the [cli](app)
+- fire up the [preferences](app)
+- fire up [term](app)
+- I need a [text editor](app)
 - I want the [editor](app)
-- I need the [command line](app)
-- I need a [internet](app)
-- I need a [Firefox browser](app)
-- I need the [terminal](app)
+- i want the [editor](app)
+- I need the [file manager](app)
+- I need [web browser](app)
+- i need [web browser](app)
+- I need the [browser](app)
+- i need the [browser](app)
 - I want [Chromium browser](app)
-- I want a [calc](app)
-- I want [calculator](app)
-- I need [chromium](app)
-- I want a [chrome browser](app)
+- I need [control panel](app)
+- I want the [term](app)
+- I need a [file explorer](app)
 - I want [control panel](app)
-- I need the [preferences](app)
-- I need to use the [shell](app)
-- I want to use the [firefox](app)
-- I need to use the [system settings](app)
-- I need to use the [calc](app)
-- I want to use the [folders](app)
-- I need to use the [term](app)
-- I want to use the [file explorer](app)
-- I want to use the [Firefox browser](app)
-- I need to use the [folders](app)
+- i want [control panel](app)
+- I need [explorer](app)
+- i need [explorer](app)
+- I need a [firefox](app)
+- I want the [mousepad](app)
+- I need a [preferences](app)
+- i need a [preferences](app)
+- I want a [file explorer](app)
+- I need the [notepad](app)
 - I need to use the [control panel](app)
-- I want to use the [calculator](app)
-- I want to use the [system settings](app)
+- i need to use the [control panel](app)
+- I need to use the [Firefox browser](app)
+- i need to use the [firefox browser](app)
+- I want to use the [term](app)
 - I need to use the [file explorer](app)
-- I need to use the [browser](app)
+- I want to use the [Terminal](app)
 - I want to use the [text editor](app)
+- I want to use the [terminal](app)
+- I want to use the [settings](app)
+- I need to use the [settings](app)
+- i need to use the [settings](app)
+- I need to use the [calc](app)
+- i need to use the [calc](app)
+- I need to use the [files](app)
+- I need to use the [cli](app)
+- [preferences](app) please
+- [preferences](app)
+- [chrome](app) please
+- [control panel](app)
 - [text editor](app)
-- [firefox](app) please
-- [calculator](app) please
-- [cli](app) please
-- [settings](app)
-- [files](app) please
-- [firefox](app)
-- [term](app)
+- [editor](app) please
 - [settings](app) please
-- [mousepad](app)
-- [web](app)
-- [internet](app)
-- [control panel](app) please
-- [file manager](app)
+- [calc](app) please
+- [explorer](app) please
 - [calc](app)
-- launch a new [text editor](app) window
-- launch new [explorer](app) window
-- open new [editor](app) window
-- open new [Browser](app) window
-- launch new [command line](app) window
-- open new [browser](app) window
+- [firefox](app)
+- [Firefox browser](app)
+- [firefox browser](app)
+- [browser](app) please
+- [Chromium browser](app) please
+- [web](app)
+- open a new [system settings](app) window
+- launch new [chrome browser](app) window
+- open a new [files](app) window
+- open new [settings](app) window
+- launch a new [internet](app) window
+- open new [calculator](app) window
+- launch new [text editor](app) window
 - open a new [Chromium browser](app) window
-- open new [web](app) window
-- launch a new [web](app) window
-- open new [file explorer](app) window
+- open a new [chromium browser](app) window
+- open a new [firefox](app) window
+- open a new [chrome browser](app) window
+- launch new [control panel](app) window
+- open new [finder](app) window
+- launch a new [files](app) window
+- launch a new [finder](app) window
 - launch a new [chrome](app) window
-- open a new [mousepad](app) window
-- open new [Firefox browser](app) window
-- get me a [internet](app)
-- give me the [mousepad](app)
-- give me [explorer](app)
-- give me a [chromium](app)
-- give me a [browser](app)
-- give me [terminal](app)
-- give me [calc](app)
-- get me [chrome](app)
-- get me [editor](app)
-- get me a [file manager](app)
-- get me [text editor](app)
-- give me the [system settings](app)
-- get me the [file explorer](app)
-- get me a [files](app)
-- get me the [editor](app)
+- get me a [calculator](app)
+- get me the [file manager](app)
+- get me a [control panel](app)
+- get me a [editor](app)
+- get me the [command line](app)
+- get me the [calculator](app)
+- give me [firefox](app)
+- give me [control panel](app)
+- get me [control panel](app)
+- get me the [internet](app)
+- give me the [shell](app)
+- give me the [calc](app)
+- give me the [Browser](app)
+- give me a [notepad](app)
+- open the [system settings](app) app
+- start the [control panel](app) app
+- start up [explorer](app) application
+- start [chrome](app) program
+- open up the [file explorer](app) program
+- start the [notepad](app) program
+- start [calc](app) app
+- start [web browser](app) program
+- open the [browser](app) app
+- start the [Firefox browser](app) app
+- start [calculator](app) app
+- open [calculator](app) program
+- start [Browser](app) application
+- start up the [control panel](app) application
 - open [mousepad](app) app
-- open the [system settings](app) program
-- start [calc](app) program
-- start up the [editor](app) program
-- open [internet](app) application
-- open up the [files](app) application
-- start the [Chromium browser](app) app
-- open up the [notepad](app) app
-- start up [Chromium browser](app) application
-- start up [calculator](app) program
-- open [file explorer](app) application
-- start the [mousepad](app) application
-- open up [firefox](app) application
-- start up [mousepad](app) program
-- start [settings](app) program
-- start the [folders](app) app
-- launch an application please
-- open an app
-- launch something
-- start an app please
-- start an application
-- start a program
+- start [chrome browser](app) application
+- launch a program please
+- open an application
+- open a program please
+- start an application please
+- open an app please
 - open an application please
 - start something please
+- open something please
+- start an app
+- start something
+- launch something please
 - launch an application
-- launch a program
-- open a program
-- let's open the [finder](app)
-- let's open the [console](app)
-- lets open the [firefox](app)
-- let's open the [system settings](app)
-- let's open the [Terminal](app)
-- let's open the [Firefox browser](app)
-- let's open the [calc](app)
-- let's open the [web](app)
-- let's open the [calculator](app)
-- lets open the [calc](app)
-- let's open the [explorer](app)
-- lets open the [chrome browser](app)
-- let's open the [control panel](app)
-- lets open the [chromium](app)
+- let's open the [notepad](app)
+- let's open the [shell](app)
 - lets open the [Firefox browser](app)
-- switch to the [chrome](app)
-- go to the [terminal](app)
+- let's open the [file manager](app)
+- let's open the [firefox](app)
+- lets open the [preferences](app)
+- lets open the [calc](app)
+- lets open the [explorer](app)
+- lets open the [editor](app)
+- let's open the [command line](app)
+- lets open the [notepad](app)
+- lets open the [finder](app)
+- let's open the [browser](app)
+- go to the [internet](app)
+- switch to the [terminal](app)
+- go to the [text editor](app)
 - go to the [files](app)
-- switch to the [editor](app)
-- go to the [browser](app)
-- switch to the [notepad](app)
-- go to the [folders](app)
-- switch to the [chromium](app)
-- go to the [calc](app)
-- go to the [explorer](app)
-- go to the [editor](app)
-- switch to the [command line](app)
-- go to the [notepad](app)
-- go to the [finder](app)
-- go to the [Firefox browser](app)
+- go to the [command line](app)
+- switch to the [preferences](app)
+- switch to the [Firefox browser](app)
+- switch to the [firefox browser](app)
+- switch to the [console](app)
+- go to the [firefox](app)
+- switch to the [file explorer](app)
+- switch to the [term](app)
+- switch to the [folders](app)
+- switch to the [calc](app)
+- go to the [settings](app)
+- switch to the [file manager](app)
 
 ## intent: recall_me
 - what's my name
@@ -498,171 +564,256 @@
 - do you know my name?
 - who am I
 - who am I?
+- who am i?
+- who am i
 - what do you call me?
-- what did I tell you my name was?
 - what did I tell you my name was
+- what do you call me
+- what did I tell you my name was?
+- what did i tell you my name was?
 - where do I live?
 - where do I live
-- do you remember where I live
+- where do i live?
 - do you remember where I live?
-- do you know where I live?
+- do you remember where i live?
+- do you remember where I live
 - do you know where I live
+- do you know where I live?
+- do you know where i live?
 - what is my home town
-- what's my home town
-- what's my location
+- what is my location?
+- what is my city?
+- what's my home
+- what is my city
+- what's my city
 - what's my location?
-- what is my home
-- what's my home?
+- what's my home town?
+- what's my city?
 - what do you know about me?
-- what do you remember about me
 - what do you remember about me?
 - what do you know about me
-- tell me what you know about me
 - show me what you know about me
 - tell me what you remember about me
-- what have you remembered?
+- tell me what you know about me
+- show me what you remember about me
 - what have you saved
-- what have you saved about me?
-- what have you remembered about me?
 - what have you stored?
-- what have you remembered about me
-- what have you saved about me
+- what have you saved?
+- what have you remembered about me?
+- what have you remembered?
+- what have you stored about me?
+- what have you stored about me
+- what have you remembered
+- do you remember me
 - do you know who I am?
 - do you remember me?
 - do you know who I am
-- do you remember me
-- which town do I live in?
-- which city do I live in?
-- what town do I live in
+- do you know who i am
+- what city do I live in?
 - what place do I live in
-- what town do I live in?
-- which place do I live in
-- which place do I live in?
-- what city do I live in
+- what place do i live in
 - which town do I live in
-- in which city am I based
-- in which city am I based?
-- where am I based
-- in which city am I living
-- where am I living?
+- which town do i live in
+- which town do I live in?
+- which town do i live in?
+- which city do I live in?
+- which place do I live in?
+- which place do i live in?
+- what town do I live in?
+- what city do I live in
 - where am I based?
-- what name do you have for me
-- what name do you have for me?
-- which name do you have for me
+- in which city am I based
+- in which city am I living
+- in which city am i living
+- in which city am I based?
+- in which city am I living?
+- in which city am i living?
 - which name do you know me by
-- which name do you know me by?
+- which name do you have for me
 - which name do you have for me?
+- what name do you know me by
+- which name do you know me by?
+- what name do you have for me
 
 ## intent: remember_me
 - my name is [Gabriel](name)
-- my name is [Chief](name)
-- my name is [Sam](name)
+- my name is [Amara](name)
 - my name is [Eva](name)
-- my name is [Kiki](name)
 - my name is [Léa](name)
-- you can call me [Amara](name)
-- just call me [Professor](name)
-- you can call me [Gab](name)
-- just call me [Kiki](name)
+- my name is [Lucas](name)
+- my name is [Tom](name)
+- my name is [tom](name)
+- you can call me [Ines](name)
 - you can call me [Mia](name)
+- you can call me [Tom](name)
 - just call me [Lucas](name)
-- just call me [Doc](name)
-- you can call me [Léa](name)
-- I'm [Romain](name)
-- I'm [Lucas](name)
+- call me [Romain](name)
+- call me [romain](name)
+- call me [Chloé](name)
+- just call me [Gab](name)
+- you can call me [Amara](name)
 - I'm [Eva](name)
-- I'm [Chief](name)
-- I'm [Kiki](name)
+- i'm [eva](name)
+- I'm [Boss](name)
+- I'm [Gab](name)
+- i'm [gab](name)
 - I'm [Chloé](name)
-- I'm [Mia](name)
-- I am [Tom](name)
-- this is [Yuki](name) speaking
-- I am [Chloé](name)
-- this is [Boss](name)
-- I am [Sam](name)
-- I am [Gab](name)
+- I'm [Kiki](name)
+- I'm [Ines](name)
+- i'm [ines](name)
 - I am [Eva](name)
-- this is [Professor](name)
-- my name is [Ines](name)
-- my name is [Noah](name)
-- remember that my name is [Chloé](name)
-- remember that my name is [Tom](name)
-- my name is [Yuki](name)
+- this is [Gab](name)
+- I am [Professor](name) speaking
+- i am [professor](name) speaking
+- this is [Tom](name) speaking
+- I am [Tom](name)
+- I am [Ines](name) speaking
+- this is [Kiki](name) speaking
+- this is [kiki](name) speaking
+- I am [Doc](name) speaking
+- i am [doc](name) speaking
+- my name is [Chloé](name)
+- remember that my name is [Ines](name)
+- remember that my name is [Gabriel](name)
 - please remember my name is [Tom](name)
-- I live in [Munich](place)
-- I live in [Paris](place)
-- I live in [Vienna](place)
-- I live in [Tokyo](place)
-- I live in [Montreal](place)
-- I live in [Berlin](place)
+- my name is [Gab](name)
+- my name is [gab](name)
+- remember that my name is [Romain](name)
+- remember that my name is [Léa](name)
 - I live in [Lyon](place)
-- remember that I live in [Montreal](place)
+- i live in [lyon](place)
+- I live in [Berlin](place)
+- I live in [Barcelona](place)
 - I live in [New York](place)
-- remember that I live in [Paris](place)
-- I live in [Hamburg](place)
-- remember that I live in [Shenzhen](place)
-- my home town is [Vienna](place)
-- my home town is [New York](place)
-- my city is [Lyon](place)
-- my home town is [Barcelona](place)
-- my city is [Vienna](place)
-- my home town is [Shenzhen](place)
+- I live in [Vienna](place)
+- I live in [Shenzhen](place)
+- I live in [Munich](place)
+- remember that I live in [Hamburg](place)
+- please remember I live in [Berlin](place)
+- please remember i live in [berlin](place)
+- remember that I live in [Berlin](place)
+- remember that i live in [berlin](place)
+- please remember I live in [Vienna](place)
+- please remember i live in [vienna](place)
+- remember that I live in [Lyon](place)
+- remember that i live in [lyon](place)
+- remember that I live in [New York](place)
+- remember that i live in [new york](place)
+- remember that I live in [Munich](place)
+- my home is [Barcelona](place)
 - my home is [Munich](place)
-- I'm based in [Hamburg](place)
-- I'm living in [Berlin](place)
-- I'm based in [Paris](place)
-- I'm living in [Hamburg](place)
-- I'm based in [Berlin](place)
-- I'm based in [Montreal](place)
+- my home is [munich](place)
+- my home town is [Montreal](place)
+- my home town is [Hamburg](place)
+- my home town is [Paris](place)
+- my home is [Vienna](place)
+- my home is [Lisbon](place)
+- my city is [Munich](place)
+- I'm living in [New York](place)
+- I'm based in [Tokyo](place)
+- I'm living in [Vienna](place)
+- i'm living in [vienna](place)
+- I'm based in [New York](place)
+- I'm living in [Lyon](place)
+- I'm based in [Lisbon](place)
 - I moved to [New York](place)
-- I moved to [Munich](place)
-- we moved to [Barcelona](place)
+- we moved to [New York](place)
+- we moved to [new york](place)
+- we moved to [Berlin](place)
+- we moved to [berlin](place)
 - we moved to [Paris](place)
-- I moved to [Montreal](place)
-- change my location to [New York](place)
-- set my home to [Shenzhen](place)
-- set my location to [New York](place)
-- change my location to [Shenzhen](place)
-- change my city to [Paris](place)
-- set my location to [Tokyo](place)
-- change my home to [Tokyo](place)
-- change my home to [Vienna](place)
-- my location is [New York](place)
-- I'm located in [Vienna](place)
+- I moved to [Lyon](place)
+- we moved to [Lyon](place)
+- we moved to [lyon](place)
+- we moved to [Montreal](place)
+- we moved to [montreal](place)
+- change my location to [Tokyo](place)
+- change my location to [tokyo](place)
+- set my city to [Vienna](place)
+- change my location to [Munich](place)
+- set my location to [Lisbon](place)
+- change my home to [Lisbon](place)
+- change my city to [Shenzhen](place)
+- change my city to [shenzhen](place)
+- change my city to [Berlin](place)
+- my location is [Lisbon](place)
+- my location is [Lyon](place)
+- my location is [lyon](place)
+- my location is [Munich](place)
+- I'm located in [Tokyo](place)
 - my location is [Shenzhen](place)
-- I'm located in [New York](place)
-- I'm located in [Lisbon](place)
-- I'm located in [Lyon](place)
-- I'm [Boss](name) and I live in [Paris](place)
-- I'm [Ines](name) and I live in [Hamburg](place)
-- I'm [Romain](name) and I live in [Munich](place)
-- I'm [Noah](name) and I live in [Lisbon](place)
-- I'm [Eva](name) and I live in [Montreal](place)
-- I'm [Ines](name) and I live in [Munich](place)
-- I'm [Ines](name) and I live in [Tokyo](place)
-- I'm [Gabriel](name) and I live in [Berlin](place)
-- store my city
-- save my name
-- remember my location
+- my location is [shenzhen](place)
+- my location is [Tokyo](place)
+- I'm [Léa](name) and I live in [Hamburg](place)
+- i'm [léa](name) and i live in [hamburg](place)
+- I'm [Noah](name) and I live in [Shenzhen](place)
+- i'm [noah](name) and i live in [shenzhen](place)
+- I'm [Lucas](name) and I live in [Shenzhen](place)
+- I'm [Kiki](name) and I live in [Lyon](place)
+- I'm [Boss](name) and I live in [Vienna](place)
+- I'm [Lucas](name) and I live in [Vienna](place)
+- I'm [Professor](name) and I live in [Lisbon](place)
+- my name is [Romain](name) and I live in [Vienna](place)
+- my name is [romain](name) and i live in [vienna](place)
+- my name is [Lucas](name) and I live in [Vienna](place)
+- my name is [lucas](name) and i live in [vienna](place)
+- my name is [Kiki](name) and I live in [Barcelona](place)
+- my name is [Doc](name) and I live in [Lyon](place)
+- my name is [doc](name) and i live in [lyon](place)
+- my name is [Boss](name) and I live in [Vienna](place)
+- my name is [boss](name) and i live in [vienna](place)
+- my name is [Gabriel](name) and I live in [Barcelona](place)
+- my name is [gabriel](name) and i live in [barcelona](place)
+- my name is [Noah](name) and I live in [Shenzhen](place)
+- I live in [Tokyo](place) and my name is [Chief](name)
+- I live in [Lyon](place) and my name is [Eva](name)
+- I live in [New York](place) and my name is [Ines](name)
+- i live in [new york](place) and my name is [ines](name)
+- I live in [Barcelona](place) and my name is [Chief](name)
+- i live in [barcelona](place) and my name is [chief](name)
+- I live in [Lisbon](place) and my name is [Chloé](name)
+- i live in [lisbon](place) and my name is [chloé](name)
+- I live in [Montreal](place) and my name is [Eva](name)
+- I live in [Hamburg](place) and my name is [Doc](name)
+- I live in [Shenzhen](place) and my name is [Chief](name)
+- I live in [Berlin](place), call me [Chloé](name)
+- I live in [New York](place) and call me [Léa](name)
+- i live in [new york](place) and call me [léa](name)
+- I live in [Lisbon](place), call me [Ines](name)
+- I live in [Vienna](place) and call me [Professor](name)
+- i live in [vienna](place) and call me [professor](name)
+- I live in [Montreal](place) and call me [Boss](name)
+- I live in [Tokyo](place) and call me [Amara](name)
+- I live in [Paris](place) and I'm [Yuki](name)
+- I live in [Paris](place), call me [Romain](name)
+- save my location
 - store my name
-- remember my name
-- save my city
-- from today I'm [Chief](name)
-- from now on I'm [Boss](name)
-- from today I'm [Gab](name)
-- from today my name is [Amara](name)
-- from now on call me [Gab](name)
-- from now on my name is [Noah](name)
+- store my location
+- remember my location
+- save my name
+- from now on I'm [Lucas](name)
+- from now on i'm [lucas](name)
+- from now on I'm [Romain](name)
+- from now on my name is [Gabriel](name)
 - from now on call me [Kiki](name)
-- from today call me [Gab](name)
-- I'm living in [Paris](place)
-- I'm now living in [Paris](place)
-- I'm now living in [Shenzhen](place)
-- we're now living in [Hamburg](place)
+- from now on call me [kiki](name)
+- from today my name is [Kiki](name)
+- from now on my name is [Gab](name)
+- from now on my name is [gab](name)
+- from now on call me [Ines](name)
+- from now on call me [ines](name)
+- from today call me [Doc](name)
+- I'm staying in [Berlin](place)
+- i'm staying in [berlin](place)
 - I'm living in [Shenzhen](place)
-- I'm now staying in [Shenzhen](place)
-- we're staying in [Lyon](place)
-- I'm staying in [Vienna](place)
+- we're now living in [Shenzhen](place)
+- we're now living in [shenzhen](place)
+- I'm now staying in [Montreal](place)
+- I'm living in [Paris](place)
+- i'm living in [paris](place)
+- I'm staying in [New York](place)
+- we're now staying in [Lyon](place)
+- we're now living in [Hamburg](place)
 
 ## intent: set_timer
 - make a timer for 90 seconds please
@@ -781,7 +932,10 @@
 - start a pasta timer for 2 hours
 - start a break timer for 20 mins
 - I need a timer
-- I need a timer for 10 minutes
-- I need a timer for 1h30
+- i need a timer
+- I need a timer for 45 seconds
+- I need a timer for 2 and a half hours
 - I need a timer for 30 seconds
-- I need a timer for 15 minutes
+- I need a timer for 10 minutes
+- I need a timer for twenty five minutes
+- i need a timer for twenty five minutes

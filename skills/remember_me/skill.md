@@ -23,6 +23,9 @@ weather and time skills then use.
 - {set|change} my {location|city|home} to [{city}](place)
 - {my location is|I'm located in} [{city}](place)
 - I'm [{first}](name) and I live in [{city}](place)
+- my name is [{first}](name) and I live in [{city}](place)
+- I live in [{city}](place) and my name is [{first}](name)
+- I live in [{city}](place){,| and} {call me|I'm} [{first}](name)
 - {remember|save|store} my {name|location|city}
 - {from now on|from today} {call me|my name is|I'm} [{first}](name)
 - {I'm|we're} {now |}{living|staying} in [{city}](place)
