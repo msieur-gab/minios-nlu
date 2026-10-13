@@ -19,16 +19,20 @@ each time a capability is added.
 What it aims for:
 
 - **Small and local.** The model is about 350 KB and trains in about a minute, on a laptop or on
-  the phone itself. Nothing leaves the device, except what a skill declares it sends (the
-  weather skill sends a place name).
-- **Reliable rather than broad.** When it isn't sure, it asks or says it can't. A confident
-  wrong action is worse than "I can't do that".
+  the phone itself.
+- **Designed by abstention.** What it leaves out is part of the design: no cloud, no large
+  model, no generated text, no account, nothing collected beyond what a skill declares it
+  sends (the weather skill sends a place name). And it abstains at run time too: below its confidence threshold it says it can't,
+  before changing anything it asks when unsure, and what it didn't understand waits in an
+  inbox to be taught, never guessed. A confident wrong action is worse than "I can't do that".
 - **Readable without machine-learning knowledge.** What a skill understands, asks and answers
   is written in a Markdown file. Adding a skill means writing a file, not changing the engine.
-- **Teachable by the person using it.** Sentences it didn't understand wait in an inbox on the
-  phone, where they can be added to a skill, become a new one, or be refused.
-- **Light and long-lived.** Plain JavaScript and Python, no frameworks, no dependencies, so it
-  keeps running on modest hardware for years.
+- **Teachable by the person using it.** In that inbox, on the phone, a sentence can be added to
+  a skill, become a new skill with its own answer, or be refused; the model retrains right there.
+- **Toward permacomputing.** Plain JavaScript and Python with no frameworks or dependencies, a
+  model of about 350 KB, plain-text skill files: it should keep running offline on modest or
+  old hardware for years and stay readable by whoever inherits it. (Training and the demo
+  still rely on a modern browser and GitHub Pages.)
 
 What it is not: a general conversational assistant. It recognises the words its skills were
 taught, not meaning. "Is precipitation likely tomorrow?" fails until a weather example uses
