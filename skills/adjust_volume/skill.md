@@ -48,6 +48,8 @@ track of the level. Brightness uses the same script with its own commands.
 - volume [up](direction)
 - volume [down](direction)
 - {change|adjust} the volume
+- {could you |can you |please }[lower](direction) the {sound|music}{ please|}
+- {could you |can you |please }[raise](direction) the {volume|sound|music}{ please|}
 
 ## Values: level
 - 50%

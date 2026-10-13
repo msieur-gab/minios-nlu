@@ -38,6 +38,8 @@ before it reaches the command line.
 - {create|make} {a |a new |}{folder|directory} {called|named} [{folder}](name) {on the|in my|in the} {|||the |my }[{loc}](location){||| folder}
 - {create|make} a {folder|directory} {called|named} "[{folder}](name)"
 - {create|make} a {folder|directory} {called|named} '[{folder}](name)'
+- {a |a new |}{folder|directory} for [{folder}](name){ please|}
+- I {need|want} a {place|folder} to {keep|store} my [{folder}](name){ in|}
 
 ## Values: folder
 - reports
@@ -107,6 +109,14 @@ before it reaches the command line.
 - q4 planning
 - design ideas
 - phone backup
+- plans for the workshop
+- stuff for school
+- to do list
+- to read
+- notes for march
+- nuts and bolts
+- bits and pieces
+- pens and brushes
 
 ## Values: loc
 - documents

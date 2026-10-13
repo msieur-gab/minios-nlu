@@ -30,6 +30,7 @@ Open-Meteo's place search for that place's time zone, so it needs a connection.
 - {what time|what hour} is it {over |}{in|at} [{city}](place){?|}
 - is it {night|morning|late} in [{city}](place){?|}
 - time in [{city}](place){?|}
+- {what's|what is} the time {over |out |}{in|at} [{city}](place){ right now|}{?|}
 
 ## Values: city
 - Tokyo
@@ -55,6 +56,18 @@ Open-Meteo's place search for that place's time zone, so it needs a connection.
 - San Francisco
 - Kuala Lumpur
 - New Delhi
+- Singapore
+- Toronto
+- Auckland
+- Dubai
+- Istanbul
+- Vancouver
+- Chicago
+- Taipei
+- Jakarta
+- Lagos
+- Oslo
+- Lima
 
 ## Replies
 - done: It's {time}. | {time}.

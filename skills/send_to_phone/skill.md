@@ -32,6 +32,7 @@ topic kept on the device, is in action.md next to it.
 - {notify|ping} my phone{ please|}
 - {send|give} me a {notification|push notification|ping}{ on my phone|}
 - {message|notify} me on my phone{:|} [{msg}](text)
+- {send|push} {me |}a {notification|ping} {saying|that says} [{msg}](text){ please|}
 
 ## Values: msg
 - buy milk
@@ -74,6 +75,14 @@ topic kept on the device, is in action.md next to it.
 - lock the back door
 - the paint is dry
 - call the bank back
+- come home
+- call me back
+- lunch is ready
+- on my way
+- time to go
+- the glue is set
+- table is varnished
+- kettle is on
 
 ## Replies
 - ask_text: What should I send to your phone?

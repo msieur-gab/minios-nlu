@@ -291,7 +291,7 @@
      "ignore": []
     }
    },
-   "sentences": 117,
+   "sentences": 131,
    "values": {
     "direction": [
      {
@@ -539,7 +539,7 @@
      "ignore": []
     }
    },
-   "sentences": 352,
+   "sentences": 354,
    "values": {
     "ext": [
      {
@@ -694,7 +694,7 @@
      "ignore": []
     }
    },
-   "sentences": 316,
+   "sentences": 348,
    "values": {}
   },
   "deny": {
@@ -815,7 +815,7 @@
      "ignore": []
     }
    },
-   "sentences": 82,
+   "sentences": 92,
    "values": {}
   },
   "get_time": {
@@ -862,7 +862,7 @@
      "ignore": []
     }
    },
-   "sentences": 111,
+   "sentences": 120,
    "values": {}
   },
   "get_weather": {
@@ -1540,7 +1540,7 @@
     ]
    },
    "slots": null,
-   "sentences": 118,
+   "sentences": 126,
    "values": {}
   },
   "power": {
@@ -1931,7 +1931,7 @@
      "ignore": []
     }
    },
-   "sentences": 181,
+   "sentences": 201,
    "values": {}
   },
   "set_reminder": {
@@ -2162,7 +2162,7 @@
      "ignore": []
     }
    },
-   "sentences": 216,
+   "sentences": 268,
    "values": {
     "check": [
      {

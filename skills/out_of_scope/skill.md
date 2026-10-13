@@ -126,6 +126,16 @@ says "I can't" instead of guessing.
 - my name is on the door
 - which city is the capital of japan
 - remember the alamo
+- who built you
+- who created you
+- who designed you
+- who programmed you
+- who is your maker
+- time to leave
+- time to go to bed
+- it's time for lunch
+- time for a break
+- remind me who you are
 
 ## Replies
 - say: I didn't understand that. Say help to see what I can do. | That's outside what I can do. Say help for the list.

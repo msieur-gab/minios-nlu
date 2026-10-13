@@ -85,6 +85,11 @@ Makes an empty file. A type ("a python file") becomes the extension; a name that
 - monthly report
 - bug list
 - draft for friday
+- notes for the shed
+- ideas for the garden
+- plans for march
+- to do
+- to read
 
 ## Values: fext
 - notes.md

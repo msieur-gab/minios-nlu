@@ -28,6 +28,9 @@ In the PWA the values are examples (the "sample" list); on the device the comman
 - [{metric}](metric){?| please| status|}
 - {check|run a} {system|health} check
 - {is|are} {there|we} enough [{metric}](metric){?|}
+- {am I|are we|is it} {running|getting} {low|short} on [{metric}](metric){?|}
+- {low|short} on [{metric}](metric){?|}
+- do we still have {enough |}[{metric}](metric){?|}
 
 ## Values: metric
 - disk space

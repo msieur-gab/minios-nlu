@@ -319,9 +319,9 @@ Opening the browser.
   $ mkdir -p $HOME/reports | x-www-browser &
 
 > make a folder called salt and pepper
-  [create_folder {"name":"salt"}]
-  Done. “salt” is now in your home folder.
-  $ mkdir -p $HOME/salt
+  [create_folder {"name":"salt and pepper"}]
+  Done. “salt and pepper” is now in your home folder.
+  $ mkdir -p $HOME'/salt and pepper'
 
 > shut down
   [power {"power_action":"shut down"}]
@@ -528,7 +528,7 @@ Uptime: 3 hours 12 minutes.
   [send_to_phone]
   What should I send to your phone?
 > I love Cookie 🍪
-  [out_of_scope {"text":"Cookie 🍪"}]
+  [out_of_scope {"name":"Cookie 🍪"}]
   Sending it to your phone…
   → Sent to your phone: “I love Cookie 🍪”.
   $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"I love Cookie 🍪"}
@@ -576,7 +576,7 @@ Uptime: 3 hours 12 minutes.
   [send_telegram]
   What should I send on Telegram?
 > the bus is late
-  [out_of_scope]
+  [get_time]
   Sending it on Telegram…
   → Sent on Telegram: “the bus is late”.
   $ POST api.telegram.org/bot•••/sendMessage {"chat_id":"•••","text":"the bus is late"}

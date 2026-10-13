@@ -216,6 +216,20 @@
 - volume [down](direction)
 - adjust the volume
 - change the volume
+- could you [lower](direction) the music please
+- please [lower](direction) the music please
+- can you [lower](direction) the sound please
+- could you [lower](direction) the sound please
+- please [lower](direction) the music
+- please [lower](direction) the sound please
+- please [lower](direction) the sound
+- could you [raise](direction) the music please
+- can you [raise](direction) the music
+- can you [raise](direction) the music please
+- can you [raise](direction) the volume
+- please [raise](direction) the volume please
+- can you [raise](direction) the volume please
+- could you [raise](direction) the volume please
 
 ## intent: affirm
 - yes
@@ -239,93 +253,94 @@
 - y
 
 ## intent: create_file
-- please make a file named [main](name)
-- make a file called [scratch](name)
-- please create a file named [main](name)
-- please create a file named [gift ideas](name)
-- start a new file called [changelog](name)
+- please make a file named [diary](name)
+- make a file called [agenda](name)
+- please create a file named [budget](name)
+- please create a file named [notes for the shed](name)
+- start a new file called [scratch](name)
 - start a new file named [shopping list](name)
-- please start file named [reading list](name)
-- please make a new file named [log](name)
-- please add file named [call notes](name)
-- please add a file called [changelog](name)
-- please make file called [scratch](name)
-- add a new file called [meeting notes](name)
-- please add a new [txt](file_type) file called [book ideas](name)
-- please write new [python](file_type) file named [grocery list](name)
-- start [css](file_type) file called [recipe](name)
-- start a new [Markdown](file_type) file called [letter to mom](name)
-- start a new [markdown](file_type) file called [letter to mom](name)
-- please create new [md](file_type) file named [tasks](name)
-- please make new [javascript](file_type) file called [monthly report](name)
-- please add a [md](file_type) file called [packing list](name)
-- write new [javascript](file_type) file named [Report2026](name)
-- add new [html](file_type) file called [brief](name)
-- please create new [javascript](file_type) file called [journal](name)
-- make [yaml](file_type) file called [index](name)
-- start new [python](file_type) file named [shopping list](name)
-- start an [javascript](file_type) file called [plan](name)
-- write an [yaml](file_type) file called [draft for friday](name) in my [Desktop](location)
-- please start an [python](file_type) file called [scratch](name) in [music](location)
-- please write an [python](file_type) file called [shopping list](name)
-- make a [md](file_type) file named [daily journal](name) in the [documents](location) folder
-- please make a [txt](file_type) file named [travel plan](name) in [desktop](location) folder
-- please write an [text](file_type) file named [readme](name) in [work](location)
-- please write a [html](file_type) file named [index](name)
-- make a [json](file_type) file called [packing list](name) in my [music](location)
-- please add an [python](file_type) file called [reading list](name) in [photos](location)
-- please create an [md](file_type) file called [packing list](name) in [work](location) folder
-- please write an [md](file_type) file named [project notes](name)
-- make a new [txt](file_type) file called [bug list](name) in the [downloads](location)
-- make a [markdown](file_type) file named [plan](name) inside [photos](location)
-- add [Markdown](file_type) file named [Report2026](name) in [work](location)
-- add [markdown](file_type) file named [report2026](name) in [work](location)
-- add [csv](file_type) file called [book ideas](name) inside [Desktop](location)
-- make [csv](file_type) file called [agenda](name) in [projects](location)
-- make a [csv](file_type) file named [agenda](name) inside [Documents](location) folder
-- create a new [md](file_type) file called [config](name) in [photos](location) folder
-- create a new [Markdown](file_type) file named [shopping list](name) inside [archive](location) folder
-- create a new [html](file_type) file called [agenda](name) in my [src](location) folder
-- add a new [csv](file_type) file named [daily journal](name) in [Desktop](location)
-- add a new [csv](file_type) file named [daily journal](name) in [desktop](location)
-- make a [Markdown](file_type) file named [scratch](name) in my [notes](location) folder
-- add a [plain text](file_type) file called [workout log](name) in the [documents](location)
-- create a new file called [index](name) inside [documents](location) folder
-- create a file named [letter to mom](name) in the [Desktop](location)
-- make a file named [daily journal](name) inside my [pictures](location) folder
-- create a file named [project notes](name) inside [Desktop](location)
-- make file called [daily journal](name) in [school](location)
-- make a file named [recipe](name) in my [archive](location)
+- please start file named [changelog](name)
+- please make a new file named [tasks](name)
+- please add file named [ideas for the garden](name)
+- please add a file called [scratch](name)
+- please make file called [packing list](name)
+- add a new file called [plan](name)
+- please add a new [txt](file_type) file called [monthly report](name)
+- please write new [python](file_type) file named [book ideas](name)
+- start [css](file_type) file called [log](name)
+- start a new [Markdown](file_type) file called [grocery list](name)
+- start a new [markdown](file_type) file called [grocery list](name)
+- please create new [md](file_type) file named [release notes](name)
+- please make new [javascript](file_type) file called [plans for march](name)
+- please add a [md](file_type) file called [log](name)
+- write new [javascript](file_type) file named [packing list](name)
+- add a [txt](file_type) file called [todo](name)
+- add a [python](file_type) file named [brief](name)
+- please start a [javascript](file_type) file named [notes](name)
+- please start [markdown](file_type) file called [bug list](name)
+- start an [css](file_type) file called [journal](name) in my [archive](location)
+- add an [csv](file_type) file named [ideas](name) in the [archive](location) folder
+- please add a [yaml](file_type) file called [changelog](name) in [archive](location)
+- create a [css](file_type) file called [notes](name)
+- start an [plain text](file_type) file called [release notes](name)
+- make a [plain text](file_type) file called [index](name) in my [pictures](location)
+- create a [css](file_type) file called [log](name) in [work](location)
+- please add a [Markdown](file_type) file named [to do](name) in [projects](location) folder
+- start a [json](file_type) file named [journal](name)
+- please make a [Markdown](file_type) file called [diary](name) in my [downloads](location)
+- please make a [markdown](file_type) file called [diary](name) in my [downloads](location)
+- please create an [md](file_type) file called [log](name) in [work](location) folder
+- please write an [md](file_type) file named [workout log](name)
+- make a new [txt](file_type) file called [to do](name) in the [downloads](location)
+- make a [markdown](file_type) file named [config](name) inside [photos](location)
+- add [Markdown](file_type) file named [packing list](name) in [work](location)
+- add [markdown](file_type) file named [packing list](name) in [work](location)
+- add [csv](file_type) file called [call notes](name) inside [Desktop](location)
+- make [csv](file_type) file called [letter to mom](name) in [projects](location)
+- make a [csv](file_type) file named [letter to mom](name) inside [Documents](location) folder
+- create a new [md](file_type) file called [budget](name) in [photos](location) folder
+- create a new [Markdown](file_type) file named [journal](name) inside [archive](location) folder
+- create a new [html](file_type) file called [summary](name) in my [src](location) folder
+- add a new [csv](file_type) file named [release notes](name) in [Desktop](location)
+- add a new [csv](file_type) file named [release notes](name) in [desktop](location)
+- make a [Markdown](file_type) file named [packing list](name) in my [notes](location) folder
+- add a [plain text](file_type) file called [draft for friday](name) in the [documents](location)
+- create a new file called [config](name) inside [documents](location) folder
+- create a file named [grocery list](name) in the [Desktop](location)
+- make a file named [book ideas](name) inside my [pictures](location) folder
+- create a file named [workout log](name) inside [Desktop](location)
+- make file called [release notes](name) in [school](location)
+- make a file named [log](name) in my [archive](location)
 - add a file named [draft](name) inside [notes](location)
-- add file named [call notes](name) inside my [archive](location)
-- add file named [index](name) in the [inbox](location)
-- make a file named [ideas](name) inside the [work](location)
-- add a file named [diary](name) in the [work](location)
-- create a new file called [book ideas](name) inside my [archive](location)
-- make a file called [daily journal](name) here
-- add a file named [bug list](name) here
-- create file named [letter to mom](name) here
-- make file called [config](name) here
-- make a file named [log](name) here
-- create a new file named [plan](name) here
-- make a file named [release notes](name) here
+- add file named [ideas for the garden](name) inside my [archive](location)
+- add file named [config](name) in the [inbox](location)
+- make a file named [shopping list](name) inside the [work](location)
+- add a file named [brief](name) in the [work](location)
+- create a new file called [call notes](name) inside my [archive](location)
+- make a file called [book ideas](name) here
+- add a file named [plans for march](name) here
 - create file named [grocery list](name) here
+- make file called [main](name) here
+- make a file named [tasks](name) here
+- create a new file named [index](name) here
+- make a file named [gift ideas](name) here
+- create file named [book ideas](name) here
 - make file named [notes](name) here
-- add a new file called [daily journal](name) here
-- create file called [reading list](name) here
-- add file named [book ideas](name) here
-- create a [markdown](file_type) file called [recipe](name) inside the [current folder](location)
-- make [python](file_type) file called [workout log](name) inside the [current directory](location)
-- make a new [markdown](file_type) file named [diary](name) in the [current directory](location)
-- create a [json](file_type) file called [draft](name) inside [current dir](location)
-- make a new [Markdown](file_type) file named [release notes](name) inside [current dir](location)
-- create a [html](file_type) file called [grocery list](name) inside [current dir](location)
-- make a new [json](file_type) file called [agenda](name) in the [current folder](location)
-- make a new [txt](file_type) file named [agenda](name) inside the [current directory](location)
-- create [python](file_type) file called [bug list](name) inside [this folder](location)
-- make a [html](file_type) file called [daily journal](name) in [this directory](location)
-- add a new [css](file_type) file named [workout log](name) inside [this directory](location)
-- add a new [markdown](file_type) file called [readme](name) in [this folder](location)
+- add a new file called [book ideas](name) here
+- create file called [brief](name) here
+- add file named [call notes](name) here
+- create a [markdown](file_type) file called [agenda](name) inside the [current folder](location)
+- make [python](file_type) file called [bug list](name) inside the [current directory](location)
+- make a new [markdown](file_type) file named [brief](name) in the [current directory](location)
+- create a [json](file_type) file called [meeting notes](name) inside [current dir](location)
+- make a new [Markdown](file_type) file named [workout log](name) inside [current dir](location)
+- create a [html](file_type) file called [travel plan](name) inside [current dir](location)
+- make a new [json](file_type) file called [letter to mom](name) in the [current folder](location)
+- make a new [txt](file_type) file named [summary](name) inside the [current directory](location)
+- create [python](file_type) file called [to do](name) inside [this folder](location)
+- make a [html](file_type) file called [release notes](name) in [this directory](location)
+- add a new [css](file_type) file named [bug list](name) inside [this directory](location)
+- add a new [markdown](file_type) file called [ideas](name) in [this folder](location)
 - touch [app.js](name)
 - add [shopping.txt](name)
 - create [ideas.md](name)
@@ -375,17 +390,17 @@
 - make [plan-2026.md](name) here
 - new [python](file_type) file [todo](name)
 - new [yaml](file_type) file [shopping list](name)
-- new [python](file_type) file [packing list](name)
+- new [python](file_type) file [log](name)
 - new [markdown](file_type) file [shopping list](name)
-- new [Markdown](file_type) file [config](name)
-- new [markdown](file_type) file [config](name)
-- new [html](file_type) file [log](name)
-- new [javascript](file_type) file [shopping list](name)
-- new [css](file_type) file [config](name)
-- new [txt](file_type) file [journal](name)
-- new [csv](file_type) file [agenda](name)
-- new [txt](file_type) file [todo](name)
-- new [yaml](file_type) file [packing list](name)
+- new [Markdown](file_type) file [main](name)
+- new [markdown](file_type) file [main](name)
+- new [html](file_type) file [tasks](name)
+- new [javascript](file_type) file [journal](name)
+- new [css](file_type) file [budget](name)
+- new [txt](file_type) file [draft](name)
+- new [csv](file_type) file [summary](name)
+- new [txt](file_type) file [readme](name)
+- new [yaml](file_type) file [log](name)
 - new file [data.json](name)
 - new file [notes.md](name)
 - new file [app.js](name)
@@ -394,32 +409,32 @@
 - new file [shopping.txt](name)
 - new file [log.txt](name)
 - new file [draft_v2.md](name)
-- new [text](file_type) document called [config](name)
-- new [csv](file_type) note named [draft for friday](name)
-- new [html](file_type) doc named [draft](name)
-- new [yaml](file_type) note called [main](name)
-- new [Markdown](file_type) doc called [grocery list](name)
-- new [javascript](file_type) document named [bug list](name)
-- new [txt](file_type) document named [scratch](name)
-- new [html](file_type) doc called [book ideas](name)
-- new [plain text](file_type) doc called [tasks](name)
-- new [javascript](file_type) note called [recipe](name)
+- new [text](file_type) document called [main](name)
+- new [csv](file_type) note named [to read](name)
+- new [html](file_type) doc named [meeting notes](name)
+- new [yaml](file_type) note called [diary](name)
+- new [Markdown](file_type) doc called [travel plan](name)
+- new [javascript](file_type) document named [to do](name)
+- new [txt](file_type) document named [agenda](name)
+- new [html](file_type) doc called [call notes](name)
+- new [plain text](file_type) doc called [project notes](name)
+- new [javascript](file_type) note called [log](name)
 - new [python](file_type) document named [ideas](name)
-- new [md](file_type) note called [recipe](name)
-- create [md](file_type) document called [monthly report](name)
-- make me a [yaml](file_type) note called [log](name)
-- make me a [html](file_type) note called [readme](name)
+- new [md](file_type) note called [log](name)
+- create [md](file_type) document called [ideas for the garden](name)
+- make me a [yaml](file_type) note called [tasks](name)
+- make me a [html](file_type) note called [ideas](name)
 - start me [Markdown](file_type) doc called [readme](name)
 - start me [markdown](file_type) doc called [readme](name)
 - create a new [md](file_type) document named [journal](name)
-- create a new [plain text](file_type) document named [recipe](name)
-- create a [markdown](file_type) note called [reading list](name)
-- make [Markdown](file_type) note named [draft for friday](name)
-- make me a new [python](file_type) note called [book ideas](name)
-- create me a new [Markdown](file_type) note called [tasks](name)
-- create me a new [markdown](file_type) note called [tasks](name)
-- start me a [javascript](file_type) doc named [book ideas](name)
-- start me a [Markdown](file_type) doc called [index](name)
+- create a new [plain text](file_type) document named [log](name)
+- create a [markdown](file_type) note called [brief](name)
+- make [Markdown](file_type) note named [to read](name)
+- make me a new [python](file_type) note called [call notes](name)
+- create me a new [Markdown](file_type) note called [project notes](name)
+- create me a new [markdown](file_type) note called [project notes](name)
+- start me a [javascript](file_type) doc named [call notes](name)
+- start me a [Markdown](file_type) doc called [main](name)
 - can you create a [css](file_type) file
 - could you make a [python](file_type) file for me?
 - can you create a [javascript](file_type) file for me?
@@ -432,37 +447,37 @@
 - could you create [python](file_type) file for me?
 - can you make [txt](file_type) file?
 - can you make a [text](file_type) file for me?
-- could you make a new file called [config](name)
-- can you create file named [todo](name)?
-- could you create a new file called [grocery list](name)?
-- can you create a file called [daily journal](name)
-- can you make a file called [changelog](name)
-- could you create a file named [reading list](name)?
-- could you create a file named [book ideas](name)
-- could you create a file named [grocery list](name)?
-- can you create file named [config](name)?
-- could you make a new file called [packing list](name)
-- can you create file called [agenda](name)
-- could you create a new file named [summary](name)?
-- I want [html](file_type) file called [notes](name)
-- i want [html](file_type) file called [notes](name)
-- I want [txt](file_type) file named [summary](name)
-- i want [txt](file_type) file named [summary](name)
-- I want [css](file_type) file called [project notes](name)
-- i want [css](file_type) file called [project notes](name)
+- could you make a new file called [budget](name)
+- can you create file named [readme](name)?
+- could you create a new file called [travel plan](name)?
+- can you create a file called [release notes](name)
+- can you make a file called [scratch](name)
+- could you create a file named [brief](name)?
+- could you create a file named [call notes](name)
+- could you create a file named [book ideas](name)?
+- can you create file named [budget](name)?
+- could you make a new file called [summary](name)
+- can you create file called [letter to mom](name)
+- could you create a new file named [daily journal](name)?
+- I want [html](file_type) file called [todo](name)
+- i want [html](file_type) file called [todo](name)
+- I want [txt](file_type) file named [daily journal](name)
+- i want [txt](file_type) file named [daily journal](name)
+- I want [css](file_type) file called [workout log](name)
+- i want [css](file_type) file called [workout log](name)
 - I need [md](file_type) file called [todo](name)
 - i need [md](file_type) file called [todo](name)
-- I want a [csv](file_type) file called [recipe](name)
-- I want [Markdown](file_type) file called [index](name)
-- i want [markdown](file_type) file called [index](name)
-- I want a new [html](file_type) file called [gift ideas](name)
-- i want a new [html](file_type) file called [gift ideas](name)
-- I need a new [python](file_type) file called [travel plan](name)
-- I need [markdown](file_type) file named [packing list](name)
+- I want a [csv](file_type) file called [agenda](name)
+- I want [Markdown](file_type) file called [config](name)
+- i want [markdown](file_type) file called [config](name)
+- I want a new [html](file_type) file called [notes for the shed](name)
+- i want a new [html](file_type) file called [notes for the shed](name)
+- I need a new [python](file_type) file called [monthly report](name)
+- I need [markdown](file_type) file named [summary](name)
 - I need a new [javascript](file_type) file called [readme](name)
-- I need a [csv](file_type) file called [main](name)
-- I need a new [csv](file_type) file named [plan](name)
-- i need a new [csv](file_type) file named [plan](name)
+- I need a [csv](file_type) file called [budget](name)
+- I need a new [csv](file_type) file named [index](name)
+- i need a new [csv](file_type) file named [index](name)
 - I want a new file called [log.txt](name)
 - i want a new file called [log.txt](name)
 - I need a new file named [plan-2026.md](name)
@@ -523,30 +538,31 @@
 - make a new file here
 - make a file here
 - make file here
-- make a file in the [projects](location) called [letter to mom](name)
-- make file in my [photos](location) named [book ideas](name)
-- create file inside the [pictures](location) called [ideas](name)
-- make file in the [Documents](location) folder named [journal](name)
-- make file in the [documents](location) folder named [journal](name)
-- make a file in [school](location) called [gift ideas](name)
-- make a file inside my [school](location) named [agenda](name)
-- make file inside [src](location) called [readme](name)
-- make file in [archive](location) called [scratch](name)
-- create file inside [notes](location) called [reading list](name)
-- make file inside [projects](location) called [travel plan](name)
-- make a file inside [school](location) folder called [bug list](name)
-- make a file in [music](location) named [config](name)
+- make a file in the [projects](location) called [project notes](name)
+- make file in my [photos](location) named [call notes](name)
+- create file inside the [pictures](location) called [shopping list](name)
+- make file in the [Documents](location) folder named [draft](name)
+- make file in the [documents](location) folder named [draft](name)
+- make a file in [school](location) called [draft for friday](name)
+- make a file inside my [school](location) named [summary](name)
+- make file inside [src](location) called [ideas](name)
+- make file in [archive](location) called [agenda](name)
+- create file inside [notes](location) called [changelog](name)
+- make file inside [projects](location) called [bug list](name)
+- make a file inside [school](location) folder called [plans for march](name)
+- make a file in [music](location) named [main](name)
+- write a new note called [journal](name)
+- start new note named [bug list](name)
+- write new document called [summary](name)
+- start new document called [call notes](name)
+- write a new note named [tasks](name)
 - write a new note called [shopping list](name)
-- start new note named [workout log](name)
-- write new document called [packing list](name)
-- start new document called [book ideas](name)
-- write a new note named [log](name)
 - start new document named [notes](name)
 - start a new note called [notes](name)
-- write new note called [ideas](name)
-- start a new document called [reading list](name)
-- write new document named [grocery list](name)
-- start new document called [summary](name)
+- write new note called [shopping list](name)
+- start a new document called [changelog](name)
+- write new document named [travel plan](name)
+- start new document called [daily journal](name)
 - touch [plan-2026.md](name)
 - touch [shopping.txt](name)
 - touch [config.yml](name)
@@ -568,199 +584,193 @@
 - make [plan-2026.md](name) on the [notes](location)
 - create [data.json](name) in my [school](location)
 - create [md](file_type) file named [notes](name) in my the [inbox](location) folder
-- add [plain text](file_type) file named [letter to mom](name) on the [src](location)
-- add [Markdown](file_type) file called [Report2026](name) in my [pictures](location) folder
-- create [json](file_type) file called [letter to mom](name) on the [music](location)
+- add [plain text](file_type) file named [grocery list](name) on the [src](location)
+- add [Markdown](file_type) file called [recipe](name) in my [pictures](location) folder
+- create [json](file_type) file called [grocery list](name) on the [music](location)
 - create a new [csv](file_type) file called [readme](name) on the [inbox](location) folder
-- add a new [css](file_type) file named [call notes](name) in my [Desktop](location)
-- create a [txt](file_type) file called [config](name) on the the [work](location)
+- add a new [css](file_type) file named [ideas for the garden](name) in my [Desktop](location)
+- create a [txt](file_type) file called [budget](name) on the the [work](location)
 - create a new [html](file_type) file called [notes](name) in my [pictures](location)
-- make a [yaml](file_type) file called [workout log](name) on the [inbox](location)
-- add a new [plain text](file_type) file called [call notes](name) in my the [photos](location)
-- add a new [plain text](file_type) file called [agenda](name) in my [photos](location) folder
-- create a new [markdown](file_type) file named [brief](name) on the [photos](location)
-- lets create [markdown](file_type) file named [grocery list](name)
-- let's create a [txt](file_type) file called [changelog](name)
-- lets create a [json](file_type) file called [workout log](name)
-- lets make a [txt](file_type) file called [call notes](name)
-- let's create a [csv](file_type) file named [main](name)
-- let's create a [python](file_type) file named [project notes](name)
-- lets create [txt](file_type) file called [todo](name)
-- lets make [yaml](file_type) file called [monthly report](name)
-- let's create [css](file_type) file called [meeting notes](name)
-- lets make a [markdown](file_type) file called [call notes](name)
-- lets create a [yaml](file_type) file called [draft for friday](name)
-- lets make a [html](file_type) file named [brief](name)
+- make a [yaml](file_type) file called [draft for friday](name) on the [inbox](location)
+- add a new [plain text](file_type) file called [notes for the shed](name) in my the [photos](location)
+- add a new [plain text](file_type) file called [letter to mom](name) in my [photos](location) folder
+- create a new [markdown](file_type) file named [Report2026](name) on the [photos](location)
+- let's make a [txt](file_type) file named [shopping list](name)
+- let's create a [python](file_type) file called [workout log](name)
+- let's create a [csv](file_type) file named [meeting notes](name)
+- lets create a [txt](file_type) file named [monthly report](name)
+- let's create [python](file_type) file called [readme](name)
+- let's create a [txt](file_type) file named [workout log](name)
+- let's make a [csv](file_type) file called [changelog](name)
+- lets make [md](file_type) file named [shopping list](name)
+- let's make [md](file_type) file called [shopping list](name)
+- lets create a [csv](file_type) file named [bug list](name)
+- let's create [txt](file_type) file named [diary](name)
+- lets create [csv](file_type) file called [journal](name)
 
 ## intent: create_folder
-- please add dir named [family photos](name)
-- build a folder named [letters](name)
-- set up a directory named [todo](name)
-- create a directory named [invoices](name)
-- create a new dir named [WoodShop](name)
-- make a dir called [client-work](name)
-- build a dir named [experiments](name)
-- create a new directory named [holiday photos](name)
-- create a new dir named [PhotosRaw](name)
-- create a new dir named [photosraw](name)
-- please create dir called [travel](name)
-- set up a new folder called [garden plans](name)
-- please set up a new folder named [spare parts](name)
-- please create a dir called [misc](name)
-- add a dir named [drafts](name)
-- make folder named [archive](name) under [school](location) folder
-- create folder called [recipes from grandma](name) in [inbox](location)
-- please create a new folder called [music lessons](name) in [projects](location)
-- please create folder named [misc](name) in [work](location)
-- please add folder named [assets](name) under [downloads](location)
-- please add directory called [tax returns](name) inside [inbox](location)
-- please create directory called [fonts](name) within [Documents](location)
-- make a folder called [bills](name) under [home](location) folder
+- please add dir named [music lessons](name)
+- build a folder named [assets](name)
+- set up a directory named [drafts](name)
+- create a directory named [holiday photos](name)
+- create a new dir named [screenshots](name)
+- please set up folder named [house plans](name)
+- please set up a directory called [to do list](name)
+- please build a directory named [summer camp](name)
+- make a new folder named [my scripts](name)
+- please create a new dir called [2026_budget](name)
+- please create a dir named [holiday photos](name)
+- set up a folder called [work in progress](name)
+- make a new directory called [to do list](name)
+- please add folder named [experiments](name) inside the [notes](location)
+- add folder named [old stuff](name) within [Documents](location) folder
+- create a folder called [PhotosRaw](name) inside [Documents](location)
+- please create folder named [school](name) in [work](location)
+- please add folder named [homework](name) under [downloads](location)
+- please add directory called [client projects](name) inside [inbox](location)
+- please create directory called [misc](name) within [Documents](location)
+- make a folder called [sandbox](name) under [home](location) folder
 - please create a new directory called [ideas](name) inside my [desktop](location)
-- please make folder called [project-x](name) inside [src](location)
-- make a new directory named [tax returns](name) within my [inbox](location)
-- add folder named [demo](name) in [archive](location)
-- add directory named [PhotosRaw](name) within [school](location)
-- add directory named [photosraw](name) within [school](location)
-- create a new folder named [drafts](name) within [Desktop](location) folder
-- create a new folder called [client projects](name) here
-- create a new directory called [Recipes](name) here
-- create a new directory called [recipes](name) here
-- create a new folder [temp](name) here
-- make a new directory [Japan trip](name) here
-- make directory named [pitch deck](name) here
-- make directory called [tools](name) here
-- make a new directory named [lab](name) here
-- create directory named [travel](name) here
-- create a new folder named [holiday photos](name) here
-- make a new directory [PhotosRaw](name) here
-- make a new directory [photosraw](name) here
-- make a new directory [summer camp](name) here
-- create folder [demo](name) here
-- make a new folder called [old invoices](name) here
-- make a new directory named [cedar box](name) inside [this directory](location)
-- create a folder called [v2](name) inside the [current directory](location)
-- create a new directory named [client projects](name) inside the [current folder](location)
-- create a new directory named [q3-review](name) inside the [current folder](location)
-- create folder called [lab](name) in [current dir](location)
-- create a folder named [notes](name) in the [current directory](location)
-- make folder named [experiments](name) in the [current directory](location)
-- create a folder named [lab](name) inside the [current directory](location)
-- create folder named [Recipes](name) inside the [current folder](location)
-- create folder named [recipes](name) inside the [current folder](location)
-- create a new directory named [screenshots](name) in [this directory](location)
-- make a folder named [game saves](name) in the [current directory](location)
-- create a new directory named [travel](name) in [current dir](location)
-- make a directory called [Recipes](name) in [current dir](location)
-- make a new folder named [sandbox](name) in [this folder](location)
-- create a new folder in [inbox](location) called [phone backup](name)
-- create a directory inside [Documents](location) named [kids drawings](name)
-- add a directory inside [pictures](location) called [ideas](name)
-- create a folder in my [Desktop](location) named [work in progress](name)
-- create directory in the [downloads](location) called [spare parts](name)
-- add directory in [Documents](location) called [old stuff](name)
-- create folder in my [music](location) called [garden plans](name)
-- add a new folder inside [downloads](location) called [journal](name)
-- create a new folder inside [desktop](location) called [trip to lisbon](name)
-- add folder inside [projects](location) called [receipts](name)
-- make a new folder in [home](location) called [drafts](name)
-- make a directory in [projects](location) folder named [family photos](name)
-- make a folder inside [home](location) called [temp](name)
-- make a new directory inside my [downloads](location) named [receipts](name)
-- create directory here called [holiday photos](name)
-- create a folder here called [fonts](name)
-- make folder here called [fonts](name)
-- create directory here called [temp](name)
-- create folder here named [family photos](name)
-- create directory here called [q3-review](name)
-- make directory here called [maps](name)
-- make a new folder here named [maps](name)
-- make directory here named [kids drawings](name)
-- make a folder here called [misc](name)
-- create directory here named [my scripts](name)
-- create a folder here called [school](name)
-- create a folder here named [archive](name)
-- create a directory here called [q3-review](name)
+- please make folder called [2026_budget](name) inside [src](location)
+- make a new directory named [client projects](name) within my [inbox](location)
+- add folder named [old invoices](name) in [archive](location)
+- add directory named [lab](name) within [school](location)
+- please add a folder called [pitch deck](name) inside the [Documents](location) folder
+- create a folder called [music](name) here
+- create a new directory named [archive](name) here
+- create a directory [WoodShop](name) here
+- create a directory [woodshop](name) here
+- create a folder called [house plans](name) here
+- create folder [nuts and bolts](name) here
+- make a new directory [spare parts](name) here
+- make a new directory [old invoices](name) here
+- make directory named [phone backup](name) here
+- make a new folder [trip to lisbon](name) here
+- create a new folder named [drafts](name) here
+- create directory named [phone backup](name) here
+- make a new folder [journal](name) here
+- make folder called [game saves](name) here
+- make folder named [assets](name) here
+- create folder named [wip](name) inside [this directory](location)
+- create a new directory called [todo](name) in the [current directory](location)
+- create folder called [assets](name) inside [current dir](location)
+- create folder called [sandbox](name) inside the [current directory](location)
+- make folder called [family photos](name) in the [current directory](location)
+- create a new directory called [Recipes](name) inside the [current folder](location)
+- create a new directory called [recipes](name) inside the [current folder](location)
+- create a new directory named [Recipes](name) in [this folder](location)
+- create a new directory named [recipes](name) in [this folder](location)
+- create a folder called [plans for the workshop](name) inside [this directory](location)
+- create a directory called [recipes from grandma](name) in the [current directory](location)
+- create a folder called [wip](name) in [current dir](location)
+- create a new directory called [travel](name) inside [current dir](location)
+- create a new folder called [bills](name) in the [current directory](location)
+- create directory called [house plans](name) in [current dir](location)
+- create directory named [pitch deck](name) inside [this directory](location)
+- create a folder in the [documents](location) named [readings](name)
+- make folder in [src](location) called [WoodShop](name)
+- create a directory inside [Desktop](location) called [drafts](name)
+- create a directory inside [desktop](location) called [drafts](name)
+- create folder in [downloads](location) folder named [temp](name)
+- add a new folder in the [photos](location) folder called [family photos](name)
+- create directory inside the [archive](location) called [ideas](name)
+- create a directory inside [notes](location) named [temp](name)
+- create a folder in the [school](location) called [archive](name)
+- make a new directory in [music](location) called [kids drawings](name)
+- make a directory inside the [inbox](location) called [garden plans](name)
+- make a new folder in [work](location) called [misc](name)
+- create a folder in [projects](location) named [screenshots](name)
+- add directory in [Documents](location) called [PhotosRaw](name)
+- create a new directory in [archive](location) folder called [music](name)
+- make a folder here called [wedding pics](name)
+- create a folder here called [2026_budget](name)
+- create a new directory here named [bits and pieces](name)
+- create a new directory here called [design ideas](name)
+- create a new directory here called [work in progress](name)
+- make folder here called [pens and brushes](name)
+- create a new folder here named [work in progress](name)
+- create a new directory here named [letters](name)
+- make a new directory here named [trip to lisbon](name)
+- make a folder here named [music](name)
+- create a new directory here called [car stuff](name)
+- make folder here called [receipts](name)
+- create a new directory here called [client-work](name)
+- make a folder here called [client-work](name)
+- new folder [misc](name) please
+- new folder [nuts and bolts](name) please
 - new folder [q4 planning](name) please
-- new folder [game saves](name) please
-- new folder [homework](name) please
-- new folder [fonts](name)
-- new folder [garden plans](name) please
-- new folder [WoodShop](name) please
-- new folder [client projects](name) please
 - new folder [v2](name) please
-- new folder [todo](name)
-- new folder [experiments](name)
-- new folder [wedding pics](name)
-- new folder [inbox](name) please
-- new folder [v2](name)
-- new folder [holiday photos](name) please
-- new directory in the [archive](location) named [family photos](name)
-- new directory inside [documents](location) called [sandbox](name)
-- new directory inside [Desktop](location) named [school](name)
-- new directory inside [desktop](location) named [school](name)
-- new directory in [Documents](location) folder named [sandbox](name)
-- new directory in [documents](location) folder named [sandbox](name)
-- new folder in [Desktop](location) called [todo](name)
-- new folder in [desktop](location) named [screenshots](name)
-- new folder inside my [notes](location) folder called [misc](name)
-- new directory in [src](location) named [game saves](name)
-- new directory inside [work](location) named [assets](name)
-- new folder inside [notes](location) named [my scripts](name)
-- new directory inside the [pictures](location) named [recipes from grandma](name)
-- new directory inside the [downloads](location) called [lab](name)
-- new directory in [school](location) named [lab](name)
-- new folder inside the [inbox](location) called [trip to lisbon](name)
-- could you make folder called [family photos](name)?
-- could you make a folder named [q4 planning](name)?
-- can you make a folder named [q4 planning](name)
-- could you create folder named [PhotosRaw](name) for me?
-- could you make a folder named [tools](name)
-- can you make a new folder named [q3-review](name) for me
-- could you create a new folder named [project-x](name)?
-- could you make a folder called [client projects](name)?
-- can you create folder named [2026_budget](name) for me
-- could you make a new folder called [letters](name) for me
-- could you make folder named [old stuff](name)
-- can you create a folder called [letters](name)
-- can you make a new folder named [summer camp](name) for me
-- can you make a new folder named [music](name) for me?
-- can you make a new folder inside the [music](location)
-- could you make folder in my [notes](location)
-- can you make a folder in the [projects](location)
-- could you create folder in the [work](location)
-- can you make a folder inside my [inbox](location)
-- could you make a new folder in the [home](location)?
-- can you make a new folder in [notes](location)
-- can you create folder inside [pictures](location) folder
-- can you create a new folder inside the [archive](location) folder?
-- could you make folder inside the [photos](location) folder
-- can you create a folder inside [inbox](location)?
-- could you make a folder inside [music](location)?
-- could you make a folder in [music](location)
-- can you make a folder in the [home](location)
-- I need directory named [garden plans](name) in my [downloads](location)
-- I want a folder for [wip](name)
-- i want a folder for [wip](name)
-- I need a new folder called [kids drawings](name)
-- I want directory called [sandbox](name)
-- i want directory called [sandbox](name)
-- I need a new directory called [old invoices](name) in the [src](location) folder
-- I need a new folder for [tax returns](name)
-- i need a new folder for [tax returns](name)
-- I want a new folder for [demo](name) in [music](location)
-- I need a folder named [car stuff](name)
-- I want a new folder called [client-work](name)
-- i want a new folder called [client-work](name)
-- I want a folder for [tools](name)
-- i want a folder for [tools](name)
-- I need a folder named [tax returns](name)
-- I need folder called [work in progress](name)
-- i need folder called [work in progress](name)
-- I need a directory for [work in progress](name)
-- i need a directory for [work in progress](name)
-- I want a folder named [Japan trip](name) in the [downloads](location)
-- i want a folder named [japan trip](name) in the [downloads](location)
+- new folder [misc](name)
+- new folder [screenshots](name) please
+- new folder [project-x](name) please
+- new folder [receipts](name)
+- new folder [bits and pieces](name)
+- new folder [summer camp](name) please
+- new folder [nuts and bolts](name)
+- new folder [receipts](name) please
+- new directory in the [downloads](location) named [my scripts](name)
+- new folder inside the [documents](location) folder called [holiday photos](name)
+- new folder in the [downloads](location) called [q4 planning](name)
+- new folder inside the [desktop](location) folder called [garden plans](name)
+- new directory inside the [notes](location) called [taxes](name)
+- new directory in the [projects](location) named [screenshots](name)
+- new folder in [music](location) named [drafts](name)
+- new directory inside the [Desktop](location) called [trip to lisbon](name)
+- new directory inside the [desktop](location) called [trip to lisbon](name)
+- new directory in [Desktop](location) named [spare parts](name)
+- new directory in my [home](location) named [old stuff](name)
+- new folder in the [src](location) folder named [tools](name)
+- new directory in my [inbox](location) folder named [client projects](name)
+- new directory in [work](location) folder called [archive](name)
+- new folder in [work](location) named [house plans](name)
+- can you make a new folder named [game saves](name)
+- can you make a folder named [client-work](name)?
+- could you make a folder named [kids drawings](name)?
+- could you make a new folder named [to read](name) for me
+- could you make a new folder called [garden plans](name)
+- can you make folder named [house plans](name) for me
+- can you make a new folder called [fonts](name)?
+- could you make a folder named [nuts and bolts](name)
+- can you create folder named [readings](name) for me?
+- could you make a folder named [ideas](name)
+- can you create a new folder called [notes](name)
+- could you make a folder named [bills](name) for me?
+- can you create a new folder called [spare parts](name) for me
+- could you make folder named [archive](name) for me
+- can you make a folder in [documents](location)?
+- could you make a new folder in [src](location)
+- can you make folder inside the [Desktop](location) folder?
+- can you make folder inside the [desktop](location) folder?
+- could you create a new folder inside my [archive](location) folder?
+- could you make a new folder inside the [downloads](location)
+- could you make a folder in the [work](location)?
+- could you create a new folder inside [desktop](location)?
+- can you make a new folder in my [music](location) folder
+- can you create a folder inside the [projects](location)
+- could you make folder inside [photos](location) folder
+- could you make folder inside the [pictures](location)
+- can you make a new folder in [school](location)
+- can you create folder inside [Desktop](location)?
+- can you create a new folder inside [school](location)
+- I need directory named [PhotosRaw](name)
+- i need directory named [photosraw](name)
+- I want a new folder for [spare parts](name)
+- I want a new directory called [receipts](name) in [Documents](location)
+- I need a new directory named [summer camp](name)
+- I want directory called [scans](name)
+- I want folder for [old stuff](name) in [inbox](location)
+- i want folder for [old stuff](name) in [inbox](location)
+- I want directory called [bits and pieces](name)
+- i want directory called [bits and pieces](name)
+- I need a folder for [ideas](name)
+- I need directory for [music lessons](name)
+- I want directory called [summer camp](name) in [notes](location)
+- I want a new directory called [todo](name)
+- I want directory for [temp](name) in [documents](location)
+- I need a new directory called [misc](name) in the [Desktop](location)
+- I want directory called [game saves](name)
+- i want directory called [game saves](name)
+- create a new folder please
 - create folder please
 - make a folder please
 - make directory please
@@ -772,143 +782,181 @@
 - make folder
 - create directory please
 - make a new folder
-- create folder in the [archive](location)
-- make a new directory in the [home](location)
-- make a directory in [documents](location)
-- make a new folder in [home](location)
-- make directory inside [school](location)
-- create a new directory inside [archive](location)
-- make a new directory inside [school](location)
-- create directory inside the [desktop](location) folder
-- create a directory in [Documents](location)
-- create a new folder in [notes](location)
-- make directory in the [src](location)
-- make a folder inside the [work](location) folder
-- make a directory inside [Desktop](location) folder
-- create a new folder inside my [archive](location)
-- make a directory here
-- make a folder here
-- make folder here
+- make directory in [school](location)
+- make folder in my [work](location)
+- make a new folder in [downloads](location)
+- create a folder in my [photos](location)
+- create a new folder in the [Desktop](location) folder
+- make folder in [src](location)
+- make a new folder inside [photos](location)
+- make folder in the [inbox](location)
+- create a directory in [archive](location)
+- create directory inside [pictures](location)
+- create directory in the [inbox](location)
+- make directory in my [documents](location)
+- make a new folder inside the [Documents](location) folder
+- make a new folder inside the [documents](location) folder
+- make a directory inside [work](location) folder
 - make directory here
-- create directory here
 - create folder here
+- make folder here
+- create a new folder here
+- create directory here
+- create a directory here
+- make a directory here
+- make a new folder here
 - create a new directory here
-- make a new directory here
-- make [client projects](name) directory
-- create [car stuff](name) directory
-- create [v2](name) folder in [school](location)
-- create [backup](name) directory in [projects](location)
-- make [experiments](name) folder in the [photos](location) folder
-- create [my scripts](name) directory in my [work](location)
-- create [receipts](name) folder
-- make [invoices](name) directory in [archive](location)
-- make [client projects](name) directory in [school](location)
-- create [v2](name) directory
-- make [demo](name) directory in the [home](location)
-- make [journal](name) folder in the [notes](location) folder
-- make [invoices](name) folder
-- make [work in progress](name) directory
-- add subfolder called [old stuff](name) in [work](location)
-- create subfolder called [experiments](name) inside the [work](location) folder
-- create subfolder named [pitch deck](name) inside the [school](location)
-- create a subfolder named [drafts](name) inside [documents](location)
-- create a subfolder called [WoodShop](name) inside the [Documents](location)
-- add subfolder called [old invoices](name) inside my [desktop](location)
-- add subfolder named [PhotosRaw](name) in my [desktop](location)
-- create subfolder called [travel](name) to [work](location) folder
-- create a subfolder named [misc](name) to my [src](location)
-- create subfolder called [design ideas](name) inside the [archive](location)
-- create subfolder called [scans](name) inside [pictures](location)
-- add a subfolder named [assets](name) in [home](location)
-- add a subfolder called [trip to lisbon](name) to [projects](location)
-- create subfolder called [WoodShop](name) to [archive](location) folder
-- mkdir [fonts](name)
-- mkdir [archive](name)
-- mkdir [pitch deck](name)
-- mkdir [holiday photos](name)
-- mkdir [phone backup](name)
-- mkdir [q4 planning](name)
-- mkdir [Recipes](name)
-- mkdir [recipes](name)
-- mkdir [house plans](name)
+- create [car stuff](name) folder in [Desktop](location)
+- make [stuff for school](name) directory
+- make [school](name) directory
+- make [2026_budget](name) directory in [school](location)
+- make [q3-review](name) folder
+- create [q4 planning](name) directory
+- create [PhotosRaw](name) directory
+- make [notes for march](name) folder
+- create [maps](name) directory
+- make [project-x](name) directory in [src](location) folder
+- create [journal](name) directory
+- make [experiments](name) directory in [Documents](location)
+- make [maps](name) directory
+- create [backup](name) folder in the [src](location)
+- create a subfolder named [Japan trip](name) inside [Documents](location) folder
+- create a subfolder named [japan trip](name) inside [documents](location) folder
+- create subfolder called [fonts](name) inside the [work](location) folder
+- create subfolder named [tools](name) inside the [school](location)
+- create a subfolder named [scans](name) inside [documents](location)
+- create a subfolder called [screenshots](name) inside the [Documents](location)
+- add subfolder called [game saves](name) inside my [desktop](location)
+- add subfolder named [lab](name) in my [desktop](location)
+- create subfolder named [ideas](name) inside my [projects](location)
+- create subfolder called [stuff for school](name) inside the [Desktop](location)
+- create subfolder called [bits and pieces](name) inside the [archive](location)
+- create subfolder called [sketches](name) inside [pictures](location)
+- add a subfolder named [PhotosRaw](name) in [home](location)
+- add a subfolder named [photosraw](name) in [home](location)
+- add a subfolder named [spare parts](name) inside [photos](location)
+- create a subfolder called [taxes](name) in the [projects](location)
+- mkdir [misc](name)
+- mkdir [WoodShop](name)
+- mkdir [invoices](name)
+- mkdir [taxes](name)
+- mkdir [notes for march](name)
+- mkdir [nuts and bolts](name)
 - mkdir [reports](name)
-- mkdir [bills](name)
-- mkdir [recipes from grandma](name)
-- mkdir [my scripts](name)
-- mkdir [sketches](name)
-- add a new folder named [sandbox](name) in [src](location) folder
-- put a new folder named [music](name) in [documents](location)
-- please add a folder named [family photos](name) in the [inbox](location) folder
-- please put folder called [demo](name) on [Desktop](location)
-- add a folder named [misc](name) on [desktop](location)
-- add a new folder called [kids drawings](name) on [Documents](location)
-- add a new folder called [kids drawings](name) on [documents](location)
-- put a folder named [drafts](name) on the [documents](location)
-- put a folder named [client projects](name) in my [documents](location)
-- please add folder named [temp](name) in [desktop](location)
-- please add a new folder named [backup](name) on [Desktop](location)
-- put folder called [kids drawings](name) in [Documents](location)
-- put folder named [scans](name) on [photos](location)
-- please put a new folder named [fonts](name) on [desktop](location)
-- put a new folder called [my scripts](name) on [home](location) folder
-- lets make folder called [receipts](name)
-- let's create a directory called [design ideas](name)
-- lets make a folder called [backup](name)
-- let's make directory named [wip](name)
-- let's create a folder named [maps](name)
-- lets create a folder called [todo](name)
-- lets create a folder called [PhotosRaw](name)
-- lets make a directory named [phone backup](name)
-- lets make a folder named [misc](name)
-- let's make folder called [v2](name)
-- lets create a folder called [readings](name)
-- lets make folder named [school](name)
-- let's make directory named [cedar box](name)
-- lets make folder named [wedding pics](name)
-- make a folder called [prototypes](name) in the [src](location) folder
-- create a new directory called [Recipes](name) in the [work](location)
-- create a directory named [v2](name) in the [notes](location)
-- make a folder called [screenshots](name) on the my [documents](location) folder
-- create a folder called [Recipes](name) in the [Documents](location)
-- create a folder called [recipes](name) in the [documents](location)
-- create folder called [old invoices](name) on the [music](location)
-- create a new directory named [readings](name) in my [documents](location) folder
-- make a new directory called [letters](name) on the [school](location)
-- create a new folder called [demo](name) in the the [Desktop](location)
-- create a new folder called [demo](name) in the the [desktop](location)
-- create directory named [invoices](name) in my [Desktop](location) folder
-- create directory named [invoices](name) in my [desktop](location) folder
-- create a directory named [homework](name) in my [desktop](location)
-- make folder called [taxes](name) in the [src](location)
-- create directory named [car stuff](name) in my [projects](location)
-- create a directory called [PhotosRaw](name) in the the [photos](location)
-- make a directory called "[receipts](name)"
-- make a folder named "[old stuff](name)"
-- make a directory named "[todo](name)"
-- make a folder called "[game saves](name)"
-- create a directory called "[taxes](name)"
-- make a directory named "[demo](name)"
-- make a directory called "[sketches](name)"
-- make a folder called "[q4 planning](name)"
-- create a directory named "[my scripts](name)"
-- create a folder named "[notes](name)"
-- create a folder called "[house plans](name)"
-- make a folder named "[phone backup](name)"
-- make a directory named "[inbox](name)"
-- make a directory named '[client projects](name)'
-- create a directory called '[backup](name)'
-- create a directory called '[kids drawings](name)'
-- create a directory named '[summer camp](name)'
-- create a folder named '[design ideas](name)'
-- make a folder named '[project-x](name)'
-- create a folder called '[reports](name)'
-- make a folder called '[tax returns](name)'
-- create a directory called '[wip](name)'
-- make a folder called '[receipts](name)'
-- make a folder called '[archive](name)'
-- make a folder called '[pitch deck](name)'
-- make a directory named '[lab](name)'
-- make a directory called '[recipes from grandma](name)'
+- mkdir [garden plans](name)
+- mkdir [game saves](name)
+- mkdir [music](name)
+- mkdir [wip](name)
+- mkdir [homework](name)
+- mkdir [backup](name)
+- put folder named [summer camp](name) on my [projects](location) folder
+- please add folder called [fonts](name) on [music](location)
+- put a new folder named [experiments](name) in my [projects](location)
+- please add a folder named [holiday photos](name) on my [documents](location) folder
+- add a folder named [pitch deck](name) on [desktop](location)
+- add a new folder called [backup](name) on [Documents](location)
+- add a new folder called [backup](name) on [documents](location)
+- put a folder named [scans](name) on the [documents](location)
+- put a folder named [wedding pics](name) in my [documents](location)
+- please add folder named [letters](name) in [desktop](location)
+- please add a new folder named [old stuff](name) on [Desktop](location)
+- put folder called [old stuff](name) in [Documents](location)
+- put folder named [sketches](name) on [photos](location)
+- please put a new folder named [misc](name) on [desktop](location)
+- put a new folder called [phone backup](name) on [home](location) folder
+- lets make folder called [music](name)
+- let's create a directory called [nuts and bolts](name)
+- lets make a folder called [old stuff](name)
+- let's make directory named [car stuff](name)
+- let's create a folder named [inbox](name)
+- lets create a folder called [drafts](name)
+- lets create a folder called [lab](name)
+- lets make folder named [pitch deck](name)
+- let's make folder called [client projects](name)
+- let's create directory called [sketches](name)
+- lets make a folder called [drafts](name)
+- lets make directory called [work in progress](name)
+- lets create directory named [house plans](name)
+- lets make directory called [bills](name)
+- make folder called [archive](name) in my my [downloads](location)
+- make a folder named [notes](name) in my the [pictures](location)
+- create a new folder called [car stuff](name) in my [school](location)
+- make a new directory called [ideas](name) in my [projects](location)
+- make folder called [letters](name) on the [Desktop](location)
+- make folder called [letters](name) on the [desktop](location)
+- create a folder named [inbox](name) in the my [projects](location)
+- make a folder called [stuff for school](name) in my [school](location)
+- create directory called [my scripts](name) in my [downloads](location)
+- create a folder named [screenshots](name) in the my [inbox](location) folder
+- make folder called [client projects](name) in the [music](location)
+- make a new directory called [inbox](name) in my [home](location)
+- create a directory called [notes for march](name) on the [projects](location) folder
+- create directory called [letters](name) in the [Desktop](location)
+- create a new folder called [sketches](name) on the [home](location) folder
+- make a folder named "[q3-review](name)"
+- make a folder called "[tax returns](name)"
+- create a directory called "[old invoices](name)"
+- make a directory called "[to do list](name)"
+- create a folder named "[pitch deck](name)"
+- make a folder called "[lab](name)"
+- make a directory named "[scans](name)"
+- make a folder called "[car stuff](name)"
+- make a folder called "[WoodShop](name)"
+- make a folder called "[woodshop](name)"
+- create a directory called "[notes](name)"
+- make a directory named "[client-work](name)"
+- make a folder named "[WoodShop](name)"
+- make a folder named "[woodshop](name)"
+- make a folder named "[homework](name)"
+- make a folder named "[game saves](name)"
+- make a folder named '[notes for march](name)'
+- make a directory called '[summer camp](name)'
+- create a directory called '[notes for march](name)'
+- create a folder called '[summer camp](name)'
+- make a directory called '[todo](name)'
+- make a directory named '[Recipes](name)'
+- make a directory named '[recipes](name)'
+- create a folder called '[misc](name)'
+- make a directory called '[WoodShop](name)'
+- make a directory called '[woodshop](name)'
+- create a directory called '[car stuff](name)'
+- make a folder called '[music](name)'
+- make a folder called '[WoodShop](name)'
+- create a folder named '[tools](name)'
+- make a directory named '[wip](name)'
+- make a folder named '[todo](name)'
+- a new folder for [my scripts](name) please
+- directory for [journal](name) please
+- a directory for [school](name) please
+- a new directory for [q4 planning](name) please
+- a folder for [nuts and bolts](name) please
+- a folder for [readings](name) please
+- a new directory for [sandbox](name) please
+- a directory for [old stuff](name)
+- directory for [house plans](name) please
+- folder for [design ideas](name)
+- a folder for [client projects](name)
+- folder for [q3-review](name) please
+- a new folder for [fonts](name) please
+- folder for [game saves](name)
+- I need a folder to store my [inbox](name) in
+- I want a place to store my [sandbox](name)
+- I want a place to keep my [2026_budget](name)
+- I want a folder to store my [phone backup](name)
+- I want a folder to store my [pitch deck](name) in
+- I want a folder to store my [travel](name) in
+- I want a folder to store my [Recipes](name) in
+- I want a folder to store my [prototypes](name)
+- i want a folder to store my [prototypes](name)
+- I want a folder to store my [family photos](name)
+- I want a folder to keep my [homework](name)
+- i want a folder to keep my [homework](name)
+- I want a place to store my [design ideas](name)
+- I need a folder to store my [receipts](name)
+- i need a folder to store my [receipts](name)
+- I want a place to keep my [pens and brushes](name) in
+- I need a folder to keep my [pens and brushes](name) in
+- i need a folder to keep my [pens and brushes](name) in
 
 ## intent: deny
 - no
@@ -1048,6 +1096,16 @@
 - what month is it?
 - what year is it
 - what year is it?
+- tell me again what's the date today?
+- tell me again what is the date?
+- tell me again what is the date
+- remind me what's the date today?
+- remind me what is the date today
+- remind me which day we are?
+- remind me which day today is?
+- remind me which day we are
+- tell me again which day we are?
+- tell me again which day today is?
 
 ## intent: get_time
 - what time is it?
@@ -1090,77 +1148,86 @@
 - show me the time
 - show me the clock
 - check the clock
-- what time is it in [Rio de Janeiro](place) now
+- what time is it in [Dubai](place) now
 - what time is it in [Tokyo](place)
-- what time is it in [Sydney](place) right now
-- what time is it in [sydney](place) right now
-- what time is it in [Reykjavik](place)?
-- what time is it in [New York](place)
-- what time is it in [new york](place)
-- what time is it in [São Paulo](place) now?
-- what time is it in [são paulo](place) now?
-- what time is it in [Hong Kong](place) now?
-- what time is it in [hong kong](place) now?
-- what time is it in [Mexico City](place) now?
-- what time is it in [mexico city](place) now?
-- what's the time in [Berlin](place)?
-- what's the time in [berlin](place)?
+- what time is it in [Kyoto](place) right now
+- what time is it in [kyoto](place) right now
+- what time is it in [Kuala Lumpur](place)?
+- what time is it in [Paris](place)
+- what time is it in [paris](place)
+- what time is it in [Buenos Aires](place) now?
+- what time is it in [buenos aires](place) now?
+- what time is it in [Auckland](place) now?
+- what time is it in [auckland](place) now?
+- what time is it in [Singapore](place) now?
+- what time is it in [singapore](place) now?
 - what's the time in [Nairobi](place)?
-- what's the time in [Montreal](place)
-- what's the time in [Paris](place)?
-- what's the time in [paris](place)?
-- what's the time in [Reykjavik](place)
+- what's the time in [nairobi](place)?
+- what's the time in [San Francisco](place)?
+- what's the time in [São Paulo](place)
+- what's the time in [London](place)?
+- what's the time in [london](place)?
+- what's the time in [New Delhi](place)
 - what's the time in [Tokyo](place)?
 - what's the time in [tokyo](place)?
-- what's the time in [Shenzhen](place)?
-- what's the time in [San Francisco](place)?
-- what's the time in [san francisco](place)?
-- give me the local time in [Montreal](place)
-- tell me the time in [Kyoto](place)
-- tell me the time in [Los Angeles](place)
-- tell me the local time in [Montreal](place)
-- tell me the local time in [montreal](place)
-- give me the local time in [Mexico City](place)
-- give me the local time in [mexico city](place)
-- give me the local time in [Nairobi](place)
-- give me the local time in [nairobi](place)
-- give me the local time in [Shenzhen](place)
-- give me the time in [Buenos Aires](place)
-- what hour is it over at [Shenzhen](place)
-- what hour is it over at [shenzhen](place)
-- what hour is it over in [Bangkok](place)?
-- what hour is it at [Paris](place)?
-- what time is it in [Kuala Lumpur](place)
-- what hour is it over in [Tokyo](place)?
-- what hour is it at [Kuala Lumpur](place)?
-- what hour is it at [kuala lumpur](place)?
-- what time is it over in [Berlin](place)
-- what hour is it in [Reykjavik](place)?
-- is it night in [Mexico City](place)
-- is it night in [mexico city](place)
-- is it morning in [Rio de Janeiro](place)
-- is it morning in [rio de janeiro](place)
-- is it night in [New Delhi](place)?
-- is it night in [new delhi](place)?
-- is it morning in [Mexico City](place)
-- is it morning in [Montreal](place)
-- is it morning in [montreal](place)
-- is it night in [Reykjavik](place)
-- is it night in [reykjavik](place)
-- is it night in [Rio de Janeiro](place)
-- is it late in [Cape Town](place)?
+- what's the time in [Sydney](place)?
+- what's the time in [Jakarta](place)?
+- what's the time in [jakarta](place)?
+- give me the local time in [Kyoto](place)
+- tell me the time in [Hong Kong](place)
+- tell me the time in [Nairobi](place)
+- tell me the local time in [Kyoto](place)
+- tell me the local time in [kyoto](place)
+- give me the local time in [Singapore](place)
+- give me the local time in [singapore](place)
+- give me the local time in [San Francisco](place)
+- give me the local time in [san francisco](place)
+- give me the local time in [Sydney](place)
+- give me the time in [Vancouver](place)
+- what hour is it over at [Sydney](place)
+- what hour is it over at [sydney](place)
+- what hour is it over in [Cape Town](place)?
+- what hour is it at [London](place)?
+- what time is it in [Lagos](place)
+- what hour is it over in [New York](place)?
+- what hour is it at [Oslo](place)?
+- what hour is it at [oslo](place)?
+- what time is it over in [Reykjavik](place)
+- what hour is it in [Kuala Lumpur](place)?
+- is it night in [Singapore](place)
+- is it night in [singapore](place)
+- is it morning in [Auckland](place)
+- is it morning in [auckland](place)
+- is it night in [Lima](place)?
+- is it night in [lima](place)?
+- is it morning in [Singapore](place)
+- is it morning in [São Paulo](place)
+- is it morning in [são paulo](place)
+- is it night in [New Delhi](place)
+- is it night in [new delhi](place)
+- is it night in [Istanbul](place)
+- is it late in [Vancouver](place)?
+- time in [Reykjavik](place)
+- time in [Reykjavik](place)?
+- time in [reykjavik](place)?
 - time in [Berlin](place)
+- time in [berlin](place)
+- time in [Lagos](place)
+- time in [lagos](place)
+- time in [Nairobi](place)?
+- time in [nairobi](place)?
 - time in [Berlin](place)?
-- time in [berlin](place)?
-- time in [Sydney](place)
-- time in [sydney](place)
-- time in [Kuala Lumpur](place)
-- time in [kuala lumpur](place)
-- time in [Los Angeles](place)?
-- time in [los angeles](place)?
-- time in [Sydney](place)?
-- time in [Rio de Janeiro](place)?
-- time in [Lisbon](place)?
+- time in [Dubai](place)?
+- time in [Montreal](place)?
+- what is the time out in [Cape Town](place) right now
+- what's the time over in [Rio de Janeiro](place) right now
+- what's the time out at [Rio de Janeiro](place)?
+- what's the time out at [rio de janeiro](place)?
+- what's the time out at [Hong Kong](place)?
+- what's the time in [new delhi](place)
+- what is the time in [Nairobi](place)
+- what is the time over in [New Delhi](place) right now
+- what is the time over in [Bangkok](place)?
 
 ## intent: get_weather
 - what's the weather now
@@ -1984,6 +2051,14 @@
 - my name is on the door
 - which city is the capital of japan
 - remember the alamo
+- who designed you
+- who programmed you
+- who is your maker
+- time to leave
+- time to go to bed
+- it's time for lunch
+- time for a break
+- remind me who you are
 
 ## intent: power
 - [turn off](power_action) the computer please
@@ -2477,147 +2552,149 @@
 - drop a note to telegram: [water the plants](text)
 
 ## intent: send_to_phone
-- send [the parcel is at the neighbour's](text) to my phone please
-- send [check the oven](text) to my phone
-- forward [turn off the heater in the shed](text) to my phone please
-- forward [put the bins out](text) to my phone please
-- push [lock the back door](text) to my phone please
-- forward [pay the electricity bill](text) to my phone please
-- forward [the backup finished](text) to my phone please
-- forward [book the dentist](text) to my phone
-- push [the kiln is cooling down](text) to my phone
-- forward [the delivery arrives at noon](text) to my phone
-- push [sand the second coat tomorrow](text) to my phone
-- push [the oil needs another hour to cure](text) to my phone please
-- push [sand the second coat tomorrow](text) to my phone please
-- push [book the dentist](text) to my phone please
-- push [don't forget the charger](text) to my phone please
+- send [pick up the kids at 5](text) to my phone please
+- send [bring the drill to the workshop](text) to my phone
+- forward [the kiln is cooling down](text) to my phone please
+- forward [on my way](text) to my phone please
+- push [time to go](text) to my phone please
+- forward [return the library books](text) to my phone please
+- forward [call me back](text) to my phone please
+- forward [feed the cat](text) to my phone
+- push [lock the back door](text) to my phone
+- forward [start the slow cooker](text) to my phone
+- push [pay the electricity bill](text) to my phone
+- push [turn off the heater in the shed](text) to my phone please
+- push [clamps are on the bench](text) to my phone please
+- push [the router needs a restart](text) to my phone please
+- push [dinner is ready](text) to my phone please
+- forward [feed the cat](text) to my phone please
 - forward [the oil needs another hour to cure](text) to my phone please
-- forward [the dishwasher is done](text) to my phone please
-- push [meeting moved to Thursday](text) to my phone please
-- send a note to my phone: [water the plants](text)
-- send a reminder to my phone [pick up the kids at 5](text)
-- push a reminder to my phone [bring the umbrella](text)
-- send a message to my phone: [sand the second coat tomorrow](text)
-- send a reminder to my phone: [the router needs a restart](text)
-- send a reminder to my phone: [water the plants](text)
-- push a note to my phone: [sand the second coat tomorrow](text)
-- send a reminder to my phone: [photos are uploaded](text)
-- push a reminder to my phone [feed the cat](text)
-- send a message to my phone: [book the dentist](text)
-- send a note to my phone [the door code is in the drawer](text)
-- push a message to my phone [buy milk](text)
+- push [water the plants](text) to my phone please
+- push a message to my phone [dinner is ready](text)
+- push a message to my phone [the delivery arrives at noon](text)
+- push a reminder to my phone [the backup finished](text)
+- send a message to my phone: [take the chicken out of the freezer](text)
+- push a message to my phone [don't forget the charger](text)
+- push a message to my phone [the door code is in the drawer](text)
+- push a reminder to my phone: [ask the neighbours about Saturday](text)
+- push a reminder to my phone: [ask the neighbours about saturday](text)
+- send a reminder to my phone: [on my way](text)
+- push a reminder to my phone [charge the drill batteries](text)
 - send a message to my phone: [feed the cat](text)
-- push a reminder to my phone [the kiln is cooling down](text)
-- send a reminder to my phone [the kiln is cooling down](text)
-- push a message to my phone [order more cedar boards](text)
-- push a reminder to my phone: [meeting moved to Thursday](text)
-- send me a notification that says [the backup finished](text)
-- push a note saying [grab bread on the way home](text)
-- push me a message that says [bring the umbrella](text)
+- send a note to my phone [grab bread on the way home](text)
+- push a message to my phone [call the plumber](text)
+- send a message to my phone: [charge the drill batteries](text)
+- push a reminder to my phone [the paint is dry](text)
+- send a reminder to my phone [lock the back door](text)
+- push a reminder to my phone: [I'm on my way](text)
+- send a reminder to my phone: [the backup finished](text)
+- send me a notification that says [call me back](text)
+- push a note saying [take the chicken out of the freezer](text)
+- push me a message that says [put the bins out](text)
 - send me a message saying [the parcel is at the neighbour's](text)
-- send me a notification saying [photos are uploaded](text)
-- send a notification saying [dinner is ready](text)
-- push me a message saying [lock the back door](text)
-- push a note saying [start the slow cooker](text)
-- send a notification saying [put the bins out](text)
-- send a message that says [water the plants](text)
+- send me a notification saying [time to go](text)
+- send a notification saying [grab bread on the way home](text)
+- push me a message saying [the glue is set](text)
+- push a note saying [photos are uploaded](text)
+- send a notification saying [lunch is ready](text)
+- send a message that says [don't forget the charger](text)
 - push me a notification that says [pick up the kids at 5](text)
-- push a message that says [start the slow cooker](text)
-- send me a notification saying [the bus is late](text)
-- push a notification saying [the dishwasher is done](text)
-- push a notification saying [don't forget the charger](text)
-- push me a note that says [clamps are on the bench](text)
-- send a notification saying [feed the cat](text)
-- text my phone: [the backup finished](text)
-- ping my phone [charge the drill batteries](text)
-- ping my phone that [the door code is in the drawer](text)
-- message my phone that [the printer is out of paper](text)
-- text my phone with [the printer is out of paper](text)
-- ping my phone with [meeting moved to Thursday](text)
-- message my phone that [the door code is in the drawer](text)
-- text my phone: [the bus is late](text)
-- message my phone with [feed the cat](text)
-- ping my phone: [I'm on my way](text)
-- ping my phone: [i'm on my way](text)
-- ping my phone: [the dishwasher is done](text)
-- notify my phone saying [dinner is ready](text)
-- message my phone: [pay the electricity bill](text)
-- notify my phone with [the train is cancelled](text)
-- ping my phone [start the slow cooker](text)
-- text my phone [call the bank back](text)
-- notify my phone that [the dishwasher is done](text)
-- notify my phone: [dinner is ready](text)
-- tell me on my phone to [put the bins out](text)
-- notify me on my phone that [buy milk](text)
-- remind me on my phone that [clamps are on the bench](text)
-- notify me on my phone to [turn off the heater in the shed](text)
-- tell me on my phone [sand the second coat tomorrow](text)
-- tell me on my phone that [meeting moved to Thursday](text)
-- remind me on my phone that [the router needs a restart](text)
+- push a message that says [photos are uploaded](text)
+- send me a notification saying [the dishwasher is done](text)
+- push a notification saying [the oil needs another hour to cure](text)
+- push a notification saying [dinner is ready](text)
+- push me a note that says [book the dentist](text)
+- send a notification saying [charge the drill batteries](text)
+- send a message that says [order more cedar boards](text)
+- text my phone: [call me back](text)
+- ping my phone [the paint is dry](text)
+- ping my phone that [grab bread on the way home](text)
+- message my phone that [the bus is late](text)
+- text my phone with [sand the second coat tomorrow](text)
+- ping my phone with [I'm on my way](text)
+- message my phone that [grab bread on the way home](text)
+- text my phone: [clamps are on the bench](text)
+- message my phone with [charge the drill batteries](text)
+- ping my phone: [order more cedar boards](text)
+- notify my phone that [check the oven](text)
+- ping my phone: [book the dentist](text)
+- message my phone with [bring the drill to the workshop](text)
+- message my phone: [lock the back door](text)
+- ping my phone saying [table is varnished](text)
+- ping my phone with [come home](text)
+- notify my phone: [the dishwasher is done](text)
+- message my phone that [the parcel is at the neighbour's](text)
+- remind me on my phone to [the dishwasher is done](text)
+- tell me on my phone that [the door code is in the drawer](text)
+- notify me on my phone [I'm on my way](text)
+- notify me on my phone [i'm on my way](text)
+- notify me on my phone to [the kiln is cooling down](text)
+- tell me on my phone [clamps are on the bench](text)
+- tell me on my phone that [water the plants](text)
+- tell me on my phone [call the plumber](text)
 - tell me on my phone to [the router needs a restart](text)
-- notify me on my phone to [the oil needs another hour to cure](text)
-- notify me on my phone that [ask the neighbours about Saturday](text)
-- notify me on my phone that [ask the neighbours about saturday](text)
-- notify me on my phone [the router needs a restart](text)
-- remind me on my phone [check the oven](text)
-- notify me on my phone [the paint is dry](text)
-- remind me on my phone that [photos are uploaded](text)
-- notify me on my phone to [book the dentist](text)
-- notify me on my phone to [bring the umbrella](text)
-- tell me on my phone [bring the drill to the workshop](text)
-- remind me on my phone [feed the cat](text)
-- push me a notification with [the dishwasher is done](text)
-- send me a push that says [water the plants](text)
-- push me a note with [turn off the heater in the shed](text)
-- send me a ping that says [turn off the heater in the shed](text)
-- send me a ping with [book the dentist](text)
-- send me a note saying [the door code is in the drawer](text)
-- push me a ping that says [I'm on my way](text)
-- push me a notification with [call the plumber](text)
-- push me a ping saying [grab bread on the way home](text)
-- push me a ping that says [the paint is dry](text)
-- push me a ping that says [book the dentist](text)
-- send me a notification with [lock the back door](text)
-- push me a push saying [the backup finished](text)
-- send me a ping with [clamps are on the bench](text)
+- notify me on my phone that [the router needs a restart](text)
+- remind me on my phone that [grab bread on the way home](text)
+- notify me on my phone to [water the plants](text)
+- remind me on my phone to [kettle is on](text)
+- notify me on my phone that [call the plumber](text)
+- remind me on my phone to [on my way](text)
+- remind me on my phone to [call the plumber](text)
+- tell me on my phone [pick up the kids at 5](text)
+- remind me on my phone [the dishwasher is done](text)
+- notify me on my phone to [the train is cancelled](text)
+- push me a push with [the door code is in the drawer](text)
+- send me a note that says [the backup finished](text)
+- send me a notification with [come home](text)
+- push me a push that says [the oil needs another hour to cure](text)
+- push me a note saying [ask the neighbours about Saturday](text)
+- push me a notification with [water the plants](text)
+- push me a note saying [book the dentist](text)
+- send me a ping with [check the oven](text)
+- send me a push that says [book the dentist](text)
+- send me a ping with [the dishwasher is done](text)
+- push me a notification that says [call the plumber](text)
+- push me a ping with [the kiln is cooling down](text)
+- push me a ping that says [the dishwasher is done](text)
+- send me a push saying [come home](text)
+- push me a ping that says [dinner is ready](text)
+- send me a ping that says [dinner is ready](text)
 - send me a note that says [return the library books](text)
-- push me a ping saying [meeting moved to Thursday](text)
-- send me a push saying [the paint is dry](text)
-- push me a ping that says [clamps are on the bench](text)
-- can you send [the printer is out of paper](text) to my phone?
+- can you send [book the dentist](text) to my phone?
 - can you send [the door code is in the drawer](text) to my phone?
-- can you send [water the plants](text) to my phone
-- could you send [water the plants](text) to my phone
-- can you send [dinner is ready](text) to my phone
-- could you send [the paint is dry](text) to my phone?
-- can you send [the parcel is at the neighbour's](text) to my phone
-- could you send [check the oven](text) to my phone
-- can you send [the kiln is cooling down](text) to my phone?
-- can you send [pick up the kids at 5](text) to my phone?
-- can you send [ask the neighbours about Saturday](text) to my phone
-- can you send [ask the neighbours about saturday](text) to my phone
-- could you send [pay the electricity bill](text) to my phone
-- can you send [call the bank back](text) to my phone?
-- could you send [turn off the heater in the shed](text) to my phone
-- could you send [return the library books](text) to my phone
-- can you send [bring the umbrella](text) to my phone
-- can you send [book the dentist](text) to my phone
-- put [call the plumber](text) on my phone
-- put [book the dentist](text) on my phone
-- put [order more cedar boards](text) on my phone
-- put [I'm on my way](text) on my phone
-- push [put the bins out](text) on my phone
-- push [the router needs a restart](text) on my phone
-- push [the train is cancelled](text) on my phone
-- put [feed the cat](text) on my phone
+- can you send [buy milk](text) to my phone?
+- can you send [sand the second coat tomorrow](text) to my phone
+- can you send [put the bins out](text) to my phone?
+- can you send [lock the back door](text) to my phone
+- could you send [I'm on my way](text) to my phone?
+- could you send [i'm on my way](text) to my phone?
+- can you send [lunch is ready](text) to my phone?
+- could you send [the backup finished](text) to my phone
+- can you send [water the plants](text) to my phone?
+- could you send [pick up the kids at 5](text) to my phone
+- can you send [return the library books](text) to my phone?
+- can you send [return the library books](text) to my phone
+- could you send [clamps are on the bench](text) to my phone?
+- could you send [ask the neighbours about Saturday](text) to my phone
+- can you send [the glue is set](text) to my phone
+- can you send [come home](text) to my phone
+- could you send [time to go](text) to my phone
+- push [on my way](text) on my phone
+- put [ask the neighbours about Saturday](text) on my phone
+- push [the door code is in the drawer](text) on my phone
+- put [clamps are on the bench](text) on my phone
+- push [book the dentist](text) on my phone
+- put [the dishwasher is done](text) on my phone
+- push [feed the cat](text) on my phone
+- push [I'm on my way](text) on my phone
+- push [dinner is ready](text) on my phone
+- push [the printer is out of paper](text) on my phone
+- push [water the plants](text) on my phone
+- put [meeting moved to Thursday](text) on my phone
+- put [meeting moved to thursday](text) on my phone
+- put [the kiln is cooling down](text) on my phone
 - put [return the library books](text) on my phone
-- put [pay the electricity bill](text) on my phone
-- put [the parcel is at the neighbour's](text) on my phone
-- push [order more cedar boards](text) on my phone
-- put [the delivery arrives at noon](text) on my phone
-- put [the bus is late](text) on my phone
-- put [lock the back door](text) on my phone
+- put [the glue is set](text) on my phone
 - send that to my phone
 - push that to my phone
 - push something to my phone
@@ -2640,24 +2717,42 @@
 - send me a ping on my phone
 - give me a push notification on my phone
 - give me a notification on my phone
-- message me on my phone [the train is cancelled](text)
-- notify me on my phone [the train is cancelled](text)
-- notify me on my phone [the oil needs another hour to cure](text)
-- notify me on my phone [ask the neighbours about Saturday](text)
-- notify me on my phone [ask the neighbours about saturday](text)
-- message me on my phone [the oil needs another hour to cure](text)
-- message me on my phone [meeting moved to Thursday](text)
-- message me on my phone [lock the back door](text)
-- message me on my phone: [call the plumber](text)
-- notify me on my phone [water the plants](text)
-- message me on my phone [water the plants](text)
-- message me on my phone [the door code is in the drawer](text)
-- notify me on my phone [bring the umbrella](text)
-- notify me on my phone [clamps are on the bench](text)
-- notify me on my phone [sand the second coat tomorrow](text)
-- notify me on my phone [the parcel is at the neighbour's](text)
+- message me on my phone [come home](text)
+- notify me on my phone [call the bank back](text)
+- notify me on my phone [feed the cat](text)
 - notify me on my phone [turn off the heater in the shed](text)
-- notify me on my phone [the kiln is cooling down](text)
+- message me on my phone: [the train is cancelled](text)
+- message me on my phone: [the paint is dry](text)
+- message me on my phone [pick up the kids at 5](text)
+- notify me on my phone [the door code is in the drawer](text)
+- message me on my phone: [time to go](text)
+- message me on my phone [take the chicken out of the freezer](text)
+- message me on my phone: [don't forget the charger](text)
+- message me on my phone: [the kiln is cooling down](text)
+- notify me on my phone [photos are uploaded](text)
+- message me on my phone: [come home](text)
+- message me on my phone [kettle is on](text)
+- message me on my phone: [table is varnished](text)
+- message me on my phone [the glue is set](text)
+- notify me on my phone [the paint is dry](text)
+- push a ping saying [the backup finished](text)
+- push me a notification that says [charge the drill batteries](text) please
+- send a ping that says [the printer is out of paper](text)
+- push a ping saying [the train is cancelled](text)
+- push a ping saying [the backup finished](text) please
+- send me a notification saying [meeting moved to Thursday](text)
+- send me a notification saying [meeting moved to thursday](text)
+- send me a notification that says [pay the electricity bill](text)
+- push a notification that says [time to go](text)
+- send me a ping saying [take the chicken out of the freezer](text)
+- send a notification saying [sand the second coat tomorrow](text)
+- push me a ping saying [time to go](text) please
+- push a notification saying [check the oven](text) please
+- push a notification that says [the router needs a restart](text)
+- push a ping saying [the glue is set](text)
+- push a ping that says [the kiln is cooling down](text) please
+- send me a ping that says [the oil needs another hour to cure](text) please
+- send a ping that says [pick up the kids at 5](text) please
 
 ## intent: set_reminder
 - remind me to [call mum](task) in 10 minutes
@@ -3342,6 +3437,58 @@
 - are we enough [ram](metric)
 - is there enough [performance](metric)
 - are we enough [load](metric)
+- are we running low on [cpu temperature](metric)
+- is it running low on [load](metric)?
+- are we getting short on [disk](metric)?
+- is it getting low on [temp](metric)?
+- is it running short on [cpu](metric)?
+- are we running short on [processor](metric)?
+- is it running low on [temperature](metric)
+- are we getting short on [disk](metric)
+- are we running low on [disk](metric)
+- is it running low on [disk](metric)?
+- are we getting short on [network](metric)?
+- are we running low on [wifi](metric)?
+- is it getting low on [performance](metric)
+- am I running short on [network](metric)?
+- am i running short on [network](metric)?
+- is it getting low on [disk space](metric)
+- is it getting short on [space left](metric)
+- are we getting low on [disk](metric)
+- is it getting low on [load](metric)
+- short on [temperature](metric)
+- short on [cpu usage](metric)?
+- low on [cpu temperature](metric)?
+- low on [ram](metric)?
+- short on [memory](metric)
+- short on [temperature](metric)?
+- short on [ip address](metric)
+- short on [processor](metric)?
+- short on [disk space](metric)?
+- low on [memory](metric)
+- low on [space left](metric)
+- short on [uptime](metric)
+- low on [ip](metric)
+- low on [uptime](metric)?
+- short on [temp](metric)?
+- short on [ram](metric)
+- short on [performance](metric)
+- do we still have [cpu usage](metric)?
+- do we still have [cpu](metric)?
+- do we still have [performance](metric)?
+- do we still have enough [storage](metric)?
+- do we still have enough [wifi](metric)
+- do we still have enough [memory](metric)
+- do we still have [cpu temperature](metric)?
+- do we still have [disk space](metric)
+- do we still have enough [cpu](metric)
+- do we still have enough [temperature](metric)?
+- do we still have enough [network](metric)?
+- do we still have [temperature](metric)
+- do we still have [ip](metric)
+- do we still have [memory usage](metric)
+- do we still have enough [free space](metric)?
+- do we still have enough [ip](metric)
 
 ## intent: thanks
 - thanks
