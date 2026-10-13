@@ -110,6 +110,7 @@ const CONVERSATIONS = [
   ["send buy milk to my phone", "gab-workshop-7f3"],
   ["ping my phone saying the glue is dry"],
   ["send something to my phone", "check the oven"],
+  ["send me a message", "I love Cookie 🍪"],
 ];
 const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)
 const UPDATE = process.argv.includes("--update"), VERBOSE = process.argv.includes("-v");

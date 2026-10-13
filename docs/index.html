@@ -3905,8 +3905,10 @@ class Agent {
   answer(p, r, text, trace) {
     let rest = text;
     const extra = {};
+    // only values the asking skill uses are split off: "Cookie" read as another skill's name stays in
+    const own = (SKILLS[p.intent] && SKILLS[p.intent].slots) || null;
     for (const [k, v] of Object.entries(r.slots)) {
-      if (k === p.need) continue;
+      if (k === p.need || (own && !own[k])) continue;
       const at = rest.toLowerCase().lastIndexOf(v.toLowerCase());
       if (at > 0) { rest = rest.slice(0, at).replace(/\s+(in|inside|on|under|within|to|at)(\s+(the|my))?\s*$/i, ""); extra[k] = v; }
     }

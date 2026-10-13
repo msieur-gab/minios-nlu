@@ -508,3 +508,12 @@ Uptime: 3 hours 12 minutes.
   → Sent to your phone: “check the oven”.
   $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"check the oven"}
 
+> send me a message
+  [send_to_phone]
+  What should I send to your phone?
+> I love Cookie 🍪
+  [out_of_scope {"name":"Cookie 🍪"}]
+  Sending it to your phone…
+  → Sent to your phone: “I love Cookie 🍪”.
+  $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"I love Cookie 🍪"}
+
