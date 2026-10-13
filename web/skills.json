@@ -1822,8 +1822,8 @@
     "help": "send a message to your phone (“send buy milk to my phone”)",
     "samples": "18",
     "acts": "yes",
-    "uses": "network",
-    "train_only": "msg"
+    "train_only": "msg",
+    "uses": "network"
    },
    "request": {
     "method": "POST",
@@ -1841,9 +1841,6 @@
     "ask_text": [
      "What should I send to your phone?"
     ],
-    "ask_topic": [
-     "Which ntfy topic should I send to? Subscribe to it in the ntfy app first; I'll keep it on this device."
-    ],
     "checking": [
      "Sending it to your phone…"
     ],
@@ -1855,6 +1852,9 @@
     ],
     "unsure": [
      "Do you want me to send that to your phone?"
+    ],
+    "ask_topic": [
+     "Which ntfy topic should I send to? Subscribe to it in the ntfy app first; I'll keep it on this device."
     ]
    },
    "slots": {

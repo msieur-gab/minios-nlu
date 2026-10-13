@@ -59,6 +59,13 @@ A skill can now pull data from an API or push data to one with nothing but its `
 - **get_weather has no skill.js any more** (40 lines gone); the 88 old conversations give the
   same replies. Core +45 lines (`runRequest`, `daysOf`), services +40 (body, headers,
   secrets, `pick`), compiler +25 (mostly checks).
+- **action.md (13 October, later):** the technical half of a skill moved to its own file
+  next to skill.md: `## Request`, `## Answer`, `## Secrets` (question asked once, value kept
+  on the device), `## Values` lists the answer uses, and `uses:`. skill.md keeps what
+  people say and hear. Compile-time only: `skills.json` is the same, the agent unchanged.
+  The compiler stops on a section in the wrong file or in both, and on a reply using a
+  `{value}` that is no slot and no Answer field. Done for get_weather and send_to_phone;
+  `command:` of open_app, power, volume… could move the same way.
 - **send_to_phone** (new): POST to ntfy.sh, message in a JSON body, topic as a secret. The
   model finds the message in 6 of its 8 test sentences; otherwise it asks for it.
 

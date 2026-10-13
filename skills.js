@@ -24,7 +24,7 @@ function parseSkill(md, file) {
     if (m) meta[m[1]] = m[2].replace(/\s+#\s.*$/, "").replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1"); // "# note" ends a line
   }
   if (!meta.skill) throw new Error(file + ": front matter needs skill: <name>");
-  const skill = { file, skill: meta.skill, action: meta.action || "say", params: meta, examples: [], values: {}, replies: {}, request: null, answer: {}, slots: null };
+  const skill = { file, skill: meta.skill, action: meta.action || "say", params: meta, examples: [], values: {}, replies: {}, request: null, answer: {}, slots: null, secrets: {}, sections: new Set() };
   let section = null, list = null;
   for (const raw of md.slice(fm[0].length).split("\n")) {
     const line = raw.trim();
@@ -33,6 +33,7 @@ function parseSkill(md, file) {
       const title = h[1].trim();
       const v = /^values\s*:\s*([a-z_]+)$/i.exec(title);
       section = v ? "values" : title.toLowerCase();
+      skill.sections.add(section);
       if (v) list = skill.values[v[1]] = [];
       continue;
     }
@@ -79,6 +80,13 @@ function parseSkill(md, file) {
       (skill.slots = skill.slots || {})[m[1]] = slot;
       continue;
     }
+    // ## Secrets (action.md): "- name: the question to ask once"
+    if (section === "secrets") {
+      const m = /^([a-z_]+)\s*:\s*(.+)$/.exec(item);
+      if (!m) throw new Error(`${file}: can't read secret line “${item}” (expected "- name: question")`);
+      skill.secrets[m[1]] = m[2];
+      continue;
+    }
     if (section === "examples") skill.examples.push(item);
     else if (section === "values") {
       // "key: synonym, synonym → output"   (synonyms and output are optional)
@@ -92,6 +100,29 @@ function parseSkill(md, file) {
     }
   }
   return skill;
+}
+
+// action.md: what the skill does with the values, next to skill.md (what people say and hear).
+// Only Request, Answer, Secrets and Values lists go there, and "uses:" in its front matter;
+// it is merged into the same compiled skill, so the agent doesn't know which file said what.
+const ACTION_SECTIONS = ["request", "answer", "secrets", "values"];
+function mergeAction(s, md, file) {
+  const a = parseSkill(/^---\n/.test(md) ? md.replace(/^---\n/, `---\nskill: ${s.skill}\n`) : `---\nskill: ${s.skill}\n---\n` + md, file);
+  const err = msg => { throw new Error(`${file}: ${msg}`); };
+  for (const sec of a.sections) if (!ACTION_SECTIONS.includes(sec)) err(`## ${sec} belongs in skill.md (action.md holds Request, Answer, Secrets and Values)`);
+  for (const k of Object.keys(a.params)) if (!["skill", "uses"].includes(k)) err(`front matter: only uses: goes here, “${k}:” belongs in skill.md`);
+  for (const sec of ["request", "answer", "secrets"]) if (s.sections.has(sec)) err(`## ${sec} is in both skill.md and action.md: keep it in action.md`);
+  if (s.params.uses && a.params.uses) err("uses: is in both files: keep it in action.md");
+  for (const k of Object.keys(a.values)) if (s.values[k]) err(`## Values: ${k} is in both files`);
+  Object.assign(s.values, a.values);
+  s.request = a.request; s.answer = a.answer;
+  if (a.params.uses) s.params.uses = a.params.uses;
+  for (const [name, question] of Object.entries(a.secrets)) {
+    if (s.slots && s.slots[name]) err(`secret ${name} is also a slot in skill.md`);
+    (s.slots = s.slots || {})[name] = { type: "secret", list: null, required: true, guess: false, ask: "ask_" + name, invalid: null, default: null, ignore: [] };
+    s.replies["ask_" + name] = [question];
+  }
+  s.action_file = file;
 }
 
 // Checks that run when the skills are compiled, so a mistake shows up while writing the skill,
@@ -126,10 +157,16 @@ function validate(s) {
   // the request may only use declared values: {slot} or {slot.field}
   const r = s.request;
   if (r) for (const v of [r.url, ...Object.values(r.query), ...Object.values(r.headers), ...Object.values(r.body || {})])
-    for (const m of v.matchAll(/\{(\w+)[.\w]*\}/g)) if (!slots[m[1]]) err(`## Request uses {${m[1]}} but ## Slots doesn't declare it`);
+    for (const m of v.matchAll(/\{(\w+)[.\w]*\}/g)) if (!slots[m[1]]) throw new Error(`${s.action_file || s.file}: ## Request uses {${m[1]}}, which is no slot in skill.md and no secret`);
   // {date} in an answer path means one answer per day of the skill's datetime slot
   const dated = Object.values(s.answer).some(a => a.path.includes("{date}"));
   if (dated && !Object.values(slots).some(x => x.type === "datetime")) err("## Answer uses {date} but ## Slots has no datetime slot");
+  // every {value} a reply uses is one the skill has: a slot, an answer field, or one the core adds
+  if (r && !s.code && !p.script) {
+    const known = new Set([...Object.keys(slots), ...Object.values(s.answer).map(a => a.name), "when", "status"]);
+    for (const [k, vs] of Object.entries(s.replies)) for (const v of vs) for (const m of v.matchAll(/\{(\w+)\}/g))
+      if (!known.has(m[1])) err(`reply ${k} uses {${m[1]}}, which is no slot or ## Answer field`);
+  }
   if (r && !s.code && !p.script) {
     const need = ["done", ...(slots && Object.values(slots).some(x => x.default === "home" || x.type === "place") ? ["not_found"] : []), ...(dated ? ["day", "days", "line"] : [])];
     for (const k of need) if (!s.replies[k]) err(`a skill with a ## Request and no script answers with the “${k}” reply, which ## Replies doesn't have`);
@@ -165,6 +202,8 @@ function compile(dir = "skills") {
   for (const f of folders) {
     const s = parseSkill(fs.readFileSync(path.join(dir, f, "skill.md"), "utf8"), path.join(dir, f, "skill.md"));
     if (s.skill !== f) throw new Error(`${s.file}: skill name "${s.skill}" must match its folder "${f}"`);
+    const action = path.join(dir, f, "action.md");
+    if (fs.existsSync(action)) mergeAction(s, fs.readFileSync(action, "utf8"), action);
     validate(s);
     if (s.params.role && skills.some(o => o.params.role === s.params.role)) throw new Error(`${s.file}: another skill already has role: ${s.params.role}`);
     s.dir = path.join(dir, f);

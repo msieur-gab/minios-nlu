@@ -4,8 +4,10 @@ One folder per skill. Everything a skill is lives in its folder:
 
 ```
 skills/get_weather/
-  skill.md    what it understands, the values it knows, the API it calls, what it says
-  skill.js    optional: logic the Markdown can't express (here: picking the forecast day)
+  skill.md    for people: what it understands, the values it knows, what it asks and says
+  action.md   optional: what it does with the values: the API it calls, what it reads back,
+              the secrets it keeps on the device
+  skill.js    optional: logic the Markdown can't express
 ```
 
 `node skills.js` reads every folder and writes `data/skills.md` (training sentences) and
@@ -27,14 +29,36 @@ train_only: city, day    # value lists used only to write examples
 ---
 # Title
 
-Free text: what the skill does, what it sends where, anything a person should know.
+Free text: what the skill does, anything a person should know.
+
+## Slots
+- place: place, required, ask: ask_place, default: home
 
 ## Examples
-- what's the weather {like |}in [{city}](place) {day}
+- what's the weather {like |}in [{city}](place)
 
 ## Values: city
 - Munich
 - Paris
+
+## Replies
+- ask_place: Which city?
+- checking: Checking the weather for {place}…
+- done: {place}: {sky}, {temp}°C.
+```
+
+## action.md
+
+What the skill does with its values, kept out of the file people write and read. The
+compiler merges it into the same skill: the agent doesn't know which file said what.
+
+```markdown
+---
+uses: network            # the only front matter here
+---
+# Weather: the call to Open-Meteo
+
+Free text: what is sent where, and nothing else (the privacy line).
 
 ## Request
 GET https://api.open-meteo.com/v1/forecast
@@ -46,10 +70,14 @@ GET https://api.open-meteo.com/v1/forecast
 - temp: current.temperature_2m round
 - sky: current.weather_code → sky
 
-## Replies
-- checking: Checking the weather for {place}…
-- done: {place}: {sky}, {temp}°C.
+## Values: sky
+- 0 → clear sky
+- 3 → overcast
 ```
+
+Only `## Request`, `## Answer`, `## Secrets` and `## Values` lists go here; examples,
+slots and replies stay in skill.md. The compiler stops on anything in the wrong file, on a
+section in both, and on a reply that uses a `{value}` that is no slot and no Answer field.
 
 ## Slots, acts, network
 
@@ -75,7 +103,7 @@ script runs, so `skill.js` gets `ctx.slots.when` ready to use and never asks by 
 | `datetime` | a date, time, range or repeat from the date parser |
 | `duration` | a duration from the date parser (“10 minutes”, “1h30”) |
 | `list app` | an entry of `## Values: app`; the script gets the whole entry (`.key`, `.out`) |
-| `secret` | asked once, then kept on the device (an API key, a private topic): never in the model, never shown in the trace. Always `required` |
+| `secret` | asked once, then kept on the device: never in the model, never shown in the trace. Usually declared under `## Secrets` in action.md rather than here |
 
 | option | |
 |---|---|
@@ -127,18 +155,20 @@ then one line per value sent:
 
 `{slot}` inserts a value from the sentence: a list entry's output, a date's ISO form, else
 the words. `{place.lat}`, `{place.lon}` and `{place.timezone}` make the agent look the place
-up first. Only declared slots can be used (checked when compiling). Put keys and private
-names in a `secret` slot, never in the file: the trace shows `•••` instead.
+up first. Only slots and secrets can be used (checked when compiling).
+
+**Secrets.** Keys and private names never go in the file. `## Secrets` names each one and
+the question that asks for it, once; the answer is kept on the device and the trace shows
+`•••` instead.
 
 ```markdown
-## Slots
-- text: text, required, ask: ask_text
-- topic: secret, required, ask: ask_topic
-
 ## Request
 POST https://ntfy.sh/
 - body.topic: {topic}
 - body.message: {text}
+
+## Secrets
+- topic: Which ntfy topic should I send to?
 ```
 
 **Answer.** Which fields of the response become reply values: a path into the JSON,
@@ -159,7 +189,8 @@ A skill with a Request and no script replies `checking`, then:
 | `not_found` | the place doesn't exist (skills with a place slot) |
 | `failed` | optional: the service answered with an error (`{status}`) |
 
-Weather (pull) and send_to_phone (push) are both written this way, with no skill.js. The
+Weather (pull) and send_to_phone (push) are both written this way: skill.md plus action.md,
+no skill.js. The
 compiler checks that the replies a skill needs are there.
 
 ## Running a command instead

@@ -3,7 +3,6 @@ skill: send_to_phone
 help: send a message to your phone (“send buy milk to my phone”)
 samples: 18
 acts: yes
-uses: network            # nothing to send without it
 train_only: msg
 ---
 # Send to my phone
@@ -13,21 +12,11 @@ ntfy app on your phone and subscribe to a topic name only you know: the first ti
 asks for that name and keeps it on this device. Anyone who knows the name can read the
 messages, so pick something hard to guess.
 
-How it works: the request below is everything sent. The message goes in a small JSON body;
-the topic comes from the `topic` value, which is a secret: asked once, kept on the device,
-never shown in the trace. There is no skill.js.
-
-Privacy: the message and the topic are sent to ntfy.sh. Nothing else is.
+This file is what people say and what the agent answers. What is sent to ntfy, and the
+topic kept on the device, is in action.md next to it.
 
 ## Slots
 - text: text, required, ask: ask_text
-- topic: secret, required, ask: ask_topic
-
-## Request
-POST https://ntfy.sh/
-- body.topic: {topic}
-- body.title: ptiLU
-- body.message: {text}
 
 ## Examples
 - {send|push|forward} [{msg}](text) to my phone{ please|}
@@ -88,7 +77,6 @@ POST https://ntfy.sh/
 
 ## Replies
 - ask_text: What should I send to your phone?
-- ask_topic: Which ntfy topic should I send to? Subscribe to it in the ntfy app first; I'll keep it on this device.
 - checking: Sending it to your phone…
 - done: Sent to your phone: “{text}”.
 - failed: ntfy refused the message (error {status}).
