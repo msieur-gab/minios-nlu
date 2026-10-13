@@ -215,7 +215,7 @@ class Agent {
       const slots = Object.fromEntries(t.slots.map(n => {
         const need = t.needed.includes(n);
         if (need) replies["ask_" + n] = ["Which " + n.replace(/_/g, " ") + "?"];
-        return [n, { type: "text", list: null, required: need, guess: false, ask: need ? "ask_" + n : null, invalid: null, default: null, ignore: [] }];
+        return [n, { type: t.types[n] || "text", list: null, required: need, guess: false, ask: need ? "ask_" + n : null, invalid: null, default: null, ignore: [] }];
       }));
       SKILLS[name] = { action: "say", params: { skill: name }, slots, replies, values: {} };
       for (const [k, v] of Object.entries(replies)) RESPONSES[name + "." + k] = v;
@@ -265,7 +265,26 @@ class Agent {
       const res = await ctx.request(ctx.slots);
       return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
     }) });
-    return { trace, reply: fill(intent + ".say", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, v && typeof v === "object" ? v.key || v.text : v]))) };
+    return this.sayFilled(intent, slots, trace);
+  }
+
+  // action: say with its slots filled. A time with two readings ("at 8" in the morning: 20:00
+  // today or 08:00 tomorrow) is offered as a choice first; skills with a script decide themselves.
+  sayFilled(intent, slots, trace) {
+    const say = s => fill(intent + ".say", Object.fromEntries(Object.entries(s).map(([k, v]) => [k, this.spoken(v)])));
+    const [name, e] = Object.entries(slots).find(([, v]) => v && v.type === "datetime" && v.ambiguous && (v.alternatives || []).length) || [];
+    if (!e) return { trace, reply: say(slots) };
+    const options = [e.value, e.alternatives[0]].map(value => {
+      const v = { ...e, value, ambiguous: false, alternatives: [] }, at = SV.fmt.fromIso(value), h = at.getHours();
+      const label = this.spoken(v);
+      const h12 = String(h % 12 || 12), ap = h < 12 ? "am" : "pm";
+      return { label, keys: [SV.fmt.clock(at), SV.fmt.clock(at).replace(/^0/, ""), String(h), h12 + ap, h12 + " " + ap, ...label.split(" ").slice(1),
+        ...(h < 12 ? ["am", "morning", "a m"] : ["pm", "evening", "afternoon", "night", "tonight", "p m"])],
+        then: () => say({ ...slots, [name]: v }) };
+    });
+    this.pending = { type: "choose", intent, slots, options };
+    trace.push({ type: "state", text: "asking: " + options.map(o => o.label).join(" / ") });
+    return { trace, reply: SV.fmt.cap(options[0].label) + ", or " + options[1].label + "?" };
   }
 
   // Each declared slot gets a value of its type: text from the model, a place (whole multi-word
@@ -299,6 +318,19 @@ class Agent {
       values[name] = v || null;
     }
     return { values };
+  }
+
+  // a filled slot in words for a reply: a list entry's name; a time with its day, counted from now
+  // ("08:00 tomorrow", "20:00 today"); a duration, a repeat, or the words as said
+  spoken(v) {
+    if (!v || typeof v !== "object") return v;
+    if (v.key) return v.key;
+    const f = SV.fmt, now = this.now();
+    if (v.type === "datetime") { const w = f.whenText(f.fromIso(v.value), now), m = /^(.*) at (\d\d:\d\d)$/.exec(w); return m ? m[2] + " " + m[1] : w; }
+    if (v.type === "date") return f.dayText(f.fromIso(v.value), now);
+    if (v.type === "duration") return f.durWords(v.seconds);
+    if (v.type === "recurrence") return f.ruleWords(v.rrule).trim();
+    return v.text;
   }
 
   // action: run — the command from the front matter; a {slot} from a list becomes that value's

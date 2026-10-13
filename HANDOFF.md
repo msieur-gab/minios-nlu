@@ -32,6 +32,11 @@ GitHub Pages.
   on the phone straight after retraining, asking "Which time?" when a value it uses is missing.
   The export holds training lines for existing skills and a draft `skills/<name>/skill.md` per
   new skill that passes the compile checks.
+  A marked value the date parser reads as a time becomes a `datetime` slot, said with its day
+  ("08:00 tomorrow"). A taught skill only answers: to really ring, it needs a skill.js.
+- **Bare hours:** "at 8" when 08:00 has passed today is now ambiguous: 20:00 today or 08:00
+  tomorrow. Reminders and taught skills ask which one; answers like "tomorrow", "8am",
+  "8:00", "tonight" pick it.
 - **APIs:** weather and world time via Open-Meteo (no key). Name and home place on the device.
 
 Run: `node train.js` (compiles the skills too), `python build_web.py`,
@@ -88,7 +93,8 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 
 **Known gaps**
 - Names containing "and" ("a folder called salt and pepper" → "salt").
-- Date parser: "after lunch", "mid-november", languages other than English.
+- Date parser: "after lunch", "mid-november", "alarm for 7" (no time read after "for"),
+  languages other than English.
 - Python reference tools (`lint.py`, `cv.py`) not rerun since the skill-file migration;
   `DATASET_BRIEF.md` predates skill files.
 

@@ -5,6 +5,13 @@
 // is exported as a draft skills/<name>/skill.md (examples, slots, reply) ready to commit.
 
 const NLUInbox = (() => {
+  const ENT = () => (typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js"));
+  // what a marked value is: a time or date when the date parser reads one there ("wake me up at
+  // [8](time)"), a duration ("for [10 minutes](length)"), otherwise words
+  function kindOf(text, s, e) {
+    const hit = ENT().parse(text, { now: new Date() }).find(x => x.start < e && s < x.end);
+    return !hit ? "text" : hit.type === "duration" ? "duration" : "datetime";
+  }
   const KEY = "minios.inbox.v1";
   const MODEL_KEY = "minios.model.v1";
   const norm = t => t.toLowerCase().replace(/[?!.]+$/g, "").split(/\s+/).filter(Boolean).join(" ");
@@ -72,12 +79,16 @@ const NLUInbox = (() => {
     remove(id) { this.items = this.items.filter(i => i.id !== id); this.save(); }
     markTrained() { for (const i of this.decided()) i.trained = true; this.save(); }
 
-    // skills created here: { name: { answer, slots: [names marked in their examples], needed: [those the answer uses] } }
+    // skills created here: { name: { answer, slots: [marked names], types: { name: text|datetime|duration },
+    // needed: [names the answer uses] }. A value is a time if the date parser reads one in any of its marks.
     newSkills() {
       const out = {};
-      for (const i of this.decided()) if (i.isNew) out[i.intent] = { answer: i.answer || "", slots: [], needed: [] };
-      for (const i of this.decided()) if (out[i.intent])
-        for (const ex of i.examples) for (const [, , n] of ex.spans) if (!out[i.intent].slots.includes(n)) out[i.intent].slots.push(n);
+      for (const i of this.decided()) if (i.isNew) out[i.intent] = { answer: i.answer || "", slots: [], types: {}, needed: [] };
+      for (const i of this.decided()) if (out[i.intent]) for (const ex of i.examples) for (const [st, en, n] of ex.spans) {
+        const sk = out[i.intent], k = kindOf(ex.text, st, en);
+        if (!sk.slots.includes(n)) { sk.slots.push(n); sk.types[n] = k; }
+        else if (k !== "text") sk.types[n] = k;
+      }
       for (const s of Object.values(out)) s.needed = s.slots.filter(n => s.answer.includes("{" + n + "}"));
       return out;
     }
@@ -100,7 +111,7 @@ const NLUInbox = (() => {
       return ["---", "skill: " + name, "action: say", "---", "# " + name.replace(/_/g, " "), "",
         "Taught on the phone through the inbox, " + stamp + ". To do more than answer, add a skill.js;",
         "to show it in help, add a help: line above.", "",
-        ...(s.slots.length ? ["## Slots", ...s.slots.map(n => "- " + n + ": text" + (s.needed.includes(n) ? ", required, ask: ask_" + n : "")), ""] : []),
+        ...(s.slots.length ? ["## Slots", ...s.slots.map(n => "- " + n + ": " + s.types[n] + (s.needed.includes(n) ? ", required, ask: ask_" + n : "")), ""] : []),
         "## Examples", ...lines, "", "## Replies",
         "- say: " + (s.answer || "I know this one, but nothing is set up to do it yet."),
         ...s.needed.map(n => "- ask_" + n + ": Which " + n.replace(/_/g, " ") + "?"), ""].join("\n");

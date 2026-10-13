@@ -362,7 +362,7 @@ const NLUEntities = (() => {
   // ---------- time resolution ----------
   const PM_HINT = new Set(["afternoon", "evening", "night", "tonight"]);
   function hour24(t, daypart, date, now) {
-    let h = t.h, amb = false, alt = null;
+    let h = t.h, amb = false, alt = null, altNextDay = false;
     if (t.mer === "pm" && h < 12) h += 12;
     else if (t.mer === "am" && h === 12) h = 0;
     else if (!t.mer && h >= 1 && h <= 12) {
@@ -373,14 +373,14 @@ const NLUEntities = (() => {
         const am = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h % 12, t.m);
         const pm = new Date(date.getFullYear(), date.getMonth(), date.getDate(), (h % 12) + 12, t.m);
         if (am > now) { h = h % 12; amb = true; alt = (h % 12) + 12; }
-        else if (pm > now) { h = (h % 12) + 12; }
+        else if (pm > now) { h = (h % 12) + 12; amb = true; alt = h - 12; altNextDay = true; } // tonight, or tomorrow morning
         else if (h <= 6) h = (h % 12) + 12;                 // both passed: tomorrow, 1–6 → afternoon
         else if (h <= 11) { amb = true; alt = h + 12; }      // tomorrow, 7–11 → morning, but ask
         else h = 12;
       } else if (h <= 6) h += 12;            // 1–6 → afternoon
       else if (h <= 11) { amb = true; alt = h + 12; } // 7–11 → morning, but ask
     }
-    return { h, m: t.m, ambiguous: amb, altHour: alt };
+    return { h, m: t.m, ambiguous: amb, altHour: alt, altNextDay };
   }
 
   // ---------- merge + resolve ----------
@@ -479,7 +479,8 @@ const NLUEntities = (() => {
     const at = new Date(day.getFullYear(), day.getMonth(), day.getDate(), t.h, t.m);
     if (t.ambiguous) { ambiguous = true; }
     const alts = altDays.map(d => iso(new Date(d.getFullYear(), d.getMonth(), d.getDate(), t.h, t.m), true));
-    if (t.ambiguous && t.altHour != null) alts.push(iso(new Date(day.getFullYear(), day.getMonth(), day.getDate(), t.altHour, t.m), true));
+    const altDay = t.altNextDay ? addDays(day, 1) : day;
+    if (t.ambiguous && t.altHour != null) alts.push(iso(new Date(altDay.getFullYear(), altDay.getMonth(), altDay.getDate(), t.altHour, t.m), true));
     if (approx) notes.push(`"${daypart}" with no time, defaulted to ${pad(t.h)}:00`);
     return { ...base, type: "datetime", grain: approx ? "daypart" : "minute", value: iso(at, true), ambiguous, alternatives: alts,
       past: at < now, note: notes.join("; ") || undefined };

@@ -20,10 +20,12 @@ function schedule(ctx, task, when, noTime) {
   ctx.arm(at, ctx.say("ring", { what: task || "time's up" }));
   return ctx.say("done", { what, at: fmt.whenText(at, now) }) + (noTime ? " " + ctx.say("no_time") : "");
 }
-// words that pick one of two dates or hours: "the 16th", "next one", "morning"
-function keysFor(d, other, fmt) {
+// words that pick one of two dates or hours: "the 16th", "next one", "tomorrow", "morning"
+function keysFor(d, other, fmt, now) {
   const keys = [];
   if (d.toDateString() !== other.toDateString()) {
+    const k = fmt.daysApart(d, now);
+    if (k === 0 || k === 1) keys.push(k ? "tomorrow" : "today");
     const n = d.getDate(), suf = n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th";
     keys.push(String(n), n + suf, fmt.MONTHS[d.getMonth()].toLowerCase() + " " + n);
     keys.push(...(d < other ? ["this", "this one", "coming", "this week"] : ["next", "next one", "next week", "later", "the following"]));
@@ -62,7 +64,7 @@ module.exports = {
       });
     } else {
       const vs = [when.value, when.alternatives[0]];
-      options = vs.map((v, i) => ({ label: fmt.whenText(fmt.fromIso(v), now), keys: keysFor(fmt.fromIso(v), fmt.fromIso(vs[1 - i]), fmt),
+      options = vs.map((v, i) => ({ label: fmt.whenText(fmt.fromIso(v), now), keys: keysFor(fmt.fromIso(v), fmt.fromIso(vs[1 - i]), fmt, now),
         then: c => schedule(c, task, { type: "datetime", value: v }, noTime) }));
     }
     return ctx.choose(fmt.cap(options[0].label) + ", or " + options[1].label + "?", options);

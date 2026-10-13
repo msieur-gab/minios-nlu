@@ -64,7 +64,7 @@ const CASES = [
   ["remind me to call mum next tuesday at 18h", "2026-10-13T18:00", true],
   ["at 18:30", "2026-10-13T18:30"],
   ["at 3pm", "2026-10-13T15:00"],
-  ["at 9", "2026-10-12T21:00"],
+  ["at 9", "2026-10-12T21:00", true],                    // tonight, or tomorrow morning: ask (13 Oct)
   ["at midnight", "2026-10-13T00:00"],
   ["tonight at 8", "2026-10-12T20:00"], // already passed: must come back with past: true
   // durations (timers)

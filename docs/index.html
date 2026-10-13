@@ -753,7 +753,7 @@ const NLUEntities = (() => {
   // ---------- time resolution ----------
   const PM_HINT = new Set(["afternoon", "evening", "night", "tonight"]);
   function hour24(t, daypart, date, now) {
-    let h = t.h, amb = false, alt = null;
+    let h = t.h, amb = false, alt = null, altNextDay = false;
     if (t.mer === "pm" && h < 12) h += 12;
     else if (t.mer === "am" && h === 12) h = 0;
     else if (!t.mer && h >= 1 && h <= 12) {
@@ -764,14 +764,14 @@ const NLUEntities = (() => {
         const am = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h % 12, t.m);
         const pm = new Date(date.getFullYear(), date.getMonth(), date.getDate(), (h % 12) + 12, t.m);
         if (am > now) { h = h % 12; amb = true; alt = (h % 12) + 12; }
-        else if (pm > now) { h = (h % 12) + 12; }
+        else if (pm > now) { h = (h % 12) + 12; amb = true; alt = h - 12; altNextDay = true; } // tonight, or tomorrow morning
         else if (h <= 6) h = (h % 12) + 12;                 // both passed: tomorrow, 1–6 → afternoon
         else if (h <= 11) { amb = true; alt = h + 12; }      // tomorrow, 7–11 → morning, but ask
         else h = 12;
       } else if (h <= 6) h += 12;            // 1–6 → afternoon
       else if (h <= 11) { amb = true; alt = h + 12; } // 7–11 → morning, but ask
     }
-    return { h, m: t.m, ambiguous: amb, altHour: alt };
+    return { h, m: t.m, ambiguous: amb, altHour: alt, altNextDay };
   }
 
   // ---------- merge + resolve ----------
@@ -870,7 +870,8 @@ const NLUEntities = (() => {
     const at = new Date(day.getFullYear(), day.getMonth(), day.getDate(), t.h, t.m);
     if (t.ambiguous) { ambiguous = true; }
     const alts = altDays.map(d => iso(new Date(d.getFullYear(), d.getMonth(), d.getDate(), t.h, t.m), true));
-    if (t.ambiguous && t.altHour != null) alts.push(iso(new Date(day.getFullYear(), day.getMonth(), day.getDate(), t.altHour, t.m), true));
+    const altDay = t.altNextDay ? addDays(day, 1) : day;
+    if (t.ambiguous && t.altHour != null) alts.push(iso(new Date(altDay.getFullYear(), altDay.getMonth(), altDay.getDate(), t.altHour, t.m), true));
     if (approx) notes.push(`"${daypart}" with no time, defaulted to ${pad(t.h)}:00`);
     return { ...base, type: "datetime", grain: approx ? "daypart" : "minute", value: iso(at, true), ambiguous, alternatives: alts,
       past: at < now, note: notes.join("; ") || undefined };
@@ -3457,10 +3458,12 @@ function schedule(ctx, task, when, noTime) {
   ctx.arm(at, ctx.say("ring", { what: task || "time's up" }));
   return ctx.say("done", { what, at: fmt.whenText(at, now) }) + (noTime ? " " + ctx.say("no_time") : "");
 }
-// words that pick one of two dates or hours: "the 16th", "next one", "morning"
-function keysFor(d, other, fmt) {
+// words that pick one of two dates or hours: "the 16th", "next one", "tomorrow", "morning"
+function keysFor(d, other, fmt, now) {
   const keys = [];
   if (d.toDateString() !== other.toDateString()) {
+    const k = fmt.daysApart(d, now);
+    if (k === 0 || k === 1) keys.push(k ? "tomorrow" : "today");
     const n = d.getDate(), suf = n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th";
     keys.push(String(n), n + suf, fmt.MONTHS[d.getMonth()].toLowerCase() + " " + n);
     keys.push(...(d < other ? ["this", "this one", "coming", "this week"] : ["next", "next one", "next week", "later", "the following"]));
@@ -3499,7 +3502,7 @@ module.exports = {
       });
     } else {
       const vs = [when.value, when.alternatives[0]];
-      options = vs.map((v, i) => ({ label: fmt.whenText(fmt.fromIso(v), now), keys: keysFor(fmt.fromIso(v), fmt.fromIso(vs[1 - i]), fmt),
+      options = vs.map((v, i) => ({ label: fmt.whenText(fmt.fromIso(v), now), keys: keysFor(fmt.fromIso(v), fmt.fromIso(vs[1 - i]), fmt, now),
         then: c => schedule(c, task, { type: "datetime", value: v }, noTime) }));
     }
     return ctx.choose(fmt.cap(options[0].label) + ", or " + options[1].label + "?", options);
@@ -3765,7 +3768,7 @@ class Agent {
       const slots = Object.fromEntries(t.slots.map(n => {
         const need = t.needed.includes(n);
         if (need) replies["ask_" + n] = ["Which " + n.replace(/_/g, " ") + "?"];
-        return [n, { type: "text", list: null, required: need, guess: false, ask: need ? "ask_" + n : null, invalid: null, default: null, ignore: [] }];
+        return [n, { type: t.types[n] || "text", list: null, required: need, guess: false, ask: need ? "ask_" + n : null, invalid: null, default: null, ignore: [] }];
       }));
       SKILLS[name] = { action: "say", params: { skill: name }, slots, replies, values: {} };
       for (const [k, v] of Object.entries(replies)) RESPONSES[name + "." + k] = v;
@@ -3815,7 +3818,26 @@ class Agent {
       const res = await ctx.request(ctx.slots);
       return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
     }) });
-    return { trace, reply: fill(intent + ".say", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, v && typeof v === "object" ? v.key || v.text : v]))) };
+    return this.sayFilled(intent, slots, trace);
+  }
+
+  // action: say with its slots filled. A time with two readings ("at 8" in the morning: 20:00
+  // today or 08:00 tomorrow) is offered as a choice first; skills with a script decide themselves.
+  sayFilled(intent, slots, trace) {
+    const say = s => fill(intent + ".say", Object.fromEntries(Object.entries(s).map(([k, v]) => [k, this.spoken(v)])));
+    const [name, e] = Object.entries(slots).find(([, v]) => v && v.type === "datetime" && v.ambiguous && (v.alternatives || []).length) || [];
+    if (!e) return { trace, reply: say(slots) };
+    const options = [e.value, e.alternatives[0]].map(value => {
+      const v = { ...e, value, ambiguous: false, alternatives: [] }, at = SV.fmt.fromIso(value), h = at.getHours();
+      const label = this.spoken(v);
+      const h12 = String(h % 12 || 12), ap = h < 12 ? "am" : "pm";
+      return { label, keys: [SV.fmt.clock(at), SV.fmt.clock(at).replace(/^0/, ""), String(h), h12 + ap, h12 + " " + ap, ...label.split(" ").slice(1),
+        ...(h < 12 ? ["am", "morning", "a m"] : ["pm", "evening", "afternoon", "night", "tonight", "p m"])],
+        then: () => say({ ...slots, [name]: v }) };
+    });
+    this.pending = { type: "choose", intent, slots, options };
+    trace.push({ type: "state", text: "asking: " + options.map(o => o.label).join(" / ") });
+    return { trace, reply: SV.fmt.cap(options[0].label) + ", or " + options[1].label + "?" };
   }
 
   // Each declared slot gets a value of its type: text from the model, a place (whole multi-word
@@ -3849,6 +3871,19 @@ class Agent {
       values[name] = v || null;
     }
     return { values };
+  }
+
+  // a filled slot in words for a reply: a list entry's name; a time with its day, counted from now
+  // ("08:00 tomorrow", "20:00 today"); a duration, a repeat, or the words as said
+  spoken(v) {
+    if (!v || typeof v !== "object") return v;
+    if (v.key) return v.key;
+    const f = SV.fmt, now = this.now();
+    if (v.type === "datetime") { const w = f.whenText(f.fromIso(v.value), now), m = /^(.*) at (\d\d:\d\d)$/.exec(w); return m ? m[2] + " " + m[1] : w; }
+    if (v.type === "date") return f.dayText(f.fromIso(v.value), now);
+    if (v.type === "duration") return f.durWords(v.seconds);
+    if (v.type === "recurrence") return f.ruleWords(v.rrule).trim();
+    return v.text;
   }
 
   // action: run — the command from the front matter; a {slot} from a list becomes that value's
@@ -3956,6 +3991,13 @@ if (typeof module !== "undefined") module.exports = { Agent };
 // is exported as a draft skills/<name>/skill.md (examples, slots, reply) ready to commit.
 
 const NLUInbox = (() => {
+  const ENT = () => (typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js"));
+  // what a marked value is: a time or date when the date parser reads one there ("wake me up at
+  // [8](time)"), a duration ("for [10 minutes](length)"), otherwise words
+  function kindOf(text, s, e) {
+    const hit = ENT().parse(text, { now: new Date() }).find(x => x.start < e && s < x.end);
+    return !hit ? "text" : hit.type === "duration" ? "duration" : "datetime";
+  }
   const KEY = "minios.inbox.v1";
   const MODEL_KEY = "minios.model.v1";
   const norm = t => t.toLowerCase().replace(/[?!.]+$/g, "").split(/\s+/).filter(Boolean).join(" ");
@@ -4023,12 +4065,16 @@ const NLUInbox = (() => {
     remove(id) { this.items = this.items.filter(i => i.id !== id); this.save(); }
     markTrained() { for (const i of this.decided()) i.trained = true; this.save(); }
 
-    // skills created here: { name: { answer, slots: [names marked in their examples], needed: [those the answer uses] } }
+    // skills created here: { name: { answer, slots: [marked names], types: { name: text|datetime|duration },
+    // needed: [names the answer uses] }. A value is a time if the date parser reads one in any of its marks.
     newSkills() {
       const out = {};
-      for (const i of this.decided()) if (i.isNew) out[i.intent] = { answer: i.answer || "", slots: [], needed: [] };
-      for (const i of this.decided()) if (out[i.intent])
-        for (const ex of i.examples) for (const [, , n] of ex.spans) if (!out[i.intent].slots.includes(n)) out[i.intent].slots.push(n);
+      for (const i of this.decided()) if (i.isNew) out[i.intent] = { answer: i.answer || "", slots: [], types: {}, needed: [] };
+      for (const i of this.decided()) if (out[i.intent]) for (const ex of i.examples) for (const [st, en, n] of ex.spans) {
+        const sk = out[i.intent], k = kindOf(ex.text, st, en);
+        if (!sk.slots.includes(n)) { sk.slots.push(n); sk.types[n] = k; }
+        else if (k !== "text") sk.types[n] = k;
+      }
       for (const s of Object.values(out)) s.needed = s.slots.filter(n => s.answer.includes("{" + n + "}"));
       return out;
     }
@@ -4051,7 +4097,7 @@ const NLUInbox = (() => {
       return ["---", "skill: " + name, "action: say", "---", "# " + name.replace(/_/g, " "), "",
         "Taught on the phone through the inbox, " + stamp + ". To do more than answer, add a skill.js;",
         "to show it in help, add a help: line above.", "",
-        ...(s.slots.length ? ["## Slots", ...s.slots.map(n => "- " + n + ": text" + (s.needed.includes(n) ? ", required, ask: ask_" + n : "")), ""] : []),
+        ...(s.slots.length ? ["## Slots", ...s.slots.map(n => "- " + n + ": " + s.types[n] + (s.needed.includes(n) ? ", required, ask: ask_" + n : "")), ""] : []),
         "## Examples", ...lines, "", "## Replies",
         "- say: " + (s.answer || "I know this one, but nothing is set up to do it yet."),
         ...s.needed.map(n => "- ask_" + n + ": Which " + n.replace(/_/g, " ") + "?"), ""].join("\n");
