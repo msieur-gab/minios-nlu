@@ -130,6 +130,6 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 
 ## Branches
 
-All merged into `main` and deleted on 13 October: `time-skills`, `js-trainer`, `inbox`,
+All merged into `main`, safe to delete (their commits are all on `main`): `time-skills`, `js-trainer`, `inbox`,
 `skill-files`, `multi-intent`, `core-split`, `place-names`, `dates`, `typed-slots`,
-`inbox-slots`, `time-values`. Their commits are all on `main`.
+`inbox-slots`, `time-values`, `cleanup`.
