@@ -6,13 +6,9 @@ const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0
 
 module.exports = {
   run(ctx) {
-    const me = ctx.me.get();
-    const place = ctx.place() || (me.place && me.place.name);
-    if (!place) return ctx.ask("place", "ask_place");
-
-    // the day or days asked for, from the date parser ("tomorrow", "this weekend")
-    const e = ctx.entities().find(x => ["date", "datetime", "range"].includes(x.type));
-    if (e) ctx.used(e);
+    // place and day are filled by the core (## Slots): the place named, or home; the day, if any
+    const me = ctx.me.get(), place = ctx.slots.place;
+    const e = ctx.slots.day && ctx.slots.day.type !== "recurrence" ? ctx.slots.day : null;
     const today = day0(ctx.now);
     let days = null;
     if (e && e.type === "range") {

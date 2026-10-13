@@ -18,6 +18,8 @@ const RESPONSES = {
   empty_value: ["I didn't catch a name. Try again, or say cancel."],
   fallback: ["I didn't understand that. Say help to see what I can do."],
   learned: ["I recognise this as “{intent}”{got}, but no action is set up for it yet."],
+  network: ["I need a network connection to {what}."],
+  unsure: ["Do you want me to {what}?"],
   wait: ["One moment…"],
 };
 for (const [name, sk] of Object.entries(SKILLS)) for (const [k, v] of Object.entries(sk.replies)) RESPONSES[name + "." + k] = v;
@@ -36,6 +38,9 @@ const findValue = (list, raw) => {
   const v = cleanValue(raw).toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
   return (list || []).find(x => x.words.includes(v)) || null;
 };
+// what a skill does, from its help line: "check the weather (“weather tomorrow”)" → "check the weather"
+const doing = sk => (sk.params.help || "do that").replace(/\s*\(.*$/, "").trim();
+const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
 const orList = a => (a.length > 1 ? a.slice(0, -1).join(", ") + " or " + a[a.length - 1] : a.join(""));
 // which offered option an answer points to: an option's keys ("16th", "morning"), "the other one", or yes
 function pickOption(answer, options) {
@@ -142,7 +147,11 @@ class Agent {
     if (p && p.type === "confirm") {
       this.pending = null;
       const yes = YES_RE.test(t) || (r.intent === "affirm" && r.confidence >= 0.5);
-      if (yes && !no) { trace.push({ type: "state", text: "confirmed " + p.what }); return this.resume(p, p.then, trace); }
+      if (yes && !no) {
+        trace.push({ type: "state", text: "confirmed " + p.what });
+        if (p.sentence) { this.lastText = p.sentence; return this.run(p.intent, p.slots, trace); }
+        return this.resume(p, p.then, trace);
+      }
       if (no) { drop("declined " + p.what); return { trace, reply: fill(has(p.intent + ".declined") ? p.intent + ".declined" : "declined") }; }
       trace.push({ type: "state", text: "no clear yes, dropped " + p.what + " and read this as a new command" });
     } else if (p && p.type === "choose") {
@@ -176,6 +185,13 @@ class Agent {
       trace.push({ type: "state", text: "learned skill " + r.intent + ", no skill folder" });
       return { trace, reply: fill("learned", { intent: r.intent.replace(/_/g, " "), got: got ? " (" + got + ")" : "" }) };
     }
+    // a skill can ask for more certainty than the global threshold: in between, ask first
+    const sure = +(SKILLS[r.intent].params.confidence || 0);
+    if (r.confidence < sure) {
+      this.pending = { type: "confirm", intent: r.intent, slots: r.slots, what: r.intent, sentence: text };
+      trace.push({ type: "state", text: "confidence " + r.confidence.toFixed(2) + " < " + sure + " for " + r.intent + ", asking first" });
+      return { trace, reply: fill(has(r.intent + ".unsure") ? r.intent + ".unsure" : "unsure", { what: doing(SKILLS[r.intent]) }) };
+    }
     return this.run(r.intent, r.slots, trace);
   }
 
@@ -205,6 +221,15 @@ class Agent {
   // ---------- running a skill ----------
   run(intent, slots, trace) {
     const sk = SKILLS[intent];
+    if ((sk.params.uses || "").includes("network") && !online()) {
+      trace.push({ type: "abstain", text: "offline, " + intent + " uses the network" });
+      return { trace, reply: fill("network", { what: doing(sk) }) };
+    }
+    if (sk.slots) { // declared slots: fill them, ask for what's missing, before the skill runs
+      const got = this.fillSlots(sk, slots, trace);
+      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace);
+      slots = got.values;
+    }
     if (sk.code || sk.params.script) return this.runScript(intent, sk, slots, trace);
     if (sk.action === "run") return this.runCommand(intent, sk, slots, trace);
     if (sk.request) return this.runScript(intent, sk, slots, trace, { run: ctx => ctx.later("checking", ctx.slots, async () => {
@@ -212,6 +237,32 @@ class Agent {
       return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
     }) });
     return { trace, reply: fill(intent + ".say") };
+  }
+
+  // Each declared slot gets a value of its type: text from the model, a place (whole multi-word
+  // name), or a date from the date parser. A missing required slot is asked for; a value that
+  // doesn't fit its type is asked for again (with the slot's invalid: reply if it has one).
+  fillSlots(sk, slots, trace) {
+    const text = this.lastText, values = { ...slots };
+    for (const [name, slot] of Object.entries(sk.slots)) {
+      const raw = slots[name] != null && typeof slots[name] === "string" ? cleanValue(slots[name]) : slots[name];
+      let v = null;
+      if (slot.type === "text") v = raw || null;
+      else if (slot.type === "place") v = raw ? SV.places.placeIn(text, raw) : null;
+      else if (slot.type === "datetime") {
+        const ents = ENT.parse(text, { now: this.now() }).filter(x => x.type !== "duration");
+        v = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range") || null;
+        if (v) trace.push({ type: "entity", e: v });
+      }
+      if (v == null && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
+      if (v == null && slot.required) {
+        const wrong = raw && slot.invalid;
+        trace.push({ type: "state", text: wrong ? name + " “" + raw + "” isn't a " + slot.type : "missing " + name });
+        return { ask: [name, wrong ? slot.invalid : slot.ask] };
+      }
+      values[name] = v;
+    }
+    return { values };
   }
 
   // action: run — a command from the skill's front matter, filled with a value from its list
@@ -306,7 +357,12 @@ class Agent {
       ctx.live = late;
       const later = Promise.resolve().then(work)
         .then(r => ({ reply: typeof r === "string" ? r : r.reply, trace: late }))
-        .catch(err => { late.push({ type: "abstain", text: err.message }); return { reply: has(intent + ".offline") ? ctx.say("offline", vars) : "Something went wrong: " + err.message, trace: late }; });
+        .catch(err => {
+          late.push({ type: "abstain", text: err.message });
+          const reply = has(intent + ".offline") ? ctx.say("offline", vars)
+            : (sk.params.uses || "").includes("network") ? fill("network", { what: doing(sk) }) : "Something went wrong: " + err.message;
+          return { reply, trace: late };
+        });
       return { trace, reply: has(intent + "." + name) ? ctx.say(name, vars) : fill("wait"), later };
     }
     return { trace, reply: typeof res === "string" ? res : (res && res.reply) || "" };

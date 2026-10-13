@@ -3,12 +3,17 @@ skill: set_reminder
 help: set reminders (“remind me to call mum next friday at 3pm”)
 samples: 14
 train_only: task, when
+confidence: 0.7          # it sets something that will ring later: below this, ask first
 ---
 # Reminders
 
 One-off or repeating reminders. When comes from the date parser; if it's ambiguous ("next friday",
 "at 9") the agent offers the two readings, and a time that has already passed becomes tomorrow
 after you agree. A day without a time is 9:00.
+
+## Slots
+- task: text
+- when: datetime, required, ask: ask_when, invalid: when_invalid
 
 ## Examples
 - remind me to [{task}](task) {when}
@@ -93,6 +98,8 @@ after you agree. A day without a time is 9:00.
 
 ## Replies
 - ask_when: When should I remind you? | OK. When?
+- unsure: Do you want a reminder for that?
+- when_invalid: I didn't catch a time. Try “tomorrow at 9” or “in an hour”.
 - ask_day: {phrase} runs from {from} to {to}. Which day?
 - done: I'll remind you{what} {at}. | Reminder set{what} {at}. | OK, I'll remind you{what} {at}.
 - repeat: OK, I'll remind you{what}{rule}. First one {next}.

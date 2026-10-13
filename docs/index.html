@@ -1071,6 +1071,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Brightness already at {n}%."
     ]
    },
+   "slots": null,
    "sentences": 96,
    "values": {
     "direction": [
@@ -1230,6 +1231,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Sound back on, at {n}%."
     ]
    },
+   "slots": null,
    "sentences": 117,
    "values": {
     "direction": [
@@ -1363,6 +1365,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "OK. What would you like to do?"
     ]
    },
+   "slots": null,
    "sentences": 19,
    "values": {}
   },
@@ -1393,6 +1396,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "OK. What's the file name?"
     ]
    },
+   "slots": null,
    "sentences": 352,
    "values": {
     "ext": [
@@ -1525,6 +1529,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Sure. What name do you want for the folder?"
     ]
    },
+   "slots": null,
    "sentences": 316,
    "values": {}
   },
@@ -1545,6 +1550,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "OK. There's nothing to cancel."
     ]
    },
+   "slots": null,
    "sentences": 18,
    "values": {}
   },
@@ -1573,6 +1579,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "There was nothing to forget."
     ]
    },
+   "slots": null,
    "sentences": 33,
    "values": {}
   },
@@ -1627,6 +1634,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "It's {year}."
     ]
    },
+   "slots": null,
    "sentences": 82,
    "values": {}
   },
@@ -1662,6 +1670,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Looking up {place}…"
     ]
    },
+   "slots": null,
    "sentences": 111,
    "values": {}
   },
@@ -1674,7 +1683,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "get_weather",
     "help": "check the weather (“weather tomorrow”)",
     "train_only": "city, day",
-    "samples": "8"
+    "samples": "8",
+    "uses": "network"
    },
    "request": {
     "method": "GET",
@@ -1727,12 +1737,25 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "past": [
      "I only have the forecast, not past weather."
     ],
-    "offline": [
-     "I can't reach the weather service right now. Are you online?"
-    ],
     "checking": [
      "Checking the weather for {place}…"
     ]
+   },
+   "slots": {
+    "place": {
+     "type": "place",
+     "required": true,
+     "ask": "ask_place",
+     "invalid": null,
+     "default": "home"
+    },
+    "day": {
+     "type": "datetime",
+     "required": false,
+     "ask": null,
+     "invalid": null,
+     "default": null
+    }
    },
    "sentences": 203,
    "values": {
@@ -2040,6 +2063,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Hi {name}. What can I do for you?"
     ]
    },
+   "slots": null,
    "sentences": 16,
    "values": {}
   },
@@ -2062,6 +2086,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”."
     ]
    },
+   "slots": null,
    "sentences": 17,
    "values": {}
   },
@@ -2092,6 +2117,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "I don't know an app called “{value}”. I can open the {choices}."
     ]
    },
+   "slots": null,
    "sentences": 204,
    "values": {
     "app": [
@@ -2250,6 +2276,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Which file or folder should I open?"
     ]
    },
+   "slots": null,
    "sentences": 253,
    "values": {}
   },
@@ -2271,6 +2298,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "That's outside what I can do. Say help for the list."
     ]
    },
+   "slots": null,
    "sentences": 118,
    "values": {}
   },
@@ -2314,6 +2342,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Cancelled. Nothing changes."
     ]
    },
+   "slots": null,
    "sentences": 104,
    "values": {
     "action": [
@@ -2403,6 +2432,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "I don't know where you live yet. Tell me “I live in …”."
     ]
    },
+   "slots": null,
    "sentences": 78,
    "values": {}
   },
@@ -2440,6 +2470,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
+   "slots": null,
    "sentences": 181,
    "values": {}
   },
@@ -2452,7 +2483,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "set_reminder",
     "help": "set reminders (“remind me to call mum next friday at 3pm”)",
     "samples": "14",
-    "train_only": "task, when"
+    "train_only": "task, when",
+    "confidence": "0.7"
    },
    "request": null,
    "answer": {},
@@ -2460,6 +2492,12 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "ask_when": [
      "When should I remind you?",
      "OK. When?"
+    ],
+    "unsure": [
+     "Do you want a reminder for that?"
+    ],
+    "when_invalid": [
+     "I didn't catch a time. Try “tomorrow at 9” or “in an hour”."
     ],
     "ask_day": [
      "{phrase} runs from {from} to {to}. Which day?"
@@ -2481,6 +2519,22 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "past": [
      "{at} has already passed. Shall I make it {next}?"
     ]
+   },
+   "slots": {
+    "task": {
+     "type": "text",
+     "required": false,
+     "ask": null,
+     "invalid": null,
+     "default": null
+    },
+    "when": {
+     "type": "datetime",
+     "required": true,
+     "ask": "ask_when",
+     "invalid": "when_invalid",
+     "default": null
+    }
    },
    "sentences": 215,
    "values": {}
@@ -2514,6 +2568,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "That's a time rather than a duration, so here's a reminder instead:"
     ]
    },
+   "slots": null,
    "sentences": 123,
    "values": {}
   },
@@ -2538,6 +2593,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "System overview (simulated values):"
     ]
    },
+   "slots": null,
    "sentences": 216,
    "values": {
     "check": [
@@ -2744,6 +2800,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Anytime."
     ]
    },
+   "slots": null,
    "sentences": 15,
    "values": {}
   }
@@ -2909,13 +2966,9 @@ const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0
 
 module.exports = {
   run(ctx) {
-    const me = ctx.me.get();
-    const place = ctx.place() || (me.place && me.place.name);
-    if (!place) return ctx.ask("place", "ask_place");
-
-    // the day or days asked for, from the date parser ("tomorrow", "this weekend")
-    const e = ctx.entities().find(x => ["date", "datetime", "range"].includes(x.type));
-    if (e) ctx.used(e);
+    // place and day are filled by the core (## Slots): the place named, or home; the day, if any
+    const me = ctx.me.get(), place = ctx.slots.place;
+    const e = ctx.slots.day && ctx.slots.day.type !== "recurrence" ? ctx.slots.day : null;
     const today = day0(ctx.now);
     let days = null;
     if (e && e.type === "range") {
@@ -3089,17 +3142,13 @@ function keysFor(d, other, fmt) {
 }
 module.exports = {
   run(ctx) {
-    const { fmt } = ctx, now = ctx.now;
-    const ents = ctx.entities().filter(x => x.type !== "duration");
-    const e = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range");
+    const { fmt } = ctx, now = ctx.now, e = ctx.slots.when; // the core asked for it if it was missing
     let task = ctx.slots.task || null;
     // the task never includes the words the date parser read as the time ("stretch every weekday at 3pm")
-    if (task && e) {
+    if (task) {
       const at = ctx.text.toLowerCase().indexOf(task.toLowerCase());
       if (at >= 0 && at < e.start && at + task.length > e.start) task = ctx.text.slice(at, e.start).replace(/[\s,]+$/, "") || null;
     }
-    if (!e) return ctx.ask("when", "ask_when");
-    ctx.used(e);
     if (e.type === "range") return ctx.ask("when", "ask_day", { phrase: fmt.cap(e.text), from: fmt.dayText(fmt.fromIso(e.from), now), to: fmt.dayText(fmt.fromIso(e.to), now) });
     let when = e, noTime = false;
     if (e.type === "date") { // a day without a time
@@ -3190,6 +3239,8 @@ const RESPONSES = {
   empty_value: ["I didn't catch a name. Try again, or say cancel."],
   fallback: ["I didn't understand that. Say help to see what I can do."],
   learned: ["I recognise this as “{intent}”{got}, but no action is set up for it yet."],
+  network: ["I need a network connection to {what}."],
+  unsure: ["Do you want me to {what}?"],
   wait: ["One moment…"],
 };
 for (const [name, sk] of Object.entries(SKILLS)) for (const [k, v] of Object.entries(sk.replies)) RESPONSES[name + "." + k] = v;
@@ -3208,6 +3259,9 @@ const findValue = (list, raw) => {
   const v = cleanValue(raw).toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
   return (list || []).find(x => x.words.includes(v)) || null;
 };
+// what a skill does, from its help line: "check the weather (“weather tomorrow”)" → "check the weather"
+const doing = sk => (sk.params.help || "do that").replace(/\s*\(.*$/, "").trim();
+const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
 const orList = a => (a.length > 1 ? a.slice(0, -1).join(", ") + " or " + a[a.length - 1] : a.join(""));
 // which offered option an answer points to: an option's keys ("16th", "morning"), "the other one", or yes
 function pickOption(answer, options) {
@@ -3314,7 +3368,11 @@ class Agent {
     if (p && p.type === "confirm") {
       this.pending = null;
       const yes = YES_RE.test(t) || (r.intent === "affirm" && r.confidence >= 0.5);
-      if (yes && !no) { trace.push({ type: "state", text: "confirmed " + p.what }); return this.resume(p, p.then, trace); }
+      if (yes && !no) {
+        trace.push({ type: "state", text: "confirmed " + p.what });
+        if (p.sentence) { this.lastText = p.sentence; return this.run(p.intent, p.slots, trace); }
+        return this.resume(p, p.then, trace);
+      }
       if (no) { drop("declined " + p.what); return { trace, reply: fill(has(p.intent + ".declined") ? p.intent + ".declined" : "declined") }; }
       trace.push({ type: "state", text: "no clear yes, dropped " + p.what + " and read this as a new command" });
     } else if (p && p.type === "choose") {
@@ -3348,6 +3406,13 @@ class Agent {
       trace.push({ type: "state", text: "learned skill " + r.intent + ", no skill folder" });
       return { trace, reply: fill("learned", { intent: r.intent.replace(/_/g, " "), got: got ? " (" + got + ")" : "" }) };
     }
+    // a skill can ask for more certainty than the global threshold: in between, ask first
+    const sure = +(SKILLS[r.intent].params.confidence || 0);
+    if (r.confidence < sure) {
+      this.pending = { type: "confirm", intent: r.intent, slots: r.slots, what: r.intent, sentence: text };
+      trace.push({ type: "state", text: "confidence " + r.confidence.toFixed(2) + " < " + sure + " for " + r.intent + ", asking first" });
+      return { trace, reply: fill(has(r.intent + ".unsure") ? r.intent + ".unsure" : "unsure", { what: doing(SKILLS[r.intent]) }) };
+    }
     return this.run(r.intent, r.slots, trace);
   }
 
@@ -3377,6 +3442,15 @@ class Agent {
   // ---------- running a skill ----------
   run(intent, slots, trace) {
     const sk = SKILLS[intent];
+    if ((sk.params.uses || "").includes("network") && !online()) {
+      trace.push({ type: "abstain", text: "offline, " + intent + " uses the network" });
+      return { trace, reply: fill("network", { what: doing(sk) }) };
+    }
+    if (sk.slots) { // declared slots: fill them, ask for what's missing, before the skill runs
+      const got = this.fillSlots(sk, slots, trace);
+      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace);
+      slots = got.values;
+    }
     if (sk.code || sk.params.script) return this.runScript(intent, sk, slots, trace);
     if (sk.action === "run") return this.runCommand(intent, sk, slots, trace);
     if (sk.request) return this.runScript(intent, sk, slots, trace, { run: ctx => ctx.later("checking", ctx.slots, async () => {
@@ -3384,6 +3458,32 @@ class Agent {
       return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
     }) });
     return { trace, reply: fill(intent + ".say") };
+  }
+
+  // Each declared slot gets a value of its type: text from the model, a place (whole multi-word
+  // name), or a date from the date parser. A missing required slot is asked for; a value that
+  // doesn't fit its type is asked for again (with the slot's invalid: reply if it has one).
+  fillSlots(sk, slots, trace) {
+    const text = this.lastText, values = { ...slots };
+    for (const [name, slot] of Object.entries(sk.slots)) {
+      const raw = slots[name] != null && typeof slots[name] === "string" ? cleanValue(slots[name]) : slots[name];
+      let v = null;
+      if (slot.type === "text") v = raw || null;
+      else if (slot.type === "place") v = raw ? SV.places.placeIn(text, raw) : null;
+      else if (slot.type === "datetime") {
+        const ents = ENT.parse(text, { now: this.now() }).filter(x => x.type !== "duration");
+        v = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range") || null;
+        if (v) trace.push({ type: "entity", e: v });
+      }
+      if (v == null && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
+      if (v == null && slot.required) {
+        const wrong = raw && slot.invalid;
+        trace.push({ type: "state", text: wrong ? name + " “" + raw + "” isn't a " + slot.type : "missing " + name });
+        return { ask: [name, wrong ? slot.invalid : slot.ask] };
+      }
+      values[name] = v;
+    }
+    return { values };
   }
 
   // action: run — a command from the skill's front matter, filled with a value from its list
@@ -3478,7 +3578,12 @@ class Agent {
       ctx.live = late;
       const later = Promise.resolve().then(work)
         .then(r => ({ reply: typeof r === "string" ? r : r.reply, trace: late }))
-        .catch(err => { late.push({ type: "abstain", text: err.message }); return { reply: has(intent + ".offline") ? ctx.say("offline", vars) : "Something went wrong: " + err.message, trace: late }; });
+        .catch(err => {
+          late.push({ type: "abstain", text: err.message });
+          const reply = has(intent + ".offline") ? ctx.say("offline", vars)
+            : (sk.params.uses || "").includes("network") ? fill("network", { what: doing(sk) }) : "Something went wrong: " + err.message;
+          return { reply, trace: late };
+        });
       return { trace, reply: has(intent + "." + name) ? ctx.say(name, vars) : fill("wait"), later };
     }
     return { trace, reply: typeof res === "string" ? res : (res && res.reply) || "" };

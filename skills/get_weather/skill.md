@@ -3,6 +3,7 @@ skill: get_weather
 help: check the weather (“weather tomorrow”)
 train_only: city, day
 samples: 8
+uses: network            # nothing to answer without it
 ---
 # Weather
 
@@ -16,6 +17,10 @@ coordinates. "Weather now" needs nothing more than the Answer section; skill.js 
 adds the forecast: finding the asked-for day(s) in the 16 days that come back.
 
 Privacy: the place name and its coordinates are sent to Open-Meteo. Nothing else is.
+
+## Slots
+- place: place, required, ask: ask_place, default: home
+- day: datetime
 
 ## Request
 GET https://api.open-meteo.com/v1/forecast
@@ -141,5 +146,4 @@ GET https://api.open-meteo.com/v1/forecast
 - not_found: I couldn't find a place called “{place}”.
 - too_far: I can only see 16 days ahead.
 - past: I only have the forecast, not past weather.
-- offline: I can't reach the weather service right now. Are you online?
 - checking: Checking the weather for {place}…

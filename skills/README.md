@@ -51,6 +51,47 @@ GET https://api.open-meteo.com/v1/forecast
 - done: {place}: {sky}, {temp}°C.
 ```
 
+## Slots, confidence, network (pilot: set_reminder, get_weather)
+
+```markdown
+---
+skill: set_reminder
+confidence: 0.7      # below this (but above the global 0.45), ask “Do you want…?” first
+uses: network        # only for skills that can't answer anything offline (get_weather)
+---
+## Slots
+- task: text
+- when: datetime, required, ask: ask_when, invalid: when_invalid
+- place: place, required, ask: ask_place, default: home
+```
+
+**Slots.** The values a skill works with, declared once. The agent fills them before the
+script runs, so `skill.js` gets `ctx.slots.when` ready to use and never asks by itself.
+
+| type | value |
+|---|---|
+| `text` | the words the model marked |
+| `place` | the place named, whole (“hong kong”) |
+| `datetime` | a date, time, range or repeat from the date parser |
+
+| option | |
+|---|---|
+| `required` | if it's missing, ask with the `ask:` reply; the answer comes back to this skill |
+| `invalid: reply` | asked instead when an answer doesn't fit the type (“banana” for a time) |
+| `default: home` | the place the person told the agent they live in |
+
+**confidence.** How sure the model must be to act straight away. Between the global
+threshold and this, the agent asks first, with the skill's `unsure` reply or a generic
+“Do you want me to {help line}?”. Leave it out and the skill acts at the global threshold.
+
+**uses: network.** When the device is offline, or the request fails, the agent answers “I
+need a network connection to {help line}.” A skill's own `offline` reply still wins (get_time
+uses it to give the local time anyway).
+
+**Checked when compiling.** `node skills.js` stops with the file and the reason when a slot
+has an unknown type, a required slot has no `ask:` reply, a reply named in a slot doesn't
+exist, or the examples mark a `[...](slot)` the Slots section doesn't declare.
+
 **Examples.** Each line is a template.
 - `{a|b|}` picks an alternative; an empty one makes it optional.
 - `{list}` picks a value from `## Values: list`.

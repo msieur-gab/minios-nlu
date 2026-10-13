@@ -21,10 +21,10 @@ function parseSkill(md, file) {
   const meta = {};
   for (const line of fm[1].split("\n")) {
     const m = /^\s*([a-z_]+)\s*:\s*(.*?)\s*$/.exec(line);
-    if (m) meta[m[1]] = m[2].replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
+    if (m) meta[m[1]] = m[2].replace(/\s+#\s.*$/, "").replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1"); // "# note" ends a line
   }
   if (!meta.skill) throw new Error(file + ": front matter needs skill: <name>");
-  const skill = { file, skill: meta.skill, action: meta.action || "say", params: meta, examples: [], values: {}, replies: {}, request: null, answer: {} };
+  const skill = { file, skill: meta.skill, action: meta.action || "say", params: meta, examples: [], values: {}, replies: {}, request: null, answer: {}, slots: null };
   let section = null, list = null;
   for (const raw of md.slice(fm[0].length).split("\n")) {
     const line = raw.trim();
@@ -54,6 +54,20 @@ function parseSkill(md, file) {
       if (m) skill.answer[m[1]] = { path: m[2], round: !!m[3], via: m[4] || null };
       continue;
     }
+    // ## Slots: "- name: type, required, ask: reply, invalid: reply, default: source"
+    if (section === "slots") {
+      const m = /^([a-z_]+)\s*:\s*(.+)$/.exec(item);
+      if (!m) throw new Error(`${file}: can't read slot line “${item}” (expected "- name: type, …")`);
+      const [type, ...rest] = m[2].split(/\s*,\s*/);
+      const slot = { type, required: false, ask: null, invalid: null, default: null };
+      for (const opt of rest) {
+        const o = /^(required|ask|invalid|default)(?:\s*:\s*(\S+))?$/.exec(opt);
+        if (!o || (o[1] === "required") === !!o[2]) throw new Error(`${file}: slot ${m[1]}: unknown option “${opt}”`);
+        slot[o[1]] = o[1] === "required" ? true : o[2];
+      }
+      (skill.slots = skill.slots || {})[m[1]] = slot;
+      continue;
+    }
     if (section === "examples") skill.examples.push(item);
     else if (section === "values") {
       // "key: synonym, synonym → output"   (synonyms and output are optional)
@@ -67,6 +81,28 @@ function parseSkill(md, file) {
     }
   }
   return skill;
+}
+
+// Checks that run when the skills are compiled, so a mistake shows up while writing the skill,
+// not when someone talks to the agent.
+const SLOT_TYPES = ["text", "place", "datetime"];
+const DEFAULTS = ["home"];   // home: the place the person told the agent they live in
+const USES = ["network"];
+function validate(s) {
+  const err = msg => { throw new Error(`${s.file}: ${msg}`); };
+  const p = s.params;
+  if (p.confidence !== undefined && !(+p.confidence > 0 && +p.confidence < 1)) err(`confidence must be between 0 and 1, not “${p.confidence}”`);
+  for (const u of (p.uses || "").split(/\s*,\s*/).filter(Boolean)) if (!USES.includes(u)) err(`uses: unknown “${u}” (known: ${USES.join(", ")})`);
+  if (!s.slots) return;
+  for (const [name, slot] of Object.entries(s.slots)) {
+    if (!SLOT_TYPES.includes(slot.type)) err(`slot ${name}: unknown type “${slot.type}” (known: ${SLOT_TYPES.join(", ")})`);
+    if (slot.required && !slot.ask) err(`slot ${name} is required but has no ask: reply to ask for it`);
+    for (const k of ["ask", "invalid"]) if (slot[k] && !s.replies[slot[k]]) err(`slot ${name}: ${k}: “${slot[k]}” is not in ## Replies`);
+    if (slot.default && !DEFAULTS.includes(slot.default)) err(`slot ${name}: unknown default “${slot.default}” (known: ${DEFAULTS.join(", ")})`);
+  }
+  // every value the examples teach the model to pull out must be declared
+  for (const ex of s.examples) for (const m of ex.matchAll(/\]\(([a-z_]+)\)/g))
+    if (!s.slots[m[1]]) err(`examples mark [..](${m[1]}) but ## Slots doesn't declare ${m[1]}`);
 }
 
 // Expand one template: {a|b|} picks an alternative, {list} picks a value from "## Values: list".
@@ -93,6 +129,7 @@ function compile(dir = "skills") {
   const skills = folders.map(f => {
     const s = parseSkill(fs.readFileSync(path.join(dir, f, "skill.md"), "utf8"), path.join(dir, f, "skill.md"));
     if (s.skill !== f) throw new Error(`${s.file}: skill name "${s.skill}" must match its folder "${f}"`);
+    validate(s);
     s.dir = path.join(dir, f);
     s.code = fs.existsSync(path.join(dir, f, "skill.js"));
     return s;
@@ -114,8 +151,8 @@ function compile(dir = "skills") {
       }
     }
     md += `\n## intent: ${s.skill}\n` + [...lines].map(l => "- " + l).join("\n") + "\n";
-    const { skill, file, dir, code, action, params, values, replies, request, answer } = s;
-    runtime[skill] = { file, dir, code, action, params, request, answer, replies, sentences: lines.size,
+    const { skill, file, dir, code, action, params, values, replies, request, answer, slots } = s;
+    runtime[skill] = { file, dir, code, action, params, request, answer, replies, slots, sentences: lines.size,
       values: Object.fromEntries(Object.entries(values).filter(([k]) => !(params.train_only || "").split(/\s*,\s*/).includes(k))) };
   }
   fs.writeFileSync("data/skills.md", md);
@@ -128,4 +165,4 @@ if (require.main === module) {
   for (const [k, s] of Object.entries(r.skills)) console.log(`  ${k.padEnd(14)} ${String(s.sentences).padStart(4)} sentences  ${s.code ? "skill.md + skill.js" : "skill.md only"}${s.request ? " · request " + new URL(s.request.url).host : ""}`);
   console.log(`data/skills.md: ${r.sentences} sentences · web/skills.json`);
 }
-module.exports = { compile, parseSkill };
+module.exports = { compile, parseSkill, validate };

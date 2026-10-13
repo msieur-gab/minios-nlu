@@ -36,17 +36,13 @@ function keysFor(d, other, fmt) {
 }
 module.exports = {
   run(ctx) {
-    const { fmt } = ctx, now = ctx.now;
-    const ents = ctx.entities().filter(x => x.type !== "duration");
-    const e = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range");
+    const { fmt } = ctx, now = ctx.now, e = ctx.slots.when; // the core asked for it if it was missing
     let task = ctx.slots.task || null;
     // the task never includes the words the date parser read as the time ("stretch every weekday at 3pm")
-    if (task && e) {
+    if (task) {
       const at = ctx.text.toLowerCase().indexOf(task.toLowerCase());
       if (at >= 0 && at < e.start && at + task.length > e.start) task = ctx.text.slice(at, e.start).replace(/[\s,]+$/, "") || null;
     }
-    if (!e) return ctx.ask("when", "ask_when");
-    ctx.used(e);
     if (e.type === "range") return ctx.ask("when", "ask_day", { phrase: fmt.cap(e.text), from: fmt.dayText(fmt.fromIso(e.from), now), to: fmt.dayText(fmt.fromIso(e.to), now) });
     let when = e, noTime = false;
     if (e.type === "date") { // a day without a time

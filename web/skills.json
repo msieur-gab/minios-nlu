@@ -36,6 +36,7 @@
      "Brightness already at {n}%."
     ]
    },
+   "slots": null,
    "sentences": 96,
    "values": {
     "direction": [
@@ -195,6 +196,7 @@
      "Sound back on, at {n}%."
     ]
    },
+   "slots": null,
    "sentences": 117,
    "values": {
     "direction": [
@@ -328,6 +330,7 @@
      "OK. What would you like to do?"
     ]
    },
+   "slots": null,
    "sentences": 19,
    "values": {}
   },
@@ -358,6 +361,7 @@
      "OK. What's the file name?"
     ]
    },
+   "slots": null,
    "sentences": 352,
    "values": {
     "ext": [
@@ -490,6 +494,7 @@
      "Sure. What name do you want for the folder?"
     ]
    },
+   "slots": null,
    "sentences": 316,
    "values": {}
   },
@@ -510,6 +515,7 @@
      "OK. There's nothing to cancel."
     ]
    },
+   "slots": null,
    "sentences": 18,
    "values": {}
   },
@@ -538,6 +544,7 @@
      "There was nothing to forget."
     ]
    },
+   "slots": null,
    "sentences": 33,
    "values": {}
   },
@@ -592,6 +599,7 @@
      "It's {year}."
     ]
    },
+   "slots": null,
    "sentences": 82,
    "values": {}
   },
@@ -627,6 +635,7 @@
      "Looking up {place}…"
     ]
    },
+   "slots": null,
    "sentences": 111,
    "values": {}
   },
@@ -639,7 +648,8 @@
     "skill": "get_weather",
     "help": "check the weather (“weather tomorrow”)",
     "train_only": "city, day",
-    "samples": "8"
+    "samples": "8",
+    "uses": "network"
    },
    "request": {
     "method": "GET",
@@ -692,12 +702,25 @@
     "past": [
      "I only have the forecast, not past weather."
     ],
-    "offline": [
-     "I can't reach the weather service right now. Are you online?"
-    ],
     "checking": [
      "Checking the weather for {place}…"
     ]
+   },
+   "slots": {
+    "place": {
+     "type": "place",
+     "required": true,
+     "ask": "ask_place",
+     "invalid": null,
+     "default": "home"
+    },
+    "day": {
+     "type": "datetime",
+     "required": false,
+     "ask": null,
+     "invalid": null,
+     "default": null
+    }
    },
    "sentences": 203,
    "values": {
@@ -1005,6 +1028,7 @@
      "Hi {name}. What can I do for you?"
     ]
    },
+   "slots": null,
    "sentences": 16,
    "values": {}
   },
@@ -1027,6 +1051,7 @@
      "Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”."
     ]
    },
+   "slots": null,
    "sentences": 17,
    "values": {}
   },
@@ -1057,6 +1082,7 @@
      "I don't know an app called “{value}”. I can open the {choices}."
     ]
    },
+   "slots": null,
    "sentences": 204,
    "values": {
     "app": [
@@ -1215,6 +1241,7 @@
      "Which file or folder should I open?"
     ]
    },
+   "slots": null,
    "sentences": 253,
    "values": {}
   },
@@ -1236,6 +1263,7 @@
      "That's outside what I can do. Say help for the list."
     ]
    },
+   "slots": null,
    "sentences": 118,
    "values": {}
   },
@@ -1279,6 +1307,7 @@
      "Cancelled. Nothing changes."
     ]
    },
+   "slots": null,
    "sentences": 104,
    "values": {
     "action": [
@@ -1368,6 +1397,7 @@
      "I don't know where you live yet. Tell me “I live in …”."
     ]
    },
+   "slots": null,
    "sentences": 78,
    "values": {}
   },
@@ -1405,6 +1435,7 @@
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
+   "slots": null,
    "sentences": 181,
    "values": {}
   },
@@ -1417,7 +1448,8 @@
     "skill": "set_reminder",
     "help": "set reminders (“remind me to call mum next friday at 3pm”)",
     "samples": "14",
-    "train_only": "task, when"
+    "train_only": "task, when",
+    "confidence": "0.7"
    },
    "request": null,
    "answer": {},
@@ -1425,6 +1457,12 @@
     "ask_when": [
      "When should I remind you?",
      "OK. When?"
+    ],
+    "unsure": [
+     "Do you want a reminder for that?"
+    ],
+    "when_invalid": [
+     "I didn't catch a time. Try “tomorrow at 9” or “in an hour”."
     ],
     "ask_day": [
      "{phrase} runs from {from} to {to}. Which day?"
@@ -1446,6 +1484,22 @@
     "past": [
      "{at} has already passed. Shall I make it {next}?"
     ]
+   },
+   "slots": {
+    "task": {
+     "type": "text",
+     "required": false,
+     "ask": null,
+     "invalid": null,
+     "default": null
+    },
+    "when": {
+     "type": "datetime",
+     "required": true,
+     "ask": "ask_when",
+     "invalid": "when_invalid",
+     "default": null
+    }
    },
    "sentences": 215,
    "values": {}
@@ -1479,6 +1533,7 @@
      "That's a time rather than a duration, so here's a reminder instead:"
     ]
    },
+   "slots": null,
    "sentences": 123,
    "values": {}
   },
@@ -1503,6 +1558,7 @@
      "System overview (simulated values):"
     ]
    },
+   "slots": null,
    "sentences": 216,
    "values": {
     "check": [
@@ -1709,6 +1765,7 @@
      "Anytime."
     ]
    },
+   "slots": null,
    "sentences": 15,
    "values": {}
   }
