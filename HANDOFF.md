@@ -1,82 +1,95 @@
-# Handoff — 12 October 2026
+# Handoff — 13 October 2026
 
-Where the MiniOS agent stands after today's session, and what's open. Everything below is on
-`main` and live on GitHub Pages.
+Where the MiniOS agent stands, and what's open. Everything below is on `main` and live on
+GitHub Pages.
 
 ## Where things are
 
 - **Model:** TF-IDF + logistic regression (intent) and a CRF (slots), trained by plain
-  JavaScript (`web/trainer.js`), in Node or on the phone. Weak weights pruned, 1-byte storage:
-  358 KB for 22 skills. Held-out: intent 97.7% (177 sentences), slot F1 0.97.
-- **Skills:** one folder per skill in `skills/<name>/`. `skill.md` holds the examples, value
-  lists, API request, replies and help line; an optional `skill.js` holds logic Markdown can't
-  express. The skill files are the training data (`node skills.js` → `data/skills.md`).
+  JavaScript (`web/trainer.js`), in Node or on the phone. 358 KB for 22 skills, 5,863 training
+  sentences (2,887 from skill files). Held-out: intent 97.2% and slot F1 0.96 on the 144 test
+  sentences that appear nowhere in training (97.7% on all 177; 33 of them are also in training).
+  Not retrained on 13 October: training data unchanged.
+- **Skills:** one folder per skill, `skill.md` plus an optional `skill.js`. Since 13 October
+  every `skill.md` also declares:
+  - `## Slots`: each value's type (`text`, `place`, `datetime`, `duration`, `list <values>`),
+    whether it's `required`, the `ask:` and `invalid:` replies, `default: home`, and for lists
+    `guess` (find the list's words anywhere in the sentence) and `ignore:` words.
+  - `confidence:` per skill. Between the global 0.45 and this, the agent asks first.
+  - `uses: network`: offline or failed call → "I need a network connection to …".
+  - `role: yes / no / fallback` for affirm, deny and out_of_scope.
   Format guide: `skills/README.md`.
-- **Core:** `web/agent.js` (320 lines) is the dialogue only: routing, missing values,
-  confirm, choose, handover, several commands per sentence. It knows no skill by name.
-  `web/services.js` (134) holds what skills share: dates in words, folders, network, memory.
-- **Date parser:** `web/entities.js`, rule-based. 99/99 tests; beats Compromise on our
-  phrases (91 vs 63 of 91), about 90× faster, 25 KB.
-- **Inbox:** unknown sentences are saved on the phone; triage (add to skill, new skill, not
-  for me), retrain on the device (~25–35 s on a laptop), export as `.md`.
-- **APIs:** weather and world time via Open-Meteo (no key). Name and home place are stored on
-  the device only.
+- **Compile checks:** `node skills.js` stops with file and reason on an unknown slot type, a
+  required slot without an `ask:` reply, a missing reply, a `[..](slot)` or `{slot}` in a
+  command that isn't declared, a list slot without its list, a duplicated role.
+- **Core:** `web/agent.js` (382 lines) is the dialogue: routing, slot filling and asking,
+  confirm, choose, handover, several commands per sentence. It knows no skill by name or
+  vocabulary. `web/services.js` holds shared services.
+- **Date parser:** `web/entities.js`, rule-based, 99/99 tests.
+- **Inbox:** unknown sentences saved on the phone; triage, retrain on the device, export `.md`.
+- **APIs:** weather and world time via Open-Meteo (no key). Name and home place on the device.
 
 Run: `node train.js` (compiles the skills too), `python build_web.py`,
 `TZ=Europe/Berlin node test_entities.js`, `TZ=Europe/Berlin node test_dialogue.js`.
 
-## Decided today
+## Decided on 13 October
 
-- **Reliability over coverage.** A confident wrong answer is worse than "I can't". Abstain,
-  show what was understood, ask when it's a real choice.
-- **Scope fence.** `agent.js` stays the dialogue. New behaviour becomes a skill folder or is
-  refused. Direction: several small "mini-brains" (mini-OS, weather and memory…) sharing one
-  core, rather than one agent doing everything.
-- **Model format stays JSON** (heavy parts are binary inside it; real binary gains ~8%
-  compressed).
-- **"Next friday" = the coming one**, the following week offered as the alternative.
-- **No Compromise dependency:** we learn from it instead.
+- **Skills declare their values, questions and answers.** The core fills slots and asks; a
+  script asks by itself only for "one or the other" rules (file or folder, level or direction,
+  a time that becomes a reminder).
+- **Network:** the agent says it needs the network; it doesn't silently disable a skill.
+  Declare `uses: network` only when a skill can answer nothing offline (get_time stays without
+  it: it still gives the local time).
+- **Runtimes:** browser JS on web and mobile (no Node), Python on the Pi (preinstalled). The
+  `skill.md` files are shared; the small parser would exist once per runtime. No Pyodide. A
+  connector between the two is for later.
+- **Code size, honestly:** scripts 370 → 346 lines, core 321 → 382, compiler 131 → 178 (about
+  30 of them checks). About 85 lines more overall; the gain is one place for slot filling and
+  skill files that describe their whole behaviour.
+- **What the model is:** it recognises unseen sentences through words, word pairs and word
+  fragments it has met, not meaning. Sentences built on words no example used for a skill
+  ("precipitation") are abstained on. Examples should teach vocabulary, not volume.
 
 ## Open
 
 **Not yet tested in real life**
-- Open-Meteo calls from the phone (only tested against recorded answers here).
-- On-device retraining time on the phone, and memory use on the Pi Zero 2W (512 MB).
+- Everything merged on 13 October, on the phone (grey-zone question, invalid answers, offline
+  message, list words like "it's too loud", "rebot the pi").
+- Open-Meteo calls from the phone; the browser's offline signal (`navigator.onLine`).
+- On-device retraining time on the phone, memory use on the Pi Zero 2W (512 MB).
 
-**Next, in the order discussed**
-1. **Place disambiguation.** Name the country in answers ("Paris, France"), ask when several
-   places plausibly match, remember the choice. Started: whole multi-word names and
-   "most populated" preference are in.
-2. **Inbox: answers for new skills.** Ask "what should I answer?" when creating a skill in
-   the inbox; store it as a `say` skill on the phone; export as a real `skills/<name>/skill.md`.
-3. **Browser capabilities as skills:** speech output (offline voices), notifications for
-   timers and reminders, location for "weather here". Later: wake lock, share/clipboard.
-   Avoid browser speech input in Chrome (audio goes to Google).
+**Next for the model, in this order (13 October)**
+1. **Test set:** about a dozen fresh, handwritten sentences per skill (now 3–9 for most;
+   greet 3, power 6, reminders 8). It's the measure for everything below.
+2. **Vocabulary:** example lines that introduce the words people use, and contrasting lines
+   at the edges between skills ("remind me what day it is" → date, "time to go home" → out of
+   scope).
+3. **Slot boundaries:** 5 of the 9 test errors are values cut short or missed ("folder for
+   bike repairs", "a note named ideas for pebbble" → "ideas", "please lower the volume").
+4. **Typos in the rule-based parts:** the model copes ("creat a foldr", "set a timr"); value
+   lists ("opne the termnal", "dowload") and date words ("tomorow") don't. Fuzzy matching once,
+   in the list slot type and the date parser.
 
-**Later**
-- **Split the brains:** the mini-OS brain for the Pi (files, apps, levels, system, power,
-  timers) vs. a weather/memory brain. Not decided yet.
-- **Executor on the Pi:** run declared commands for real (agent in Node on the device, or a
-  small local service). Rules: only commands declared in skill files; values quoted or taken
-  from lists; per-OS commands in value lists.
-- **Small context for the OS brain:** "it" = the last thing created or opened; a `move_item`
-  skill; typo tolerance for folder and app names ("dowload").
-- **Simpler skill scripts:** weather (48 lines), reminders (74) and volume (43) carry generic
-  logic (e.g. finding the asked-for day in a forecast) that a declarative section could absorb.
-- **Documentation:** say in each `skill.md` where every reply placeholder comes from
-  (e.g. `{list}` in help).
+**Also open (from 12 October)**
+- **Place disambiguation:** name the country, ask between places, remember the choice.
+- **Inbox: answers for new skills;** export as a real `skills/<name>/skill.md` with `## Slots`
+  (the compile checks now require them for tagged examples).
+- **Browser capabilities as skills:** speech output, notifications, location for "weather
+  here". Avoid browser speech input in Chrome.
+- **Small context across tasks:** "and tomorrow?" after the weather, "open it" after creating
+  a folder. A follow-up could reuse the previous skill's filled slots.
+- **Split the brains** (OS brain for the Pi vs. weather/memory) and an **executor on the Pi**
+  (only declared commands; values from lists).
+- **Device skills:** a `uses: device` for skills that need the Pi's `/sys` and `/proc`
+  (system status), answered as unavailable in the browser.
 
 **Known gaps**
 - Names containing "and" ("a folder called salt and pepper" → "salt").
-- "remind me what day it is" → reminder; "time to go home" → time.
-- Date parser: "after lunch", "mid-november" (gives the whole month), languages other than
-  English.
-- New skills' held-out scores are optimistic (templates were widened after first misses):
-  needs a dozen fresh handwritten test sentences.
-- Python reference tools (`lint.py`, `cv.py`) import fine but weren't rerun after the
-  migration; `DATASET_BRIEF.md` predates skill files.
+- Date parser: "after lunch", "mid-november", languages other than English.
+- Python reference tools (`lint.py`, `cv.py`) not rerun since the skill-file migration;
+  `DATASET_BRIEF.md` predates skill files.
 
 ## Branches
 
 All merged into `main` (fast-forward), kept for history: `time-skills`, `js-trainer`, `inbox`,
-`skill-files`, `multi-intent`, `core-split`, `place-names`, `dates`.
+`skill-files`, `multi-intent`, `core-split`, `place-names`, `dates`, `typed-slots`.
