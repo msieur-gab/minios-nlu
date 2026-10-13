@@ -66,6 +66,7 @@ by the date parser, not marked by the model.
 | `create_folder` | name, location | yes |
 | `create_file` | name, file_type, location | yes |
 | `open_file` | name, location | yes |
+| `move_item` | name, location (where it goes), source (where it is, when named) | yes |
 | `open_app` | app (from a list) | yes |
 | `adjust_volume`, `adjust_brightness` | direction (from a list), level | yes |
 | `power` | power_action (from a list) | confirms every time |
@@ -73,6 +74,9 @@ by the date parser, not marked by the model.
 | `get_time` | place | no |
 | `get_date` | day (date) | no |
 | `get_weather` | place (home by default), day (date); needs the network | no |
+| `play_music` | query (a track, album or artist; none plays what is there) | yes |
+| `control_music` | control (from a list: pause, resume, next, previous, stop) | yes |
+| `now_playing` | none | no |
 | `set_timer` | duration | yes |
 | `set_reminder` | task, when (date and time) | yes |
 | `remember_me` | name, place | yes |

@@ -238,6 +238,92 @@
 - go for it
 - y
 
+## intent: control_music
+- [pause](control) it please
+- [pause](control) the music please
+- [pause](control) the song
+- [pause](control) please
+- [pause](control) this
+- could you [pause](control) it?
+- can you [pause](control) it?
+- could you [pause](control) it
+- can you [pause](control) it
+- could you [pause](control) the music
+- can you [pause](control) the song?
+- could you [pause](control) the song?
+- [resume](control) playing
+- [resume](control) the music please
+- [resume](control) the song
+- [resume](control) the song please
+- [resume](control) it please
+- [resume](control) playing please
+- [resume](control) please
+- [resume](control) the music
+- [continue](control) playing
+- [continue](control) the music
+- [continue](control) the song
+- [unpause](control) it
+- [unpause](control) the music
+- [unpause](control)
+- [next](control) song
+- [next](control) song please
+- [next](control) track please
+- [next](control) one
+- [next](control) track
+- [next](control) one please
+- the [next](control) one please
+- [skip](control) this one please
+- [skip](control)
+- [skip](control) this track
+- [skip](control) this one
+- [skip](control) this please
+- [skip](control) this song please
+- [skip](control) this
+- play the [next](control) song
+- play the [next](control) track
+- play the [next](control) one
+- jump to the [next](control) track
+- go to the [next](control) track
+- jump to the [next](control) song
+- go to the [next](control) song
+- [previous](control) song please
+- [previous](control) one please
+- [previous](control) one
+- [previous](control) track
+- [previous](control) song
+- play the [previous](control) one
+- play the [previous](control) track
+- play the [previous](control) song
+- [back](control) one song
+- [back](control) one track
+- go [back](control) one song
+- [back](control) a song
+- go [back](control) one track
+- play the [last](control) song again
+- play the [last](control) track again
+- go to the [last](control) song again
+- go to the [last](control) track again
+- [stop](control) the song please
+- [stop](control) the playback
+- [stop](control) the music please
+- [stop](control) the playback please
+- [stop](control) playing
+- turn the song [off](control)
+- switch the song [off](control) please
+- switch the song [off](control)
+- turn the music [off](control) please
+- turn the music [off](control)
+- turn [off](control) the music
+- switch [off](control) the music
+- music [off](control)
+- [continue](control)
+- [pause](control)
+- [resume](control)
+- [next](control)
+- [previous](control)
+- [pause](control) that
+- [skip](control) that
+
 ## intent: create_file
 - please make a file named [main](name)
 - make a file called [scratch](name)
@@ -1404,6 +1490,237 @@
 - commands
 - what can I say
 
+## intent: move_item
+- move [the photos](name) to [work](location)
+- move [DSC_0193.jpg](name) to [documents](location)
+- move [scans](name) to [desktop](location)
+- move [letter.txt](name) to [inbox](location)
+- move [homework](name) to [pictures](location)
+- move [flyer.png](name) to [backup](location)
+- move [garden plans](name) to [downloads](location)
+- move [thesis.tex](name) to [work](location)
+- move [photo.jpg](name) to [admin](location)
+- move [cv.docx](name) to [school](location)
+- please move [summer camp forms](name) into the [Documents](location)
+- move [report.pdf](name) into [desktop](location) folder
+- move [journal](name) into [old stuff](location)
+- please move [plan.md](name) to my [inbox](location) folder
+- please move [sketches](name) to the [work](location)
+- move [IMG_2041.png](name) to [downloads](location) folder
+- please move [IMG_2041.png](name) into my [backup](location)
+- please move [the tax return](name) to my [downloads](location)
+- please move [shopping list](name) to my [projects](location)
+- please move [backup.zip](name) into [Documents](location)
+- please move [backup.zip](name) into [documents](location)
+- move the folder [contract_v2.pdf](name) from [inbox](source) to [old stuff](location)
+- move [passport scan.pdf](name) from [pictures](source) to [desktop](location)
+- move the file [the tax return](name) from [inbox](source) to [notes](location)
+- move the file [taxes](name) from [documents](source) to [school](location)
+- move the folder [report.pdf](name) from [documents](source) to [Documents](location)
+- move the file [cv.docx](name) from [pictures](source) to [desktop](location)
+- move the file [journal](name) from [Downloads](source) to [admin](location)
+- move [recipes](name) from [pictures](source) to [2026](location)
+- move the file [plan.md](name) from [desktop](source) to [work](location)
+- move the folder [holiday photos](name) from [work](source) to [photos](location)
+- move [photo.jpg](name) from my [pictures](source) folder into my [school](location)
+- move [the old invoices](name) from [documents](source) folder into [old stuff](location) folder
+- move [config.yaml](name) from [temp](source) folder to my [school](location)
+- move [passport scan.pdf](name) from [desktop](source) folder into [photos](location) folder
+- move [the lease](name) from [work](source) into the [desktop](location)
+- move [config.yaml](name) from the [pictures](source) folder to [desktop](location)
+- move [config.yaml](name) from the [documents](source) folder to the [old stuff](location) folder
+- move [scans](name) from the [inbox](source) folder into [notes](location) folder
+- move [the tax return](name) from the [temp](source) folder to [projects](location)
+- move [the report](name) from [downloads](source) to the [shared](location) folder
+- put [summer camp forms](name) into [backup](location) folder
+- put [the wedding album](name) into the [2026](location)
+- put [the budget](name) inside [pictures](location)
+- put [plan.md](name) in the [music](location)
+- put [keys.txt](name) in [music](location)
+- put [budget.csv](name) inside the [work](location) folder
+- put [contract_v2.pdf](name) inside [2026](location) folder
+- put [plan.md](name) into my [school](location) folder
+- put [budget.csv](name) into the [desktop](location)
+- put [flyer.png](name) into the [shared](location) folder
+- can you move [report.pdf](name) into [downloads](location)
+- can you move [the lease](name) to [notes](location)
+- can you move [meeting notes](name) into [shared](location)
+- could you move [readme.md](name) to [archive](location)
+- could you move [pitch deck](name) to [backup](location)?
+- could you move [summer camp forms](name) into [photos](location)
+- could you move [readme.md](name) into [Documents](location)
+- could you move [the report](name) to [documents](location)?
+- can you move [letter to the bank.odt](name) to [work](location)?
+- can you move [shopping list](name) into [old stuff](location)
+- move [pitch deck](name) over to [notes](location)
+- move [backup.zip](name) over to [school](location)
+- move [drafts](name) over to [pictures](location)
+- move [journal](name) over to [2026](location)
+- move [index.html](name) over to [work](location)
+- move [taxes](name) over to [shared](location)
+- move [config.yaml](name) over to [backup](location)
+- move [notes.txt](name) over to [Documents](location)
+- move [photo.jpg](name) over to [pictures](location)
+- move [invoice-2026.pdf](name) over to [music](location)
+- [the wedding album](name) belongs in [music](location)
+- [draft](name) belongs in [Documents](location)
+- [draft](name) belongs in [documents](location)
+- [the lease](name) belongs in [photos](location)
+- [summer camp forms](name) goes in [photos](location)
+- [old stuff](name) should go in [notes](location)
+- [recipes](name) should go in [pictures](location)
+- [report.pdf](name) should go in [desktop](location)
+- [thesis.tex](name) should go in [Documents](location)
+- [backup.zip](name) should go in [admin](location)
+- [shopping list](name) belongs in [work](location)
+- relocate [report.pdf](name) to [Documents](location)
+- relocate [report.pdf](name) to [documents](location)
+- relocate [summer camp forms](name) to [projects](location)
+- relocate [the wedding album](name) to [photos](location)
+- relocate [holiday photos](name) to [old stuff](location)
+- shift [prototype v3](name) to [admin](location)
+- shift [summer camp forms](name) to [archive](location)
+- shift [drafts](name) to [shared](location)
+- shift [config.yaml](name) to [downloads](location)
+- shift [screenshots](name) to [documents](location)
+- transfer [scans](name) to [2026](location)
+- move the file [the lease](name) into [music](location)
+- move the file [invoice-2026.pdf](name) to [2026](location)
+- move the file [flyer.png](name) into [downloads](location)
+- move the file [drafts](name) to [inbox](location)
+- move the folder [backup.zip](name) to [documents](location)
+- move the file [mix.wav](name) to [notes](location)
+- move the folder [scans](name) into [inbox](location)
+- move the file [mix.wav](name) to [backup](location)
+- move the folder [photo.jpg](name) into [school](location)
+- move the file [plan.md](name) to [notes](location)
+- get [book notes](name) out of [Downloads](source) and put it in [work](location)
+- get [book notes](name) out of [downloads](source) and put it in [work](location)
+- get [letter to the bank.odt](name) out of [work](source) and put it in [inbox](location)
+- get [letter.txt](name) out of [Downloads](source) and put it in [photos](location)
+- get [letter.txt](name) out of [downloads](source) and put it in [photos](location)
+- take [screenshots](name) out of [temp](source) and put it in [2026](location)
+- take [garden plans](name) out of [inbox](source) and put it in [school](location)
+- take [the budget](name) out of [desktop](source) and put it in [work](location)
+- take [my cv](name) out of [inbox](source) and put it in [documents](location)
+- get [journal](name) out of [documents](source) and put it in [downloads](location)
+- get [backup.zip](name) out of [Downloads](source) and put it in [work](location)
+- take [notes.txt](name) out of [inbox](source) and put it in [inbox](location)
+- mv [todo list](name) [notes](location)
+- mv [readme.md](name) [school](location)
+- mv [prototype v3](name) [school](location)
+- mv [thesis.tex](name) [2026](location)
+- mv [pitch deck](name) [school](location)
+- mv [report.pdf](name) [documents](location)
+- mv [budget.csv](name) [music](location)
+- mv [the lease](name) [2026](location)
+- mv [mix.wav](name) [downloads](location)
+- mv [my cv](name) [2026](location)
+- move [holiday photos](name)
+- move [the wedding album](name)
+- move [sketches](name)
+- move [minutes-march.md](name)
+- move [plan.md](name)
+- move [prototype v3](name)
+- move [meeting notes](name)
+- move [playlist.m3u](name)
+- move [index.html](name)
+- move something
+- move a folder
+- move a file
+- move a document
+- move this file
+- I want to move [the tax return](name)
+- i want to move [the tax return](name)
+- I want to move [meeting notes](name)
+- I want to move [vacation videos](name)
+- I want to move [letter to the bank.odt](name)
+- i want to move [letter to the bank.odt](name)
+- I want to move [prototype v3](name)
+- I want to move [config.yaml](name)
+- I want to move [taxes](name)
+- I want to move [photo.jpg](name)
+- I want to move [journal](name)
+- I want to move [screenshots](name)
+- move my [the budget](name) to the [backup](location) please
+- move the [scans](name) to my [backup](location) please
+- move my [IMG_2041.png](name) to [Documents](location)
+- move my [img_2041.png](name) to [documents](location)
+- move [contract_v2.pdf](name) to the [backup](location) folder
+- move the [cv.docx](name) to my [desktop](location)
+- move my [shopping list](name) to my [old stuff](location) please
+- move the [recipes](name) to my [projects](location)
+- move my [taxes](name) to my [shared](location) please
+- move my [minutes-march.md](name) to my [projects](location) folder
+- move the [my cv](name) to [documents](location) folder
+- transfer [playlist.m3u](name) to [notes](location)
+- relocate [x.py](name) to my [archive](location)
+- transfer [todo list](name) into the [shared](location)
+- relocate [homework](name) into the [desktop](location)
+- transfer [prototype v3](name) to the [2026](location)
+- relocate [IMG_2041.png](name) to the [2026](location)
+- relocate [img_2041.png](name) to the [2026](location)
+- transfer [journal](name) to the [shared](location)
+- transfer [todo.md](name) into [2026](location)
+- transfer [draft](name) into the [photos](location)
+- transfer [passport scan.pdf](name) into [desktop](location)
+- [letter to the bank.odt](name) should go in [admin](location)
+- [the report](name) should go in [desktop](location)
+- [IMG_2041.png](name) should go in [admin](location)
+- [config.yaml](name) should go in [projects](location)
+- [index.html](name) should go in [school](location)
+- [x.py](name) should go in [archive](location)
+- [meeting notes](name) should go in [old stuff](location)
+- [letter to the bank.odt](name) should go in [Documents](location)
+- [keys.txt](name) should go in [archive](location)
+- [summer camp forms](name) should go in [desktop](location)
+
+## intent: now_playing
+- what's playing right now
+- what's playing now?
+- what's playing now
+- what is this track?
+- what is that music?
+- what is this track
+- what is that track?
+- what is this music?
+- what is that song
+- which track is this
+- what song is this?
+- what song is this
+- which song is this?
+- what song is that
+- which track is that?
+- which track is playing?
+- what's that track called?
+- what's that track called
+- what's this song called?
+- what's this track called
+- what's this track called?
+- what's the name of this track
+- what's the name of this track?
+- what's the name of that song
+- what's the name of that track
+- what's the name of that song?
+- who is this by?
+- who plays this
+- who is this by
+- who plays this?
+- who is this
+- who is this?
+- what am I listening to?
+- what am i listening to?
+- what am I listening to
+- what am i listening to
+- title of the song please
+- title of this track
+- name of this track
+- name of the song please
+- name of the track please
+- title of the track please
+- which album is this?
+- which album is this
+
 ## intent: open_app
 - launch my [console](app)
 - run the [calc](app)
@@ -1867,13 +2184,11 @@
 
 ## intent: out_of_scope
 - tell me a joke
-- play some music
 - how much is 12 times 7
 - send an email to my boss
 - delete the reports folder
 - remove notes.md
 - rename the folder to drafts
-- move invoices to the archive
 - delete everything
 - what is the capital of france
 - who are you
@@ -1951,12 +2266,57 @@
 - who turned off the lights
 - the volume of a sphere
 - the music was great yesterday
+- play a video
+- skip the next step
+- skip to the next chapter
+- what's my next appointment
+- next page
+- next question please
+- play the next episode
+- pause the meeting
+- pause the game
+- stop the recording
+- resume the download
+- continue the installation
+- go back to the previous page
+- the previous owner
+- who sings in the shower
+- move on to the next point
+- let's move on to another subject
+- move over
+- move the meeting to friday
+- move my appointment to monday
+- we are moving to a new flat
+- move the cursor to the top
+- move report.pdf to the trash
+- put the old files in the bin
+- move everything to the recycle bin
+- throw notes.txt away
+- copy the folder to the desktop
+- duplicate this file
+- rename the folder to archive
+- merge these two files
+- zip the documents folder
+- let's move on
+- moving on to something else
+- move forward with the plan
+- copy this file to documents
+- rename this file
+- move the mouse to the left
+- skip the meeting
+- pause the download
+- next slide
+- stop the washing machine
+- play that movie
+- play the film again
+- play a youtube video
+- play a game
+- record a song
+- download this album
 - how to free up disk space on windows
 - open the window it's hot
 - open the door
 - show me a picture of a cat
-- play the next song
-- skip this track
 - check my email
 - open my bank app
 - open google.com
@@ -1980,10 +2340,126 @@
 - who is your creator
 - what's your name
 - where do you live
-- what's the name of this song
 - my name is on the door
 - which city is the capital of japan
 - remember the alamo
+
+## intent: play_music
+- play some music please
+- play music please
+- play some music
+- play music
+- start music
+- play the tunes
+- play the songs
+- start the tunes
+- put on tunes
+- start the music
+- let's hear some music
+- play something
+- put some music on
+- I want to hear some music
+- i want to hear some music
+- I want to listen to some music
+- I would like to hear music
+- I would like to hear some music
+- can you put on some music
+- could you play music
+- could you play some music?
+- can you put on some music?
+- could you put on some music?
+- can you put on music?
+- could you put on music
+- can you put on music
+- play [99 luftballons](query) please
+- play [real food](query) please
+- play [bob marley](query) please
+- play [bad guy](query)
+- play [daft punk](query) please
+- play [Nina Simone](query)
+- play [nina simone](query)
+- play [the road trip mix](query) please
+- play [Kavinsky](query) please
+- play [workout mix](query) please
+- play the track [feeling good](query)
+- play the song [the rip tide](query)
+- play the track [Nina Simone](query)
+- play the album [la vie en rose](query)
+- play the track [radiohead](query)
+- play the song [hopopono](query)
+- play the album [Kavinsky](query)
+- play the song [daft punk](query)
+- play the song [got the tendo](query)
+- play some music from [piano](query)
+- play songs by [bohemian rhapsody](query)
+- play anything by [Miles Davis](query)
+- play anything by [to build a home](query)
+- play some music from [bohemian rhapsody](query)
+- play some music by [ole](query)
+- play anything from [the cinematic orchestra](query)
+- play anything by [move on up](query)
+- play a song from [John Coltrane](query)
+- put on [karma police](query)
+- put on [ole](query) please
+- put on [back in black](query)
+- put on [the beatles](query)
+- put on [something in the way](query) please
+- put on [redemption song](query)
+- put on [Blizzard](query) please
+- put on [daft punk](query) please
+- put on [bad guy](query)
+- I want to hear [pink floyd](query)
+- I'd like to hear [something in the way](query)
+- i'd like to hear [something in the way](query)
+- let me listen to [bohemian rhapsody](query)
+- let me listen to [debussy](query)
+- let me hear [the road trip mix](query)
+- I'd like to hear [so what](query)
+- i'd like to hear [so what](query)
+- I'd like to hear [Nina Simone](query)
+- i'd like to hear [nina simone](query)
+- I want to listen to [gogo penguin](query)
+- i want to listen to [gogo penguin](query)
+- let me listen to [John Coltrane](query)
+- let me listen to [john coltrane](query)
+- can you play [gogo penguin](query)?
+- can you play [outrun](query)
+- can you play [jazz](query)
+- can you play [bohemian rhapsody](query)?
+- could you play [beirut](query)
+- can you play [real food](query)
+- could you play [around the world](query)
+- can you play [favourite playlist](query)?
+- can you play [1979](query)?
+- play me [redemption song](query)
+- play me [wish you were here](query)
+- play me [bad guy](query)
+- play me [beirut](query)
+- play me [a love supreme](query)
+- play me [back in black](query)
+- play me [bohemian rhapsody](query)
+- play me [daft punk](query)
+- play me [Blizzard](query)
+- play me [blizzard](query)
+- listen to [gogo penguin](query)
+- listen to [Kavinsky](query)
+- listen to [bob marley](query)
+- listen to [move on up](query)
+- listen to [nightcall](query)
+- listen to [so what](query)
+- listen to [beirut](query)
+- listen to [pink floyd](query)
+- listen to [got the tendo](query)
+- play my [the rip tide](query)
+- play my [nightcall](query)
+- play my [around the world](query)
+- play my [Blizzard](query)
+- play my [blue in green](query)
+- play my [Nina Simone](query)
+- play my [nina simone](query)
+- play my [piano](query)
+- play my [feeling good](query)
+- play my [real food](query)
 
 ## intent: power
 - [turn off](power_action) the computer please

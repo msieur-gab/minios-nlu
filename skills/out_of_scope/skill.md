@@ -12,13 +12,11 @@ says "I can't" instead of guessing.
 
 ## Examples
 - tell me a joke
-- play some music
 - how much is 12 times 7
 - send an email to my boss
 - delete the reports folder
 - remove notes.md
 - rename the folder to drafts
-- move invoices to the archive
 - delete everything
 - what is the capital of france
 - who are you
@@ -93,12 +91,57 @@ says "I can't" instead of guessing.
 - who turned off the lights
 - the volume of a sphere
 - the music was great yesterday
+- play a video
+- skip the next step
+- skip to the next chapter
+- what's my next appointment
+- next page
+- next question please
+- play the next episode
+- pause the meeting
+- pause the game
+- stop the recording
+- resume the download
+- continue the installation
+- go back to the previous page
+- the previous owner
+- who sings in the shower
+- move on to the next point
+- let's move on to another subject
+- move over
+- move the meeting to friday
+- move my appointment to monday
+- we are moving to a new flat
+- move the cursor to the top
+- move report.pdf to the trash
+- put the old files in the bin
+- move everything to the recycle bin
+- throw notes.txt away
+- copy the folder to the desktop
+- duplicate this file
+- rename the folder to archive
+- merge these two files
+- zip the documents folder
+- let's move on
+- moving on to something else
+- move forward with the plan
+- copy this file to documents
+- rename this file
+- move the mouse to the left
+- skip the meeting
+- pause the download
+- next slide
+- stop the washing machine
+- play that movie
+- play the film again
+- play a youtube video
+- play a game
+- record a song
+- download this album
 - how to free up disk space on windows
 - open the window it's hot
 - open the door
 - show me a picture of a cat
-- play the next song
-- skip this track
 - check my email
 - open my bank app
 - open google.com
@@ -122,7 +165,6 @@ says "I can't" instead of guessing.
 - who is your creator
 - what's your name
 - where do you live
-- what's the name of this song
 - my name is on the door
 - which city is the capital of japan
 - remember the alamo

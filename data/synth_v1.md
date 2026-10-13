@@ -270,7 +270,6 @@
 - delete the folder called reports
 - remove index.html
 - rename notes.txt to old_notes.txt
-- move pictures to documents
 - copy the file
 - close the web browser
 - search for budget.csv
@@ -287,7 +286,6 @@
 - the volume of a box
 - my laptop has no space
 - open youtube
-- play some music
 - check my email
 - add an event to my calendar
 - delete all files
@@ -302,7 +300,6 @@
 - close the window
 - turn down the lights in the room
 - pause the video
-- play next song
 - how do i open a file
 - the storage unit is full
 - delete my history

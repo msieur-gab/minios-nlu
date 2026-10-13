@@ -133,11 +133,9 @@
 - delete the folder called drafts
 - remove the old stuff directory
 - rename notes.md to ideas.md
-- play my favourite playlist
 - how many files are in documents
 - tell me about yourself
 - can you code a website
-- move the photos to the archive
 - what's the meaning of life
 - show my calendar
 - close all windows
@@ -250,3 +248,80 @@
 - can you show me [Bergen](place) on a map
 - locate [Tübingen](place)
 - show me the map
+
+## intent: play_music
+- play some music please
+- put some tunes on
+- i'd like to hear some music
+- play [take five](query)
+- play something by [fela kuti](query)
+- can you play [hotel california](query)
+- put on [kind of blue](query)
+- play the song [despacito](query)
+- i want to listen to [portishead](query)
+- play my [sunday morning mix](query)
+- play [Got the Tendo](query) please
+- let's have some music
+
+## intent: control_music
+- [pause](control) the music
+- [next](control) track please
+- [skip](control) this one
+- go [back](control) one song
+- [resume](control)
+- can you [stop](control) the music
+- play the [previous](control) track
+- [pause](control) it please
+- [next](control)
+- [continue](control) playing
+- [skip](control) it
+- turn the music [off](control)
+
+## intent: now_playing
+- what's playing
+- which song is this
+- what's this track called
+- who is this by
+- what am i listening to
+- what is that song
+- tell me the name of this track
+
+## intent: out_of_scope
+- play the video
+- the next train to berlin
+- pause the washing machine
+- stop the car
+- skip the next meeting
+
+## intent: move_item
+- move the [photos](name) to the [archive](location)
+- move [shopping-list.md](name) to [documents](location)
+- put [receipt.pdf](name) in the [taxes](location) folder
+- can you move [wedding pics](name) into [pictures](location)
+- move [draft-3.docx](name) from [downloads](source) to [work](location)
+- please move [song ideas](name) to my [music](location) folder
+- [bike-manual.pdf](name) should go in [documents](location)
+- move the folder [client-work](name) into [projects](location)
+- transfer [log.txt](name) to [backup](location)
+- move [scan_0042.jpg](name) from the [desktop](source) to [pictures](location)
+- i want to move [resume.pdf](name)
+- move a file
+
+## intent: out_of_scope
+- move the window to the left
+- move on to the next topic
+- copy notes.txt to documents
+- rename ideas.md to plans.md
+
+## intent: out_of_scope
+- skip the next question
+- pause the film
+- next slide please
+- stop the download
+- play the next video
+- move the appointment to tuesday
+- can we move on now
+- move draft.md to the bin
+- copy budget.csv to the desktop
+- rename notes.txt to ideas.txt
+

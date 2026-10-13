@@ -479,6 +479,138 @@
    "sentences": 19,
    "values": {}
   },
+  "control_music": {
+   "file": "skills/control_music/skill.md",
+   "dir": "skills/control_music",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "control_music",
+    "help": "pause, resume or skip the music (“next track”)",
+    "samples": "9",
+    "acts": "yes"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "ask": [
+     "Pause, resume, next, previous or stop?"
+    ],
+    "unknown": [
+     "I can't do “{value}” with the music. I can {choices}."
+    ],
+    "done_pause": [
+     "Paused."
+    ],
+    "done_resume": [
+     "Carrying on."
+    ],
+    "done_next": [
+     "Next track."
+    ],
+    "done_previous": [
+     "Previous track."
+    ],
+    "done_stop": [
+     "Stopped."
+    ]
+   },
+   "slots": {
+    "control": {
+     "type": "list",
+     "list": "control",
+     "required": true,
+     "guess": true,
+     "ask": "ask",
+     "invalid": "unknown",
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 84,
+   "values": {
+    "control": [
+     {
+      "key": "pause",
+      "words": [
+       "pause",
+       "hold the music"
+      ],
+      "say": [
+       "pause",
+       "hold the music"
+      ],
+      "out": "pause"
+     },
+     {
+      "key": "resume",
+      "words": [
+       "resume",
+       "continue",
+       "unpause",
+       "carry on",
+       "keep playing"
+      ],
+      "say": [
+       "resume",
+       "continue",
+       "unpause",
+       "carry on",
+       "keep playing"
+      ],
+      "out": "play"
+     },
+     {
+      "key": "next",
+      "words": [
+       "next",
+       "skip",
+       "forward",
+       "nxt"
+      ],
+      "say": [
+       "next",
+       "skip",
+       "forward",
+       "nxt"
+      ],
+      "out": "next"
+     },
+     {
+      "key": "previous",
+      "words": [
+       "previous",
+       "back",
+       "prev",
+       "last",
+       "before"
+      ],
+      "say": [
+       "previous",
+       "back",
+       "prev",
+       "last",
+       "before"
+      ],
+      "out": "prev"
+     },
+     {
+      "key": "stop",
+      "words": [
+       "stop",
+       "off",
+       "end the music"
+      ],
+      "say": [
+       "stop",
+       "off",
+       "end the music"
+      ],
+      "out": "stop"
+     }
+    ]
+   }
+  },
   "create_file": {
    "file": "skills/create_file/skill.md",
    "dir": "skills/create_file",
@@ -1292,6 +1424,97 @@
    "sentences": 17,
    "values": {}
   },
+  "move_item": {
+   "file": "skills/move_item/skill.md",
+   "dir": "skills/move_item",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "move_item",
+    "help": "move files and folders (“move ideas.md to documents”)",
+    "samples": "10",
+    "train_only": "item, dest, src",
+    "acts": "yes"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "ask_name": [
+     "What should I move?",
+     "Which file or folder?"
+    ],
+    "ask_where": [
+     "Where should it go?",
+     "Move it to which folder?"
+    ],
+    "done": [
+     "Moved {name}{from} to {to}."
+    ],
+    "no_bin": [
+     "I don't move things to the bin: deleting stays out of what I do."
+    ],
+    "same": [
+     "{name} is already there."
+    ]
+   },
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_name",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "source": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 183,
+   "values": {}
+  },
+  "now_playing": {
+   "file": "skills/now_playing/skill.md",
+   "dir": "skills/now_playing",
+   "code": false,
+   "action": "run",
+   "params": {
+    "skill": "now_playing",
+    "help": "say what's playing (“what's this song?”)",
+    "action": "run",
+    "command": "mpc current",
+    "samples": "8"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "done": [
+     "(Simulated) Nightcall, by Kavinsky."
+    ]
+   },
+   "slots": null,
+   "sentences": 44,
+   "values": {}
+  },
   "open_app": {
    "file": "skills/open_app/skill.md",
    "dir": "skills/open_app",
@@ -1540,7 +1763,45 @@
     ]
    },
    "slots": null,
-   "sentences": 118,
+   "sentences": 160,
+   "values": {}
+  },
+  "play_music": {
+   "file": "skills/play_music/skill.md",
+   "dir": "skills/play_music",
+   "code": true,
+   "action": "say",
+   "params": {
+    "skill": "play_music",
+    "help": "play music (“play some music”)",
+    "samples": "9",
+    "train_only": "track",
+    "acts": "yes"
+   },
+   "request": null,
+   "answer": {},
+   "replies": {
+    "any": [
+     "Playing music.",
+     "Here's some music."
+    ],
+    "track": [
+     "Playing {query}."
+    ]
+   },
+   "slots": {
+    "query": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 115,
    "values": {}
   },
   "power": {

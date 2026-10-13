@@ -213,7 +213,6 @@
 - delete the report file
 - remove that folder
 - rename the picture
-- move my documents to backup
 - copy this over there
 - close the window please
 - search for my budget spreadsheet
@@ -360,8 +359,6 @@
 - quiet personality
 - mute the strings on the guitar
 - blind in one eye
-- play some music
-- open spotify and play rock
 - send an email to my boss
 - what is on my calendar for today
 - open netflix on the tv
@@ -372,7 +369,6 @@
 - order a pizza
 - add eggs to my shopping list
 - open youtube and search for cats
-- skip this song
 - pause the video
 - rewind ten seconds
 - who won the football game

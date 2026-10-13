@@ -72,7 +72,7 @@
   [set_reminder {"task":"call mum"} · datetime 2026-10-16T15:00]
   On Friday 16 October at 15:00, or on Friday 23 October at 15:00?
 > next one
-  [thanks]
+  [control_music {"control":"next"}]
   I'll remind you to call mum on Friday 23 October at 15:00.
   $ systemd-run --user --on-calendar="2026-10-23 15:00:00" notify-send Reminder 'call mum'
 
@@ -98,7 +98,7 @@
   [set_reminder {"task":"send the invoice"}]
   When should I remind you?
 > next week
-  [get_weather · range 2026-10-19/2026-10-25]
+  [control_music · range 2026-10-19/2026-10-25]
   Next week runs from Monday 19 October to Sunday 25 October. Which day?
 > wednesday at 10am
   [out_of_scope · datetime 2026-10-14T10:00]
@@ -167,7 +167,7 @@
   [get_weather]
   Which city? Tip: say “I live in …” and I'll remember it for next time.
 > Munich
-  [out_of_scope {"place":"Munich"}]
+  [out_of_scope {"name":"Munich"}]
   Checking the weather for Munich…
   → Munich right now: overcast, 11°C, wind 10 km/h.
   $ GET api.open-meteo.com/v1/forecast?latitude=48.13743&longitude=11.57549&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
@@ -404,7 +404,7 @@ Uptime: 3 hours 12 minutes.
 
 > help
   [help]
-  I can change the brightness, change the volume, create files, create folders, tell the date, tell the time, here or in another city, check the weather, open apps, open files and folders, shut down or restart, remember your name and where you live, send yourself a Telegram message, send a message to your phone, set reminders, set timers, show a place on a map and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
+  I can change the brightness, change the volume, pause, resume or skip the music, create files, create folders, tell the date, tell the time, here or in another city, check the weather, move files and folders, say what's playing, open apps, open files and folders, play music, shut down or restart, remember your name and where you live, send yourself a Telegram message, send a message to your phone, set reminders, set timers, show a place on a map and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
 
 > hello
   [greet]
@@ -430,7 +430,7 @@ Uptime: 3 hours 12 minutes.
   [create_folder]
   What should I call the folder?
 > drafts in documents
-  [create_file {"location":"documents"}]
+  [move_item {"name":"drafts","location":"documents"}]
   Done. “drafts” is now in Documents.
   $ mkdir -p $HOME/Documents/drafts
 
@@ -503,7 +503,7 @@ Uptime: 3 hours 12 minutes.
   [send_to_phone]
   What should I send to your phone?
 > check the oven
-  [system_status]
+  [out_of_scope]
   Sending it to your phone…
   → Sent to your phone: “check the oven”.
   $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"check the oven"}
@@ -512,7 +512,7 @@ Uptime: 3 hours 12 minutes.
   [send_to_phone]
   What should I send to your phone?
 > I love Cookie 🍪
-  [out_of_scope {"text":"Cookie 🍪"}]
+  [out_of_scope {"query":"Cookie 🍪"}]
   Sending it to your phone…
   → Sent to your phone: “I love Cookie 🍪”.
   $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"I love Cookie 🍪"}
@@ -582,4 +582,185 @@ Uptime: 3 hours 12 minutes.
   Looking for kyoto…
   → Kyoto, Japan: https://www.openstreetmap.org/?mlat=35.02107&mlon=135.75385#map=12/35.02107/135.75385
   $ GET geocoding-api.open-meteo.com/v1/search?name=kyoto&count=1&language=en&format=json
+
+> play some music
+  [play_music]
+  Playing music.
+  $ mpc play
+
+> play nightcall
+  [play_music {"query":"nightcall"}]
+  Playing “nightcall”.
+  $ mpc searchplay any nightcall
+
+> play the song despacito
+  [play_music]
+  Playing “despacito”.
+  $ mpc searchplay any despacito
+
+> put on kind of blue
+  [play_music]
+  Do you want me to play music?
+
+> play something by fela kuti
+  [play_music {"query":"by fela kuti"}]
+  Playing “fela kuti”.
+  $ mpc searchplay any 'fela kuti'
+
+> can you play Got the Tendo please
+  [play_music {"query":"Got the Tendo"}]
+  Playing “Got the Tendo”.
+  $ mpc searchplay any 'Got the Tendo'
+
+> pause the music
+  [control_music {"control":"pause"}]
+  Paused.
+  $ mpc pause
+
+> next track
+  [control_music {"control":"next"}]
+  Next track.
+  $ mpc next
+
+> go back one song
+  [control_music {"control":"back"}]
+  Previous track.
+  $ mpc prev
+
+> resume
+  [control_music {"control":"resume"}]
+  Carrying on.
+  $ mpc play
+
+> stop the music
+  [control_music {"control":"stop"}]
+  Stopped.
+  $ mpc stop
+
+> turn the music off
+  [control_music {"control":"off"}]
+  Stopped.
+  $ mpc stop
+
+> what's this song
+  [now_playing]
+  (Simulated) Nightcall, by Kavinsky.
+  $ mpc current
+
+> do something with the music
+  [play_music]
+  I didn't understand that. Say help to see what I can do.
+> skip
+  [control_music {"control":"skip"}]
+  Next track.
+  $ mpc next
+
+> play the video
+  [out_of_scope]
+  I didn't understand that. Say help to see what I can do.
+
+> stop
+  [deny]
+  OK. There's nothing to cancel.
+
+> play some music and turn the volume up
+  [adjust_volume {"direction":"up"}]
+  Playing music.
+Volume up to 60%.
+  $ mpc play | pactl set-sink-volume @DEFAULT_SINK@ +10%
+
+> move ideas.md to documents
+  [move_item {"name":"ideas.md","location":"documents"}]
+  Moved “ideas.md” to Documents.
+  $ mv -n $HOME/ideas.md $HOME/Documents/
+
+> move report.pdf from downloads to work
+  [move_item {"name":"report.pdf","source":"downloads","location":"work"}]
+  Moved “report.pdf” from Downloads to work.
+  $ mv -n $HOME/Downloads/report.pdf $HOME/work/
+
+> put the holiday photos in the archive folder
+  [move_item {"name":"holiday photos","location":"archive"}]
+  Do you want me to move files and folders?
+
+> move notes.txt
+  [move_item {"name":"notes.txt"}]
+  Where should it go?
+> to the desktop
+  [open_file {"location":"desktop"}]
+  Moved “notes.txt” to Desktop.
+  $ mv -n $HOME/notes.txt $HOME/Desktop/
+
+> move a file
+  [move_item]
+  What should I move?
+> todo.md
+  [create_file {"name":"todo.md"}]
+  Where should it go?
+> documents
+  [move_item {"location":"documents"}]
+  Moved “todo.md” to Documents.
+  $ mv -n $HOME/todo.md $HOME/Documents/
+
+> move old-invoice.pdf to the trash
+  [out_of_scope {"name":"old-invoice.pdf","location":"trash"}]
+  I didn't understand that. Say help to see what I can do.
+
+> move the window to the left
+  [out_of_scope]
+  I didn't understand that. Say help to see what I can do.
+
+> move on to the next topic
+  [out_of_scope {"control":"next"}]
+  I didn't understand that. Say help to see what I can do.
+
+> move the photos to the archive
+  [move_item {"name":"the photos","location":"archive"}]
+  Moved “photos” to archive.
+  $ mv -n $HOME/photos $HOME/archive/
+
+> put receipt.pdf in the taxes folder
+  [move_item {"name":"receipt.pdf"}]
+  Do you want me to move files and folders?
+> yes
+  [affirm]
+  Where should it go?
+> taxes
+  [out_of_scope]
+  Moved “receipt.pdf” to taxes.
+  $ mv -n $HOME/receipt.pdf $HOME/taxes/
+
+> make a folder called taxes and move receipt.pdf to taxes
+  [create_folder {"name":"taxes"}]
+  Done. “taxes” is now in your home folder.
+Where should it go?
+  $ mkdir -p $HOME/taxes
+
+> skip the next meeting
+  [out_of_scope {"control":"skip"}]
+  I didn't understand that. Say help to see what I can do.
+
+> move on to the next topic
+  [out_of_scope {"control":"next"}]
+  I didn't understand that. Say help to see what I can do.
+
+> pause the film
+  [control_music {"control":"pause"}]
+  Do you want me to pause, resume or skip the music?
+
+> next slide please
+  [control_music {"control":"next"}]
+  Do you want me to pause, resume or skip the music?
+
+> move draft.md to the bin
+  [move_item {"name":"draft.md"}]
+  I don't move things to the bin: deleting stays out of what I do.
+
+> copy budget.csv to the desktop
+  [out_of_scope {"name":"budget.csv","location":"desktop"}]
+  I didn't understand that. Say help to see what I can do.
+
+> play the next video
+  [out_of_scope {"control":"next"}]
+  I didn't understand that. Say help to see what I can do.
 

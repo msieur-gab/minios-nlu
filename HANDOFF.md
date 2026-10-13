@@ -93,6 +93,80 @@ outside ptiLU.
 - **Known gap, older than today:** the tokenizer reads A–Z only (“Kraków”, “Tübingen” are cut).
 - **Next:** a skill.js guide built on three patterns; a tests.md per skill folder.
 
+## Music skills (13 October, evening, branch `music`, not merged)
+
+Three skills for a music player on the device: `play_music` ("play some music", "play
+nightcall", "play something by …"), `control_music` (pause, resume, next, previous, stop) and
+`now_playing`. They hand `mpc` commands to the executor (`mpc play`, `mpc searchplay any
+'<name>'`, `mpc pause|play|next|prev|stop`, `mpc current`); in the PWA they are simulated like
+every command. The desk project (a separate repository) plays them in its own player.
+
+- **Model:** 28 skills, 421 KB. Held-out intent 97.8%, slot F1 0.93 (182 sentences; before:
+  97.5%, 0.93 on 162). Training took about 200 s on the laptop, most of it the slot model.
+- **Names the model never saw are often not marked** (4 of 9 test names: "put on kind of
+  blue", "play the song despacito"). `play_music/skill.js` therefore reads the name from the
+  sentence shape ("play …", "put on …", "something by …") and uses the model's marking only
+  when the shape doesn't fit.
+- **Moved out of out_of_scope:** "play some music", "play next song", "skip this song", "open
+  spotify and play rock" (in `data/synth_moved.md`) and four lines of the out_of_scope skill.
+  Videos, films and games are still refused ("play a video").
+- **A bare "stop" stays a no.** The music needs naming: "stop the music", "turn the music off".
+- **Known misses:** "skip the next meeting" is read as control_music (0.88). "put on kind of
+  blue" gets 0.46 and asks "Do you want me to play music?" first. A one-word "next", "pause"
+  or "skip" given as the answer to a pending question drops that question and acts on the
+  music (the existing rule for a clearly different skill).
+- **Dialogue test:** 17 music conversations added (117 in all). Four older ones changed only in
+  the label shown for an answer ("next one", "next week" now carry control_music); their
+  replies are identical.
+
+## Move skill (13 October, evening, same `music` branch, not merged)
+
+`move_item`: "move ideas.md to documents", "move report.pdf from downloads to work", "put the
+holiday photos in the archive folder". It hands `mv -n <thing> <folder>/` to the executor:
+never overwrites, never creates the destination (the command fails instead), and refuses the
+bin ("deleting stays out").
+
+- **Slot names follow the other file skills:** `location` is where the thing ends up, `source`
+  the folder it comes from. A first version called the destination `destination`; the model
+  kept marking it `location` (as in "create … in documents") and held-out intent fell to
+  95.9%, slot F1 to 0.91. Renaming brought it back.
+- **Model with music + move:** 29 skills, 443 KB. Held-out intent 97.4%, slot F1 0.92 (196
+  sentences). Music only: 97.8%, 0.93 (182). Before both: 97.5%, 0.93 (162). Training about
+  220 s on the laptop.
+- **Slot errors on older skills, two more than with music only:** "create a markdown file named
+  weekly review" (name cut to "weekly") and "what time is it over in Seoul" (place marked as
+  location; this one was already wrong before today).
+- **Known misses:** "move on to the next topic" is read as move_item (0.70) and asks "What
+  should I move?". A destination the model never saw is often not marked ("put receipt.pdf
+  in the taxes folder"): the skill then asks where. Answering that question with a whole new
+  sentence can fill the folder wrongly; the command then fails rather than moving anything.
+- **Moved out of out_of_scope:** "move my documents to backup", "move pictures to documents",
+  "move invoices to the archive". "Move … to trash", copying and renaming are still refused.
+- **Dialogue test:** 11 move conversations added (128 in all); three older ones changed only
+  in the label shown, with identical replies.
+
+## Refusals around music and files (13 October, late, same branch)
+
+30 lines added to the out_of_scope skill for look-alikes of the new skills: other things that
+get skipped, paused or played ("skip the next step", "pause the game", "play the next
+episode"), other meanings of move ("move on to the next point", "move the meeting to friday"),
+and what stays refused with files (the bin, copying, renaming, zipping). 10 fresh test sentences.
+
+- **Model:** 29 skills, 445 KB. Held-out intent 97.1%, slot F1 0.92 (206 sentences).
+- **The two misses of the afternoon are refused now:** "skip the next meeting", "move on to the
+  next topic".
+- **Of the 10 new test look-alikes, 7 are refused outright.** "pause the film" (0.60) and "next
+  slide please" (0.69) are still read as music, below the 0.7 line, so the agent asks "Do you
+  want me to pause, resume or skip the music?" before doing anything. "move draft.md to the
+  bin" is still read as a move (0.88); the skill refuses it.
+- **move_item asks where by itself now** (location is no longer `required`), so the bin is
+  refused before any question. Cost: an unsure move ("put receipt.pdf in the taxes folder",
+  0.46) first asks "Do you want me to move files and folders?", then where.
+- **Not chased further on purpose:** the model tells "pause the film" from "pause the music" by
+  the words it has seen. More lines would fit today's test sentences, not the next ones; the
+  0.7 line for skills that act is what covers the rest.
+- **Dialogue test:** 135 conversations.
+
 ## Decided on 13 October
 
 - **Skills declare their values, questions and answers.** The core fills slots and asks; a
