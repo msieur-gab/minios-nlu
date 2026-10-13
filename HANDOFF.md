@@ -1,6 +1,6 @@
 # Handoff — 13 October 2026
 
-Where the MiniOS agent stands, and what's open. Everything below is on `main` and live on
+Where ptiLU (formerly MiniOS NLU) stands, and what's open. Everything below is on `main` and live on
 GitHub Pages.
 
 ## Where things are

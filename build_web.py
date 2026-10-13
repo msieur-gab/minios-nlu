@@ -58,7 +58,7 @@ head = """<!doctype html>
 <meta name="theme-color" content="#f7f7f4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="MiniOS">
+<meta name="apple-mobile-web-app-title" content="ptiLU">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">

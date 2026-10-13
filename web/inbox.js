@@ -12,7 +12,7 @@ const NLUInbox = (() => {
     const hit = ENT().parse(text, { now: new Date() }).find(x => x.start < e && s < x.end);
     return !hit ? "text" : hit.type === "duration" ? "duration" : "datetime";
   }
-  const KEY = "minios.inbox.v1";
+  const KEY = "minios.inbox.v1";        // storage keys keep the old name, so what was taught survives the rename
   const MODEL_KEY = "minios.model.v1";
   const norm = t => t.toLowerCase().replace(/[?!.]+$/g, "").split(/\s+/).filter(Boolean).join(" ");
   const NAME_RE = /^[a-z][a-z0-9_]{1,40}$/;

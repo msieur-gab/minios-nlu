@@ -124,7 +124,7 @@ const NLUServices = (() => {
   }
 
   // ---------- what the agent remembers about the person: on this device only ----------
-  const ME_KEY = "minios.me.v1";
+  const ME_KEY = "minios.me.v1"; // old name kept on purpose: name and place survive the rename
   const me = {
     get: (store, agent) => { try { return JSON.parse((store && store.getItem(ME_KEY)) || "null") || agent._mem || {}; } catch { return agent._mem || {}; } },
     set: (store, agent, m) => { agent._mem = m; try { if (store) store.setItem(ME_KEY, JSON.stringify(m)); } catch { /* kept in memory only */ } },

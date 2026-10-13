@@ -1,6 +1,10 @@
-# MiniOS NLU
+# ptiLU
 
-A tiny, CPU-only natural language understanding model for a mini operating system running on an Orange Pi Zero 2W (Armbian). It understands an English command, picks the intent, extracts the parameters, and a small dialogue manager decides what to do and what to answer.
+**ptiLU** (*p'tit LU*): **P**rivate, **T**iny, **I**nterpretable **L**anguage **U**nderstanding.
+A model of about 350 KB that understands short commands on the device, offline, and says
+"I can't" rather than guessing. Formerly MiniOS NLU.
+
+The first ptiLU is a tiny, CPU-only natural language understanding model for a mini operating system running on an Orange Pi Zero 2W (Armbian). It understands an English command, picks the intent, extracts the parameters, and a small dialogue manager decides what to do and what to answer.
 
 Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 
