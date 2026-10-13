@@ -4,38 +4,74 @@ A tiny, CPU-only natural language understanding model for a mini operating syste
 
 Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 
+## Why this exists
+
+Assistants today usually sit on a large language model, a cloud connection, or both. For a
+small device that should do a handful of things well (make a folder, set a reminder, tell the
+time) that is far more than needed, and it comes with the wrong trade-offs: heavy, opaque,
+online, and confidently wrong when it hasn't understood.
+
+This project tries the opposite: small, single-purpose "mini-brains" that run on the CPU of a
+cheap single-board computer, or offline in a phone's browser. It started as a way to replace a
+MiniLM sentence-embedding model with something lighter that needs no retraining from scratch
+each time a capability is added.
+
+What it aims for:
+
+- **Small and local.** The model is about 350 KB and trains in about a minute, on a laptop or on
+  the phone itself. Nothing leaves the device, except what a skill declares it sends (the
+  weather skill sends a place name).
+- **Reliable rather than broad.** When it isn't sure, it asks or says it can't. A confident
+  wrong action is worse than "I can't do that".
+- **Readable without machine-learning knowledge.** What a skill understands, asks and answers
+  is written in a Markdown file. Adding a skill means writing a file, not changing the engine.
+- **Teachable by the person using it.** Sentences it didn't understand wait in an inbox on the
+  phone, where they can be added to a skill, become a new one, or be refused.
+- **Light and long-lived.** Plain JavaScript and Python, no frameworks, no dependencies, so it
+  keeps running on modest hardware for years.
+
+What it is not: a general conversational assistant. It recognises the words its skills were
+taught, not meaning. "Is precipitation likely tomorrow?" fails until a weather example uses
+"precipitation"; open questions are refused.
+
+## How it works
+
 - **Intent:** TF-IDF features (words, word pairs, character 3–4-grams) and a logistic regression.
 - **Slots:** a linear-chain CRF tagger (BIO labels).
 - **Training:** plain JavaScript, no dependencies (`web/trainer.js`). The same file trains in Node (`node train.js`) and in the browser, so the PWA can retrain itself on the phone. Weak weights are dropped and the rest stored as 1-byte numbers: 358 KB for 22 skills.
-- **Skills as folders:** every skill is `skills/<name>/`: a `skill.md` in plain Markdown (example sentences, the values it knows, the API request it makes, what it says) and, only where needed, a short `skill.js`. They are also the training data: `node skills.js` turns the examples into sentences. `web/agent.js` is the dialogue only (questions, confirmations, choices, several commands per sentence) and knows no skill by name; `web/services.js` holds what skills share (dates in words, folders, network, memory). See `skills/README.md`.
+- **Skills as folders:** every skill is `skills/<name>/`: a `skill.md` in plain Markdown and, only where needed, a short `skill.js`. The `skill.md` holds the example sentences, the values the skill takes and their types (`## Slots`: text, place, date or time, duration, a value from a list), the questions to ask when one is missing or wrong, what it says, the API request it makes, and whether it changes something (`acts: yes`) or needs the network (`uses: network`). The examples are also the training data: `node skills.js` turns them into sentences and checks every file, stopping with the file and the reason when something doesn't add up. `web/agent.js` is the dialogue only and knows no skill by name; `web/services.js` holds what skills share (dates in words, folders, network, memory). See `skills/README.md`.
 - **Real APIs:** weather and the time in other places come from Open-Meteo (free, no key). Only the place name and its coordinates are sent; your name and place are stored on the device only.
 - **Inbox:** every sentence the agent can't handle lands in an inbox on the device (plus any reply you flag as wrong). For each one: add it to an existing skill (tap words, then pick which of the skill's declared values they are), make a new skill from it with the answer it should give, or mark it "not for me". Retrain on the phone, keep the trained model across reloads, and export what was taught: training lines for existing skills, and a draft `skills/<name>/skill.md` for each new skill, ready to commit.
-- **Runtime:** dependency-free Python (`nlu/`, for the Pi) and plain JavaScript, both reading the same exported `model.json`. `python evaluate.py` checks the Python side against the test set.
+- **Runtime:** the model runs in plain JavaScript (`web/runtime.js`) and in dependency-free Python (`nlu/`), both reading the same `model.json`; `python evaluate.py` checks the Python side. The dialogue, the date parser and the skills run in JavaScript only for now. How the Pi will run them (a Python port, or one JavaScript brain with the Pi executing declared commands) is still open: see `HANDOFF.md`.
 - **Dates, times, durations:** a rule-based parser (`web/entities.js`), not part of the model. It reads "next friday at 3pm", "in 2 days", "next year", "timer 1h30", "every weekday at 8" and flags what is ambiguous ("next friday" on a Monday, "at 9", "3/4") or already past, so the agent asks instead of guessing. Every skill that needs time shares it; adding one needs no retraining of this layer.
-- **Dialogue:** asks for missing slots, confirms risky actions (power), asks "Do you want me to…?" when unsure before anything that changes something (`acts: yes`), offers a choice when a date or time is ambiguous, abstains below a confidence threshold, and falls back on small dictionaries (apps, directions, metrics) when the model is unsure.
+- **Dialogue:** asks for missing or invalid values with the skill's own questions, confirms risky actions (power), asks "Do you want me to…?" when unsure before anything that changes something, offers a choice when a date or time is ambiguous ("20:00 today, or 08:00 tomorrow?"), says it needs the network when a skill does, abstains below a confidence threshold, and finds list values named anywhere in the sentence ("it's too loud", "rebot the pi") when the model didn't mark them.
 
 Try it: the `docs/` folder is a Progressive Web App that runs the model fully offline. Commands are simulated: the trace shows the shell command that would run on the device.
 
-## Intents
+## Skills
 
-| intent | slots |
-|---|---|
-| `create_folder` | name, location |
-| `create_file` | name, file_type, location |
-| `open_file` | name, location |
-| `open_app` | app |
-| `adjust_volume` | direction, level |
-| `adjust_brightness` | direction, level |
-| `system_status` | metric |
-| `power` | power_action |
-| `get_time` | place (optional) |
-| `get_date` | none (date read by the parser) |
-| `set_timer` | none (duration read by the parser) |
-| `set_reminder` | task (when read by the parser) |
-| `get_weather` | place (optional; day read by the parser) |
-| `remember_me` | name, place |
-| `recall_me`, `forget_me` | none |
-| `greet`, `thanks`, `help`, `affirm`, `deny`, `out_of_scope` | none |
+The values each skill takes, as declared in its `skill.md`. Dates, times and durations are read
+by the date parser, not marked by the model.
+
+| skill | values | changes something |
+|---|---|---|
+| `create_folder` | name, location | yes |
+| `create_file` | name, file_type, location | yes |
+| `open_file` | name, location | yes |
+| `open_app` | app (from a list) | yes |
+| `adjust_volume`, `adjust_brightness` | direction (from a list), level | yes |
+| `power` | power_action (from a list) | confirms every time |
+| `system_status` | metric | no |
+| `get_time` | place | no |
+| `get_date` | day (date) | no |
+| `get_weather` | place (home by default), day (date); needs the network | no |
+| `set_timer` | duration | yes |
+| `set_reminder` | task, when (date and time) | yes |
+| `remember_me` | name, place | yes |
+| `recall_me` | none | no |
+| `forget_me` | none | yes |
+| `greet`, `thanks`, `help` | none | no |
+| `affirm`, `deny`, `out_of_scope` | none (the dialogue's yes, no and "I can't") | no |
 
 ## Layout
 
