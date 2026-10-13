@@ -3560,6 +3560,7 @@ const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./service
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
 // skills that do something (conversational ones are marked "kind: chat")
 const ACTIONABLE = new Set(Object.keys(SKILLS).filter(k => SKILLS[k].params.kind !== "chat"));
+const COMPILED = new Set(Object.keys(SKILLS)); // skill folders; the rest are taught on the device
 // the skills the dialogue relies on, by the role their file declares: yes, no, fallback
 const ROLE = Object.fromEntries(Object.entries(SKILLS).filter(([, s]) => s.params.role).map(([k, s]) => [s.params.role, k]));
 
@@ -3754,6 +3755,24 @@ class Agent {
     return this.run(r.intent, r.slots, trace);
   }
 
+  // Skills taught in the inbox ({ name: { answer, slots, needed } }) answer like a skill.md with
+  // action: say: a value the answer uses is required, and asked for with "Which <value>?".
+  teach(taught) {
+    for (const name of this.taught || []) { delete SKILLS[name]; ACTIONABLE.delete(name); }
+    this.taught = Object.keys(taught).filter(n => !COMPILED.has(n) && taught[n].answer);
+    for (const name of this.taught) {
+      const t = taught[name], replies = { say: [t.answer] };
+      const slots = Object.fromEntries(t.slots.map(n => {
+        const need = t.needed.includes(n);
+        if (need) replies["ask_" + n] = ["Which " + n.replace(/_/g, " ") + "?"];
+        return [n, { type: "text", list: null, required: need, guess: false, ask: need ? "ask_" + n : null, invalid: null, default: null, ignore: [] }];
+      }));
+      SKILLS[name] = { action: "say", params: { skill: name }, slots, replies, values: {} };
+      for (const [k, v] of Object.entries(replies)) RESPONSES[name + "." + k] = v;
+      ACTIONABLE.add(name);
+    }
+  }
+
   // the answer to "what should I call it?": the needed value, minus any other value it carries
   // ("drafts in documents" → name "drafts", location "documents")
   answer(p, r, text, trace) {
@@ -3796,7 +3815,7 @@ class Agent {
       const res = await ctx.request(ctx.slots);
       return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
     }) });
-    return { trace, reply: fill(intent + ".say") };
+    return { trace, reply: fill(intent + ".say", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, v && typeof v === "object" ? v.key || v.text : v]))) };
   }
 
   // Each declared slot gets a value of its type: text from the model, a place (whole multi-word
@@ -3933,7 +3952,8 @@ if (typeof module !== "undefined") module.exports = { Agent };
 <script>// Inbox: sentences the agent did not understand, waiting for a decision.
 // Everything stays on this device (localStorage). Accepted and rejected sentences become
 // training lines in the same Markdown format as data/*.md, so they can be retrained here
-// or exported and committed to the repo.
+// or exported and committed to the repo. A skill created here gets its answer here too, and
+// is exported as a draft skills/<name>/skill.md (examples, slots, reply) ready to commit.
 
 const NLUInbox = (() => {
   const KEY = "minios.inbox.v1";
@@ -3977,11 +3997,12 @@ const NLUInbox = (() => {
     decided() { return this.items.filter(i => i.status !== "new"); }
     untrained() { return this.decided().filter(i => !i.trained).length; }
 
-    // examples: [{ text, spans }] — the sentence itself, plus any other phrasings
-    accept(id, intent, examples, isNew = false) {
+    // examples: [{ text, spans }] — the sentence itself, plus any other phrasings;
+    // answer: for a new skill, what the agent says ({value} fills in a marked value)
+    accept(id, intent, examples, isNew = false, answer = "") {
       const i = this.get(id);
       if (!i || !NAME_RE.test(intent)) return false;
-      Object.assign(i, { status: "accepted", intent, examples, isNew, trained: false, decidedAt: Date.now() });
+      Object.assign(i, { status: "accepted", intent, examples, isNew, answer: isNew ? answer.trim() : "", trained: false, decidedAt: Date.now() });
       this.save();
       return true;
     }
@@ -3995,17 +4016,26 @@ const NLUInbox = (() => {
     undo(id) { // back to the inbox
       const i = this.get(id);
       if (!i) return;
-      for (const k of ["intent", "examples", "isNew", "trained", "decidedAt"]) delete i[k];
+      for (const k of ["intent", "examples", "isNew", "answer", "trained", "decidedAt"]) delete i[k];
       i.status = "new";
       this.save();
     }
     remove(id) { this.items = this.items.filter(i => i.id !== id); this.save(); }
     markTrained() { for (const i of this.decided()) i.trained = true; this.save(); }
 
-    // training lines in data/*.md format, grouped by intent
-    markdown() {
+    // skills created here: { name: { answer, slots: [names marked in their examples], needed: [those the answer uses] } }
+    newSkills() {
+      const out = {};
+      for (const i of this.decided()) if (i.isNew) out[i.intent] = { answer: i.answer || "", slots: [], needed: [] };
+      for (const i of this.decided()) if (out[i.intent])
+        for (const ex of i.examples) for (const [, , n] of ex.spans) if (!out[i.intent].slots.includes(n)) out[i.intent].slots.push(n);
+      for (const s of Object.values(out)) s.needed = s.slots.filter(n => s.answer.includes("{" + n + "}"));
+      return out;
+    }
+    // training lines in data/*.md format, grouped by intent (only = a filter on intents)
+    markdown(only = () => true) {
       const by = new Map();
-      for (const i of this.decided()) for (const ex of i.examples) {
+      for (const i of this.decided()) if (only(i.intent)) for (const ex of i.examples) {
         if (!by.has(i.intent)) by.set(i.intent, []);
         by.get(i.intent).push(annotate(ex.text, ex.spans));
       }
@@ -4013,10 +4043,28 @@ const NLUInbox = (() => {
       for (const [intent, lines] of by) md += `\n## intent: ${intent}\n` + lines.map(l => "- " + l).join("\n") + "\n";
       return md;
     }
+    // a new skill as a skill.md that passes the compile checks: its examples, each marked value
+    // as a text slot, and its answer. Types, questions and a help line are refined in the file.
+    draftSkill(name, stamp) {
+      const s = this.newSkills()[name];
+      const lines = this.markdown(i => i === name).split("\n").filter(l => l.startsWith("- "));
+      return ["---", "skill: " + name, "action: say", "---", "# " + name.replace(/_/g, " "), "",
+        "Taught on the phone through the inbox, " + stamp + ". To do more than answer, add a skill.js;",
+        "to show it in help, add a help: line above.", "",
+        ...(s.slots.length ? ["## Slots", ...s.slots.map(n => "- " + n + ": text" + (s.needed.includes(n) ? ", required, ask: ask_" + n : "")), ""] : []),
+        "## Examples", ...lines, "", "## Replies",
+        "- say: " + (s.answer || "I know this one, but nothing is set up to do it yet."),
+        ...s.needed.map(n => "- ask_" + n + ": Which " + n.replace(/_/g, " ") + "?"), ""].join("\n");
+    }
     exportFile() {
-      const stamp = new Date().toISOString().slice(0, 10);
-      return "<!-- Sentences taught on the device through the inbox, " + stamp + ".\n" +
-        "     Copy to data/ and list the file in data/manifest.json to make them part of the shipped model. -->\n" + this.markdown();
+      const stamp = new Date().toISOString().slice(0, 10), fresh = this.newSkills();
+      let out = "<!-- Taught on the device through the inbox, " + stamp + ".\n" +
+        "     Sentences for existing skills: copy to data/ and list the file in data/manifest.json. -->\n" +
+        this.markdown(i => !fresh[i]);
+      for (const name of Object.keys(fresh))
+        out += "\n<!-- New skill: save this as skills/" + name + "/skill.md, then run node train.js -->\n" +
+          "````markdown\n" + this.draftSkill(name, stamp) + "````\n";
+      return out;
     }
 
     // the model trained on this device, kept until the shipped model changes
@@ -4034,19 +4082,7 @@ const NLUInbox = (() => {
     clearModel() { try { this.storage.removeItem(MODEL_KEY); } catch { /* nothing stored */ } }
   }
 
-  // slot names used by each intent in a training file, e.g. { set_reminder: ["task"], open_app: ["app"] }
-  function slotsByIntent(md) {
-    const out = {};
-    let intent = null;
-    for (const line of md.split("\n")) {
-      const h = /^##\s*intent:\s*([a-z_]+)/.exec(line.trim());
-      if (h) { intent = h[1]; out[intent] = out[intent] || new Set(); continue; }
-      if (intent) for (const m of line.matchAll(/\]\(([a-z_]+)\)/g)) out[intent].add(m[1]);
-    }
-    return Object.fromEntries(Object.entries(out).map(([k, v]) => [k, [...v].sort()]));
-  }
-
-  return { Inbox, annotate, slotsByIntent, NAME_RE };
+  return { Inbox, annotate, NAME_RE };
 })();
 if (typeof module !== "undefined") module.exports = NLUInbox;
 </script>
@@ -4080,8 +4116,13 @@ showModel(MODEL, EVAL, "(build)");
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const inbox = new NLUInbox.Inbox(store);
 const SHIPPED = agent.nlu;
-const SLOTS = NLUInbox.slotsByIntent(DATA.train);
 let current = MODEL;
+// the values the model can learn to mark for a skill: those its skill.md declares (dates and durations
+// are read by the date parser, not marked); null for a skill made here, which names its own
+const declared = intent => (SKILLS_DATA.skills[intent]
+  ? Object.entries(SKILLS_DATA.skills[intent].slots || {}).filter(([, s]) => s.type !== "datetime" && s.type !== "duration").map(([n]) => n) : null);
+const shareAnswers = () => agent.teach(inbox.newSkills()); // skills made here answer with what you gave them
+shareAnswers();
 
 // a model trained on this phone earlier is used until the app itself is updated
 const saved = inbox.loadModel(MODEL.version);
@@ -4140,6 +4181,7 @@ const dayTime = t => new Date(t).toDateString() === new Date().toDateString() ? 
 
 function renderInbox() {
   updateCount();
+  shareAnswers();
   const w = inbox.waiting();
   $("waiting").innerHTML = w.length ? w.map(i => `
     <article class="card" data-id="${i.id}">
@@ -4185,9 +4227,10 @@ function openEditor(card, item, mode) {
       ? `<label>Which skill<select class="ed-intent"><option value="">Choose…</option>${names.map(n => `<option${n === guess ? " selected" : ""}>${esc(n)}</option>`).join("")}</select></label>`
       : `<label>Name of the new skill<input class="ed-name" placeholder="for example set_alarm" autocapitalize="none" spellcheck="false"></label>`)
     + `<div><p class="hint" style="margin-bottom:6px">If part of the sentence is a value (a name, a place, an app, a task…), tap its words, then say what it is. Otherwise skip this.</p><div class="words"></div></div>
-       <div class="mark-row" hidden><input class="ed-slot" list="sl-${item.id}" placeholder="what is it? e.g. task" autocapitalize="none" spellcheck="false"><datalist id="sl-${item.id}"></datalist><button class="btn ed-mark" type="button">Mark</button></div>
+       <div class="mark-row" hidden></div>
        <div class="preview"></div>
        <label>Other ways to say it (optional, one per line)<textarea class="ed-more" rows="3" placeholder="${mode === "new" ? "wake me up at 6\nset my alarm for tomorrow" : "another phrasing"}"></textarea></label>
+       ${mode === "new" ? `<label>What should I answer? <small>(a marked value goes in braces: {time})</small><input class="ed-answer" placeholder="for example OK, alarm at {time}." spellcheck="true"></label>` : ""}
        <p class="err"></p>
        <div class="ed-buttons"><button class="primary ed-save" type="button">Save</button><button class="btn ed-cancel" type="button">Cancel</button></div>`;
   ed.hidden = false;
@@ -4202,9 +4245,17 @@ function drawEditor(card, item) {
     const sp = inSpan(i), sel = st.sel && i >= st.sel[0] && i <= st.sel[1];
     return `<button class="word${sp ? " marked" : ""}${sel ? " sel" : ""}" type="button" data-w="${i}" aria-pressed="${!!(sp || sel)}">${esc(w)}${sp && sp[0] === s ? `<sub>${esc(sp[2])}</sub>` : ""}</button>`;
   }).join("");
-  ed.querySelector(".mark-row").hidden = !st.sel;
+  // an existing skill offers only the values its skill.md declares; a new skill names its own
   const intent = st.mode === "add" ? ed.querySelector(".ed-intent").value : "";
-  ed.querySelector("datalist").innerHTML = (SLOTS[intent] || []).map(n => `<option value="${esc(n)}">`).join("");
+  const fixed = st.mode === "add" ? declared(intent) : null;
+  const named = st.mode === "add" ? (inbox.newSkills()[intent] || { slots: [] }).slots : [...new Set(st.spans.map(x => x[2]))];
+  const row = ed.querySelector(".mark-row");
+  row.hidden = !st.sel;
+  if (st.sel && !(st.mode === "add" && !intent)) row.innerHTML = fixed
+    ? (fixed.length ? `<span class="hint">It's the</span> ` + fixed.map(n => `<button class="btn ed-slotbtn" type="button" data-slot="${esc(n)}">${esc(n)}</button>`).join(" ")
+      : `<span class="hint">This skill has no values to mark (dates and times are read without marking). If it needs one, it belongs in a new skill.</span>`)
+    : `<input class="ed-slot" list="sl-${item.id}" placeholder="what is it? e.g. task" autocapitalize="none" spellcheck="false"><datalist id="sl-${item.id}">${named.map(n => `<option value="${esc(n)}">`).join("")}</datalist><button class="btn ed-mark" type="button">Mark</button>`;
+  else if (st.sel) row.innerHTML = `<span class="hint">Choose the skill first.</span>`;
   ed.querySelector(".preview").textContent = "→ " + NLUInbox.annotate(item.text, st.spans);
 }
 function onEditorClick(card, item, e) {
@@ -4221,15 +4272,15 @@ function onEditorClick(card, item, e) {
       st.sel = clash ? [i, i] : [a, b];
     } else st.sel = st.sel && st.sel[0] === i && st.sel[1] === i ? null : [i, i];
     drawEditor(card, item);
-    if (st.sel) ed.querySelector(".ed-slot").focus();
+    if (st.sel && ed.querySelector(".ed-slot")) ed.querySelector(".ed-slot").focus();
     return;
   }
-  if (e.target.closest(".ed-mark")) {
-    const name = ed.querySelector(".ed-slot").value.trim().toLowerCase().replace(/\s+/g, "_");
+  const pickBtn = e.target.closest(".ed-slotbtn");
+  if (pickBtn || e.target.closest(".ed-mark")) {
+    const name = pickBtn ? pickBtn.dataset.slot : ed.querySelector(".ed-slot").value.trim().toLowerCase().replace(/\s+/g, "_");
     if (!NLUInbox.NAME_RE.test(name)) { err.textContent = "Give the value a short name, like task or app."; return; }
     st.spans.push([st.toks[st.sel[0]][1], st.toks[st.sel[1]][2], name]);
     st.sel = null;
-    ed.querySelector(".ed-slot").value = "";
     drawEditor(card, item);
     return;
   }
@@ -4246,7 +4297,12 @@ function onEditorClick(card, item, e) {
     }
     const more = ed.querySelector(".ed-more").value.split("\n").map(l => l.trim()).filter(Boolean).map(parseLine);
     if (st.mode === "new" && !more.length) { err.textContent = "Add at least one other way to say it: a new skill needs a few examples to be recognised."; return; }
-    inbox.accept(item.id, intent, [{ text: item.text, spans: st.spans }, ...more], st.mode === "new");
+    // phrasings typed with [words](value): an existing skill only takes the values it declares
+    const fixed = st.mode === "add" ? declared(intent) : null;
+    const stray = fixed ? [...new Set([st, ...more].flatMap(m => m.spans.map(x => x[2])).filter(n => !fixed.includes(n)))] : [];
+    if (stray.length) { err.textContent = `${intent} has no value called ${stray.join(", ")}` + (fixed.length ? ` (it takes ${fixed.join(", ")}).` : " (it takes none)."); return; }
+    const answer = st.mode === "new" ? ed.querySelector(".ed-answer").value : "";
+    inbox.accept(item.id, intent, [{ text: item.text, spans: st.spans }, ...more], st.mode === "new", answer);
     editors.delete(item.id);
     $("ibLog").textContent = "Saved. Retrain to apply it.";
     renderInbox();

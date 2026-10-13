@@ -27,6 +27,11 @@ GitHub Pages.
   vocabulary. `web/services.js` holds shared services.
 - **Date parser:** `web/entities.js`, rule-based, 99/99 tests.
 - **Inbox:** unknown sentences saved on the phone; triage, retrain on the device, export `.md`.
+  Adding to an existing skill offers only the values its `skill.md` declares (as buttons; dates
+  and durations aren't marked). A new skill gets an answer ("OK, alarm at {time}") and works
+  on the phone straight after retraining, asking "Which time?" when a value it uses is missing.
+  The export holds training lines for existing skills and a draft `skills/<name>/skill.md` per
+  new skill that passes the compile checks.
 - **APIs:** weather and world time via Open-Meteo (no key). Name and home place on the device.
 
 Run: `node train.js` (compiles the skills too), `python build_web.py`,
@@ -72,8 +77,6 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 
 **Also open (from 12 October)**
 - **Place disambiguation:** name the country, ask between places, remember the choice.
-- **Inbox: answers for new skills;** export as a real `skills/<name>/skill.md` with `## Slots`
-  (the compile checks now require them for tagged examples).
 - **Browser capabilities as skills:** speech output, notifications, location for "weather
   here". Avoid browser speech input in Chrome.
 - **Small context across tasks:** "and tomorrow?" after the weather, "open it" after creating

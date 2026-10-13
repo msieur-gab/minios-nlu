@@ -10,6 +10,7 @@ const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./service
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
 // skills that do something (conversational ones are marked "kind: chat")
 const ACTIONABLE = new Set(Object.keys(SKILLS).filter(k => SKILLS[k].params.kind !== "chat"));
+const COMPILED = new Set(Object.keys(SKILLS)); // skill folders; the rest are taught on the device
 // the skills the dialogue relies on, by the role their file declares: yes, no, fallback
 const ROLE = Object.fromEntries(Object.entries(SKILLS).filter(([, s]) => s.params.role).map(([k, s]) => [s.params.role, k]));
 
@@ -204,6 +205,24 @@ class Agent {
     return this.run(r.intent, r.slots, trace);
   }
 
+  // Skills taught in the inbox ({ name: { answer, slots, needed } }) answer like a skill.md with
+  // action: say: a value the answer uses is required, and asked for with "Which <value>?".
+  teach(taught) {
+    for (const name of this.taught || []) { delete SKILLS[name]; ACTIONABLE.delete(name); }
+    this.taught = Object.keys(taught).filter(n => !COMPILED.has(n) && taught[n].answer);
+    for (const name of this.taught) {
+      const t = taught[name], replies = { say: [t.answer] };
+      const slots = Object.fromEntries(t.slots.map(n => {
+        const need = t.needed.includes(n);
+        if (need) replies["ask_" + n] = ["Which " + n.replace(/_/g, " ") + "?"];
+        return [n, { type: "text", list: null, required: need, guess: false, ask: need ? "ask_" + n : null, invalid: null, default: null, ignore: [] }];
+      }));
+      SKILLS[name] = { action: "say", params: { skill: name }, slots, replies, values: {} };
+      for (const [k, v] of Object.entries(replies)) RESPONSES[name + "." + k] = v;
+      ACTIONABLE.add(name);
+    }
+  }
+
   // the answer to "what should I call it?": the needed value, minus any other value it carries
   // ("drafts in documents" → name "drafts", location "documents")
   answer(p, r, text, trace) {
@@ -246,7 +265,7 @@ class Agent {
       const res = await ctx.request(ctx.slots);
       return res.place === null && ctx.slots.place ? ctx.say("not_found", ctx.slots) : ctx.say("done", { ...ctx.slots, ...res.answer, ...(res.place ? { place: res.place.name } : {}) });
     }) });
-    return { trace, reply: fill(intent + ".say") };
+    return { trace, reply: fill(intent + ".say", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, v && typeof v === "object" ? v.key || v.text : v]))) };
   }
 
   // Each declared slot gets a value of its type: text from the model, a place (whole multi-word

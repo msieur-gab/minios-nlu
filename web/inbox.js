@@ -1,7 +1,8 @@
 // Inbox: sentences the agent did not understand, waiting for a decision.
 // Everything stays on this device (localStorage). Accepted and rejected sentences become
 // training lines in the same Markdown format as data/*.md, so they can be retrained here
-// or exported and committed to the repo.
+// or exported and committed to the repo. A skill created here gets its answer here too, and
+// is exported as a draft skills/<name>/skill.md (examples, slots, reply) ready to commit.
 
 const NLUInbox = (() => {
   const KEY = "minios.inbox.v1";
@@ -45,11 +46,12 @@ const NLUInbox = (() => {
     decided() { return this.items.filter(i => i.status !== "new"); }
     untrained() { return this.decided().filter(i => !i.trained).length; }
 
-    // examples: [{ text, spans }] — the sentence itself, plus any other phrasings
-    accept(id, intent, examples, isNew = false) {
+    // examples: [{ text, spans }] — the sentence itself, plus any other phrasings;
+    // answer: for a new skill, what the agent says ({value} fills in a marked value)
+    accept(id, intent, examples, isNew = false, answer = "") {
       const i = this.get(id);
       if (!i || !NAME_RE.test(intent)) return false;
-      Object.assign(i, { status: "accepted", intent, examples, isNew, trained: false, decidedAt: Date.now() });
+      Object.assign(i, { status: "accepted", intent, examples, isNew, answer: isNew ? answer.trim() : "", trained: false, decidedAt: Date.now() });
       this.save();
       return true;
     }
@@ -63,17 +65,26 @@ const NLUInbox = (() => {
     undo(id) { // back to the inbox
       const i = this.get(id);
       if (!i) return;
-      for (const k of ["intent", "examples", "isNew", "trained", "decidedAt"]) delete i[k];
+      for (const k of ["intent", "examples", "isNew", "answer", "trained", "decidedAt"]) delete i[k];
       i.status = "new";
       this.save();
     }
     remove(id) { this.items = this.items.filter(i => i.id !== id); this.save(); }
     markTrained() { for (const i of this.decided()) i.trained = true; this.save(); }
 
-    // training lines in data/*.md format, grouped by intent
-    markdown() {
+    // skills created here: { name: { answer, slots: [names marked in their examples], needed: [those the answer uses] } }
+    newSkills() {
+      const out = {};
+      for (const i of this.decided()) if (i.isNew) out[i.intent] = { answer: i.answer || "", slots: [], needed: [] };
+      for (const i of this.decided()) if (out[i.intent])
+        for (const ex of i.examples) for (const [, , n] of ex.spans) if (!out[i.intent].slots.includes(n)) out[i.intent].slots.push(n);
+      for (const s of Object.values(out)) s.needed = s.slots.filter(n => s.answer.includes("{" + n + "}"));
+      return out;
+    }
+    // training lines in data/*.md format, grouped by intent (only = a filter on intents)
+    markdown(only = () => true) {
       const by = new Map();
-      for (const i of this.decided()) for (const ex of i.examples) {
+      for (const i of this.decided()) if (only(i.intent)) for (const ex of i.examples) {
         if (!by.has(i.intent)) by.set(i.intent, []);
         by.get(i.intent).push(annotate(ex.text, ex.spans));
       }
@@ -81,10 +92,28 @@ const NLUInbox = (() => {
       for (const [intent, lines] of by) md += `\n## intent: ${intent}\n` + lines.map(l => "- " + l).join("\n") + "\n";
       return md;
     }
+    // a new skill as a skill.md that passes the compile checks: its examples, each marked value
+    // as a text slot, and its answer. Types, questions and a help line are refined in the file.
+    draftSkill(name, stamp) {
+      const s = this.newSkills()[name];
+      const lines = this.markdown(i => i === name).split("\n").filter(l => l.startsWith("- "));
+      return ["---", "skill: " + name, "action: say", "---", "# " + name.replace(/_/g, " "), "",
+        "Taught on the phone through the inbox, " + stamp + ". To do more than answer, add a skill.js;",
+        "to show it in help, add a help: line above.", "",
+        ...(s.slots.length ? ["## Slots", ...s.slots.map(n => "- " + n + ": text" + (s.needed.includes(n) ? ", required, ask: ask_" + n : "")), ""] : []),
+        "## Examples", ...lines, "", "## Replies",
+        "- say: " + (s.answer || "I know this one, but nothing is set up to do it yet."),
+        ...s.needed.map(n => "- ask_" + n + ": Which " + n.replace(/_/g, " ") + "?"), ""].join("\n");
+    }
     exportFile() {
-      const stamp = new Date().toISOString().slice(0, 10);
-      return "<!-- Sentences taught on the device through the inbox, " + stamp + ".\n" +
-        "     Copy to data/ and list the file in data/manifest.json to make them part of the shipped model. -->\n" + this.markdown();
+      const stamp = new Date().toISOString().slice(0, 10), fresh = this.newSkills();
+      let out = "<!-- Taught on the device through the inbox, " + stamp + ".\n" +
+        "     Sentences for existing skills: copy to data/ and list the file in data/manifest.json. -->\n" +
+        this.markdown(i => !fresh[i]);
+      for (const name of Object.keys(fresh))
+        out += "\n<!-- New skill: save this as skills/" + name + "/skill.md, then run node train.js -->\n" +
+          "````markdown\n" + this.draftSkill(name, stamp) + "````\n";
+      return out;
     }
 
     // the model trained on this device, kept until the shipped model changes
@@ -102,18 +131,6 @@ const NLUInbox = (() => {
     clearModel() { try { this.storage.removeItem(MODEL_KEY); } catch { /* nothing stored */ } }
   }
 
-  // slot names used by each intent in a training file, e.g. { set_reminder: ["task"], open_app: ["app"] }
-  function slotsByIntent(md) {
-    const out = {};
-    let intent = null;
-    for (const line of md.split("\n")) {
-      const h = /^##\s*intent:\s*([a-z_]+)/.exec(line.trim());
-      if (h) { intent = h[1]; out[intent] = out[intent] || new Set(); continue; }
-      if (intent) for (const m of line.matchAll(/\]\(([a-z_]+)\)/g)) out[intent].add(m[1]);
-    }
-    return Object.fromEntries(Object.entries(out).map(([k, v]) => [k, [...v].sort()]));
-  }
-
-  return { Inbox, annotate, slotsByIntent, NAME_RE };
+  return { Inbox, annotate, NAME_RE };
 })();
 if (typeof module !== "undefined") module.exports = NLUInbox;

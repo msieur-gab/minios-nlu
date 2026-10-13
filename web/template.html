@@ -233,8 +233,13 @@ showModel(MODEL, EVAL, "(build)");
 const store = (() => { try { return window.localStorage; } catch { return null; } })();
 const inbox = new NLUInbox.Inbox(store);
 const SHIPPED = agent.nlu;
-const SLOTS = NLUInbox.slotsByIntent(DATA.train);
 let current = MODEL;
+// the values the model can learn to mark for a skill: those its skill.md declares (dates and durations
+// are read by the date parser, not marked); null for a skill made here, which names its own
+const declared = intent => (SKILLS_DATA.skills[intent]
+  ? Object.entries(SKILLS_DATA.skills[intent].slots || {}).filter(([, s]) => s.type !== "datetime" && s.type !== "duration").map(([n]) => n) : null);
+const shareAnswers = () => agent.teach(inbox.newSkills()); // skills made here answer with what you gave them
+shareAnswers();
 
 // a model trained on this phone earlier is used until the app itself is updated
 const saved = inbox.loadModel(MODEL.version);
@@ -293,6 +298,7 @@ const dayTime = t => new Date(t).toDateString() === new Date().toDateString() ? 
 
 function renderInbox() {
   updateCount();
+  shareAnswers();
   const w = inbox.waiting();
   $("waiting").innerHTML = w.length ? w.map(i => `
     <article class="card" data-id="${i.id}">
@@ -338,9 +344,10 @@ function openEditor(card, item, mode) {
       ? `<label>Which skill<select class="ed-intent"><option value="">Choose…</option>${names.map(n => `<option${n === guess ? " selected" : ""}>${esc(n)}</option>`).join("")}</select></label>`
       : `<label>Name of the new skill<input class="ed-name" placeholder="for example set_alarm" autocapitalize="none" spellcheck="false"></label>`)
     + `<div><p class="hint" style="margin-bottom:6px">If part of the sentence is a value (a name, a place, an app, a task…), tap its words, then say what it is. Otherwise skip this.</p><div class="words"></div></div>
-       <div class="mark-row" hidden><input class="ed-slot" list="sl-${item.id}" placeholder="what is it? e.g. task" autocapitalize="none" spellcheck="false"><datalist id="sl-${item.id}"></datalist><button class="btn ed-mark" type="button">Mark</button></div>
+       <div class="mark-row" hidden></div>
        <div class="preview"></div>
        <label>Other ways to say it (optional, one per line)<textarea class="ed-more" rows="3" placeholder="${mode === "new" ? "wake me up at 6\nset my alarm for tomorrow" : "another phrasing"}"></textarea></label>
+       ${mode === "new" ? `<label>What should I answer? <small>(a marked value goes in braces: {time})</small><input class="ed-answer" placeholder="for example OK, alarm at {time}." spellcheck="true"></label>` : ""}
        <p class="err"></p>
        <div class="ed-buttons"><button class="primary ed-save" type="button">Save</button><button class="btn ed-cancel" type="button">Cancel</button></div>`;
   ed.hidden = false;
@@ -355,9 +362,17 @@ function drawEditor(card, item) {
     const sp = inSpan(i), sel = st.sel && i >= st.sel[0] && i <= st.sel[1];
     return `<button class="word${sp ? " marked" : ""}${sel ? " sel" : ""}" type="button" data-w="${i}" aria-pressed="${!!(sp || sel)}">${esc(w)}${sp && sp[0] === s ? `<sub>${esc(sp[2])}</sub>` : ""}</button>`;
   }).join("");
-  ed.querySelector(".mark-row").hidden = !st.sel;
+  // an existing skill offers only the values its skill.md declares; a new skill names its own
   const intent = st.mode === "add" ? ed.querySelector(".ed-intent").value : "";
-  ed.querySelector("datalist").innerHTML = (SLOTS[intent] || []).map(n => `<option value="${esc(n)}">`).join("");
+  const fixed = st.mode === "add" ? declared(intent) : null;
+  const named = st.mode === "add" ? (inbox.newSkills()[intent] || { slots: [] }).slots : [...new Set(st.spans.map(x => x[2]))];
+  const row = ed.querySelector(".mark-row");
+  row.hidden = !st.sel;
+  if (st.sel && !(st.mode === "add" && !intent)) row.innerHTML = fixed
+    ? (fixed.length ? `<span class="hint">It's the</span> ` + fixed.map(n => `<button class="btn ed-slotbtn" type="button" data-slot="${esc(n)}">${esc(n)}</button>`).join(" ")
+      : `<span class="hint">This skill has no values to mark (dates and times are read without marking). If it needs one, it belongs in a new skill.</span>`)
+    : `<input class="ed-slot" list="sl-${item.id}" placeholder="what is it? e.g. task" autocapitalize="none" spellcheck="false"><datalist id="sl-${item.id}">${named.map(n => `<option value="${esc(n)}">`).join("")}</datalist><button class="btn ed-mark" type="button">Mark</button>`;
+  else if (st.sel) row.innerHTML = `<span class="hint">Choose the skill first.</span>`;
   ed.querySelector(".preview").textContent = "→ " + NLUInbox.annotate(item.text, st.spans);
 }
 function onEditorClick(card, item, e) {
@@ -374,15 +389,15 @@ function onEditorClick(card, item, e) {
       st.sel = clash ? [i, i] : [a, b];
     } else st.sel = st.sel && st.sel[0] === i && st.sel[1] === i ? null : [i, i];
     drawEditor(card, item);
-    if (st.sel) ed.querySelector(".ed-slot").focus();
+    if (st.sel && ed.querySelector(".ed-slot")) ed.querySelector(".ed-slot").focus();
     return;
   }
-  if (e.target.closest(".ed-mark")) {
-    const name = ed.querySelector(".ed-slot").value.trim().toLowerCase().replace(/\s+/g, "_");
+  const pickBtn = e.target.closest(".ed-slotbtn");
+  if (pickBtn || e.target.closest(".ed-mark")) {
+    const name = pickBtn ? pickBtn.dataset.slot : ed.querySelector(".ed-slot").value.trim().toLowerCase().replace(/\s+/g, "_");
     if (!NLUInbox.NAME_RE.test(name)) { err.textContent = "Give the value a short name, like task or app."; return; }
     st.spans.push([st.toks[st.sel[0]][1], st.toks[st.sel[1]][2], name]);
     st.sel = null;
-    ed.querySelector(".ed-slot").value = "";
     drawEditor(card, item);
     return;
   }
@@ -399,7 +414,12 @@ function onEditorClick(card, item, e) {
     }
     const more = ed.querySelector(".ed-more").value.split("\n").map(l => l.trim()).filter(Boolean).map(parseLine);
     if (st.mode === "new" && !more.length) { err.textContent = "Add at least one other way to say it: a new skill needs a few examples to be recognised."; return; }
-    inbox.accept(item.id, intent, [{ text: item.text, spans: st.spans }, ...more], st.mode === "new");
+    // phrasings typed with [words](value): an existing skill only takes the values it declares
+    const fixed = st.mode === "add" ? declared(intent) : null;
+    const stray = fixed ? [...new Set([st, ...more].flatMap(m => m.spans.map(x => x[2])).filter(n => !fixed.includes(n)))] : [];
+    if (stray.length) { err.textContent = `${intent} has no value called ${stray.join(", ")}` + (fixed.length ? ` (it takes ${fixed.join(", ")}).` : " (it takes none)."); return; }
+    const answer = st.mode === "new" ? ed.querySelector(".ed-answer").value : "";
+    inbox.accept(item.id, intent, [{ text: item.text, spans: st.spans }, ...more], st.mode === "new", answer);
     editors.delete(item.id);
     $("ibLog").textContent = "Saved. Retrain to apply it.";
     renderInbox();
