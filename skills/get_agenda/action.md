@@ -19,4 +19,4 @@ POST {hook}
 - say: say required
 
 ## Secrets
-- hook: Which webhook reads your calendar? Paste its address.
+- hook: Reading your calendar needs a webhook of your own (tools/webhook.js reads an iCal address). Paste its address, or say cancel.

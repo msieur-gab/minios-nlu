@@ -607,3 +607,34 @@ Uptime: 3 hours 12 minutes.
   → For 2026-10-17/2026-10-18: dentist at 9:00, call with the bank at 14:00.
   $ POST hooks.test/agenda {"when":"2026-10-17/2026-10-18"}
 
+> forget where I live
+  [forget_me]
+  OK, I've forgotten where you live.
+
+> I need an itinerary from home to Munich airport
+  [get_route {"location":"home","to":"Munich airport"}]
+  From where? (If you meant home: I don't know where you live yet. Say “I live in …” and I'll remember it.)
+> I start from Menzinger Straße 14a, Munich
+  [remember_me {"text":"start from Menzinger Straße 14a, Munich"}]
+  Working out the route to Munich airport…
+  → Menzinger Straße 14a, Munich to Munich airport: 1 h 40 min by car, 142 km.
+  $ POST hooks.test/route {"from":"Menzinger Straße 14a, Munich","to":"Munich airport","mode":""}
+
+> I need the itinerary from home to the airport
+  [get_route {"location":"home","to":"the airport"}]
+  From where? (If you meant home: I don't know where you live yet. Say “I live in …” and I'll remember it.)
+> send me telegram messages
+  [send_telegram]
+  What should I send on Telegram?
+> the bus is late
+  [out_of_scope]
+  Sending it on Telegram…
+  → Sent on Telegram: “the bus is late”.
+  $ POST api.telegram.org/bot•••/sendMessage {"chat_id":"•••","text":"the bus is late"}
+
+> where is kyoto
+  [show_map {"place":"kyoto"}]
+  Looking for kyoto…
+  → Kyoto, Japan: https://www.openstreetmap.org/?mlat=35.02107&mlon=135.75385#map=12/35.02107/135.75385
+  $ GET geocoding-api.open-meteo.com/v1/search?name=kyoto&count=1&language=en&format=json
+

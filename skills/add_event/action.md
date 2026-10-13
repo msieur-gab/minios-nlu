@@ -16,4 +16,4 @@ POST {hook}
 - body.start: {when}
 
 ## Secrets
-- hook: Which webhook adds events to your calendar? Paste its address.
+- hook: Adding events needs a webhook of your own, connected to your calendar (an n8n or Activepieces flow). Paste its address, or say cancel.

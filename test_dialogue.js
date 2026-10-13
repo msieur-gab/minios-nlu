@@ -125,6 +125,11 @@ const CONVERSATIONS = [
   ["schedule a call with the bank", "tomorrow at 3pm"],
   ["what's on my calendar tomorrow", "https://hooks.test/agenda"],
   ["what do I have this weekend"],
+  // replayed from the phone, 13 October: home unknown, an address as the answer, another skill mid-question
+  ["forget where I live"],
+  ["I need an itinerary from home to Munich airport", "I start from Menzinger Straße 14a, Munich"],
+  ["I need the itinerary from home to the airport", "send me telegram messages", "the bus is late"],
+  ["where is kyoto"],
 ];
 const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)
 const UPDATE = process.argv.includes("--update"), VERBOSE = process.argv.includes("-v");

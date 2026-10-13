@@ -1,8 +1,9 @@
 // A small webhook for ptiLU's hand-over skills: it receives what the agent understood and
 // answers with one sentence to say, { "say": "…" }. No dependencies (Node 18 or later).
 //
-//   POST /route   { from, to, mode }   places from Open-Meteo, routes from OpenStreetMap's
-//                                      routing servers (routing.openstreetmap.de, fair use)
+//   POST /route   { from, to, mode }   places and street addresses from OpenStreetMap's
+//                                      Nominatim, routes from routing.openstreetmap.de
+//                                      (both free, fair use: one request a second at most)
 //   POST /agenda  { when }             reads the calendar at ICS_URL (a private iCal address)
 //
 //   ICS_URL="https://…/basic.ics" PORT=8787 node tools/webhook.js
@@ -22,17 +23,19 @@ const minutes = s => { const m = Math.round(s / 60); return m < 60 ? m + " min" 
 
 // ---------- route ----------
 const PROFILE = { car: "routed-car", bike: "routed-bike", foot: "routed-foot" };
+// a place or a street address ("Munich airport", "Menzinger Straße 14a, Munich")
+const AGENT = { "User-Agent": "ptiLU-webhook/1 (https://github.com/msieur-gab/ptiLU)" }; // Nominatim asks for one
 async function place(name, fetch) {
-  const r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=" + encodeURIComponent(name));
-  const g = ((await r.json()).results || [])[0];
-  return g ? { name: g.name, lat: g.latitude, lon: g.longitude } : null;
+  const r = await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=" + encodeURIComponent(name), { headers: AGENT });
+  const g = (await r.json())[0];
+  return g ? { name: g.name || name, lat: +g.lat, lon: +g.lon } : null; // an address has no name: say it as asked
 }
 async function route({ from, to, mode }, fetch) {
   if (!from || !to) return { say: "I need both a start and a destination." };
   const [a, b] = await Promise.all([place(from, fetch), place(to, fetch)]);
   if (!a || !b) return {}; // no "say": the agent answers its not_found reply
   const how = PROFILE[mode] ? mode : "car";
-  const r = await fetch(`https://routing.openstreetmap.de/${PROFILE[how]}/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=false`);
+  const r = await fetch(`https://routing.openstreetmap.de/${PROFILE[how]}/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=false`, { headers: AGENT });
   const best = ((await r.json()).routes || [])[0];
   if (!best) return {};
   const by = how === "foot" ? "on foot" : "by " + how;

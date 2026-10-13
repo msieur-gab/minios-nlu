@@ -2,12 +2,13 @@
 const assert = require("assert");
 const { route, agenda, events } = require("../tools/webhook.js");
 
-const PLACES = { munich: [48.137, 11.575, "Munich"], salzburg: [47.799, 13.044, "Salzburg"] };
+const PLACES = { munich: [48.137, 11.575, "Munich"], salzburg: [47.799, 13.044, "Salzburg"],
+  "menzinger straße 14a, munich": [48.157, 11.503, ""] }; // an address: no name, only display_name
 const fake = async url => {
   const u = new URL(url);
-  if (u.hostname.startsWith("geocoding")) {
-    const p = PLACES[u.searchParams.get("name").toLowerCase()];
-    return { json: async () => ({ results: p ? [{ latitude: p[0], longitude: p[1], name: p[2] }] : undefined }) };
+  if (u.hostname === "nominatim.openstreetmap.org") {
+    const p = PLACES[u.searchParams.get("q").toLowerCase()];
+    return { json: async () => (p ? [{ lat: String(p[0]), lon: String(p[1]), name: p[2], display_name: p[2] + ", Bavaria, Germany" }] : []) };
   }
   if (u.hostname === "routing.openstreetmap.de")
     return { json: async () => ({ routes: [{ duration: u.pathname.includes("bike") ? 30000 : 5400, distance: 142400 }] }) };
@@ -29,6 +30,7 @@ const ICS = [
   await eq(route({ from: "Munich", to: "Salzburg", mode: "bike" }, fake), { say: "Munich to Salzburg: 8 h 20 min by bike, 142 km." });
   await eq(route({ from: "Munich", to: "Salzburg", mode: "" }, fake), { say: "Munich to Salzburg: 1 h 30 min by car, 142 km." });
   await eq(route({ from: "Munich", to: "Atlantis" }, fake), {});
+  await eq(route({ from: "Menzinger Straße 14a, Munich", to: "Salzburg", mode: "foot" }, fake), { say: "Menzinger Straße 14a, Munich to Salzburg: 1 h 30 min on foot, 142 km." });
 
   assert.strictEqual(events(ICS).length, 3); n++; // the repeating one is left out
   process.env.ICS_URL = "https://cal.test/basic.ics";

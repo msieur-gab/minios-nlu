@@ -57,7 +57,7 @@ and says the sentence the webhook sends back.
 
 ## Replies
 - ask_to: Where to?
-- ask_from: From where? Tip: say “I live in …” and I'll start from there next time.
+- ask_from: From where? (If you meant home: I don't know where you live yet. Say “I live in …” and I'll remember it.)
 - checking: Working out the route to {to}…
 - done: {say}
 - not_found: I couldn't find a route to {to}.

@@ -92,6 +92,15 @@ answers `{"say": "…"}`. Skills stay self-contained folders; `skill.js` is the 
   https tunnel to the webhook, an n8n flow for add_event.
 - **Known gap, older than today:** the tokenizer reads letters A–Z only, so “Kraków” or
   “Tübingen” are cut. Matters for European place names; needs the same change in nlu/ (Python).
+- **First test on the phone (14:40) and fixes:** a map link shown as a bare host (now “open on
+  openstreetmap.org ↗”); an answer kept its “I start from”; “send me telegram messages” at
+  1.00 was swallowed as the answer to a pending question (a clearly different skill at ≥ 0.9
+  now drops the question); a sentence was accepted as a webhook address (a secret answer with
+  spaces now drops the question); “from home” with no home saved now says why it asks. The
+  reference webhook finds street addresses (Nominatim) instead of city names only. The
+  conversation is replayed in test_dialogue.js.
+- **Still true:** route and calendar skills need a running webhook; without one they can only
+  ask for its address. Real use starts once tools/webhook.js runs behind https.
 - **Next:** weather's day logic back into its skill.js (only weather needs it); a skill.js guide
   built on three patterns; a tests.md per skill folder.
 

@@ -22,4 +22,4 @@ POST {hook}
 - say: say required
 
 ## Secrets
-- hook: Which webhook plans routes? Paste its address (for example https://…/route).
+- hook: Routes need a webhook of your own (tools/webhook.js runs one). Paste its address, or say cancel.

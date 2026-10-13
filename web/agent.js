@@ -176,12 +176,15 @@ class Agent {
       trace.push({ type: "state", text: "answer matched no option, read it as a new command" });
     } else if (p) {
       if (no) { drop("cancelled pending " + p.intent); return { trace, reply: fill("cancel") }; }
-      if (r.intent === p.intent && r.slots[p.need]) {
+      const asked = ((SKILLS[p.intent] && SKILLS[p.intent].slots) || {})[p.need];
+      if (asked && asked.type === "secret" && /\s/.test(t)) drop("a sentence, not a key or an address: dropped the question");
+      else if (ACTIONABLE.has(r.intent) && r.intent !== p.intent && r.confidence >= 0.9) drop("clearly " + r.intent + ": dropped the question");
+      else if (r.intent === p.intent && r.slots[p.need]) {
         this.pending = null;
         trace.push({ type: "state", text: "same skill with " + p.need + ", merged into the question" });
         return this.run(p.intent, { ...p.slots, ...r.slots }, trace);
       }
-      if (r.intent === ROLE.fallback && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
+      else if (r.intent === ROLE.fallback && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
       else if (ACTIONABLE.has(r.intent) && r.confidence >= 0.8 && Object.keys(r.slots).length) drop("new command, dropped the question");
       else return this.answer(p, r, text, trace);
     }
@@ -237,7 +240,7 @@ class Agent {
       const at = rest.toLowerCase().lastIndexOf(v.toLowerCase());
       if (at > 0) { rest = rest.slice(0, at).replace(/\s+(in|inside|on|under|within|to|at)(\s+(the|my))?\s*$/i, ""); extra[k] = v; }
     }
-    const value = cleanValue(rest.replace(/^(please\s+)?(call it|name it|let'?s call it|it'?s|it is|its|name|called|named|use|make it|open|launch|start|run|fire up)\s+/i, ""));
+    const value = cleanValue(rest.replace(/^(please\s+)?(call it|name it|let'?s call it|it'?s|it is|its|name|called|named|use|make it|open|launch|start|run|fire up|i('?m| am)? (start(ing)? |leav(e|ing) |going |coming )?(from|at|to)|start(ing)? from|from|to)\s+/i, ""));
     if (!value) { trace.push({ type: "state", text: "still waiting for " + p.need }); return { trace, reply: fill("empty_value") }; }
     this.pending = null;
     const secret = SKILLS[p.intent] && SKILLS[p.intent].slots && (SKILLS[p.intent].slots[p.need] || {}).type === "secret";
