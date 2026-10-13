@@ -9,6 +9,10 @@ train_only: fname, fext, folder, loc
 Opens a file or a folder with its default app. If what you named is actually an app
 ("open the terminal"), it hands over to open_app.
 
+## Slots
+- name: text
+- location: text
+
 ## Examples
 - {open|show|show me|display|view|pull up|bring up} {[{fext}](name)|[{fext}](name)|the [{fname}](name) file|the [{folder}](name) folder}
 - {open|show me|display} {[{fext}](name)|[{fext}](name)|the [{fname}](name) file|the [{folder}](name) folder} {in|from|inside} {|||the |my }[{loc}](location){||| folder}

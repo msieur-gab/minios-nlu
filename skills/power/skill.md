@@ -8,6 +8,9 @@ train_only: power
 
 Shut down, restart or sleep. Always asks for a yes first: these can't be undone from the agent.
 
+## Slots
+- power_action: list action, required, guess, ask: ask
+
 ## Examples
 - {please |}[{power}](power_action) {the |}{computer|pi|device|system|board|machine}{ now| please|}
 - [{power}](power_action){ now| please|}
@@ -30,9 +33,9 @@ Shut down, restart or sleep. Always asks for a yes first: these can't be undone 
 - suspend
 
 ## Values: action
-- shutdown: shut down, shutting down, power off, power down, turn off, switch off, halt, off → sudo systemctl poweroff
-- reboot: restart → sudo systemctl reboot
-- sleep: suspend, sleep mode → sudo systemctl suspend
+- shutdown: shut down, shutting down, power off, power down, turn off, switch off, halt, off, down, dwn, pwr, kill power, drop power, unplug → sudo systemctl poweroff
+- reboot: restart, rebot, restrat, restart it, power cycle, hard reset → sudo systemctl reboot
+- sleep: suspend, sleep mode, slepp, standby, nap, bed, rest, goodnight → sudo systemctl suspend
 
 ## Replies
 - ask: Shut down, restart or sleep?

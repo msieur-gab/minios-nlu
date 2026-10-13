@@ -10,6 +10,8 @@ const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./service
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
 // skills that do something (conversational ones are marked "kind: chat")
 const ACTIONABLE = new Set(Object.keys(SKILLS).filter(k => SKILLS[k].params.kind !== "chat"));
+// the skills the dialogue relies on, by the role their file declares: yes, no, fallback
+const ROLE = Object.fromEntries(Object.entries(SKILLS).filter(([, s]) => s.params.role).map(([k, s]) => [s.params.role, k]));
 
 // the dialogue's own replies; every skill brings its own as "<skill>.<name>"
 const RESPONSES = {
@@ -33,11 +35,21 @@ const NO_RE = /^(n|no|nope|nah|nvm|cancel|stop|don'?t|never ?mind|abort|not now)
 const stripVerb = t => t.replace(/^(please\s+)?((can|could|would) you\s+)?/i, "")
   .replace(/^(open|launch|start|run|bring up|fire up|show( me)?|give me|get me|pull up|display|view)\s+(up\s+)?/i, "")
   .replace(/\s+(please|for me)\s*\??$/i, "");
-// a word from a skill's value list: "the Terminal app" → the "terminal" entry
-const findValue = (list, raw) => {
-  const v = cleanValue(raw).toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
-  return (list || []).find(x => x.words.includes(v)) || null;
+// a word from a skill's value list: "the Terminal app" → the "terminal" entry (the slot's ignore: words dropped)
+const words = t => " " + t.toLowerCase().replace(/[^a-z0-9%]+/g, " ").trim() + " ";
+const findValue = (list, raw, ignore = []) => {
+  let v = words(cleanValue(raw)).replace(/^ (the|my|a|an) /, " ");
+  for (const w of ignore) v = v.replace(new RegExp(" " + w + " $"), " ");
+  return (list || []).find(x => x.words.some(w => words(w) === v)) || null;
 };
+// a value named anywhere in a sentence, longest words first ("too quiet" before "quiet")
+const guessValue = (list, text) => {
+  const t = words(text);
+  const all = (list || []).flatMap(x => x.words.map(w => [words(w), x])).sort((a, b) => b[0].length - a[0].length);
+  return (all.find(([w]) => t.includes(w)) || [])[1] || null;
+};
+// a list slot's ignore: words, for matching against another skill's list
+const ignoreFor = (skill, list) => Object.values((SKILLS[skill] && SKILLS[skill].slots) || {}).filter(s => s.list === list).flatMap(s => s.ignore);
 // what a skill does, from its help line: "check the weather (“weather tomorrow”)" → "check the weather"
 const doing = sk => (sk.params.help || "do that").replace(/\s*\(.*$/, "").trim();
 const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
@@ -141,12 +153,12 @@ class Agent {
     const r = this.nlu.parse(text);
     trace.push({ type: "nlu", r });
     const p = this.pending, t = text.trim();
-    const no = NO_RE.test(t) || (r.intent === "deny" && r.confidence >= 0.5);
+    const no = NO_RE.test(t) || (r.intent === ROLE.no && r.confidence >= 0.5);
     const drop = why => { this.dropQueue = true; this.pending = null; trace.push({ type: "state", text: why }); };
 
     if (p && p.type === "confirm") {
       this.pending = null;
-      const yes = YES_RE.test(t) || (r.intent === "affirm" && r.confidence >= 0.5);
+      const yes = YES_RE.test(t) || (r.intent === ROLE.yes && r.confidence >= 0.5);
       if (yes && !no) {
         trace.push({ type: "state", text: "confirmed " + p.what });
         if (p.sentence) { this.lastText = p.sentence; return this.run(p.intent, p.slots, trace); }
@@ -167,18 +179,15 @@ class Agent {
         trace.push({ type: "state", text: "same skill with " + p.need + ", merged into the question" });
         return this.run(p.intent, { ...p.slots, ...r.slots }, trace);
       }
-      if (r.intent === "out_of_scope" && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
+      if (r.intent === ROLE.fallback && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
       else if (ACTIONABLE.has(r.intent) && r.confidence >= 0.8 && Object.keys(r.slots).length) drop("new command, dropped the question");
       else return this.answer(p, r, text, trace);
     }
 
-    if (r.confidence < THRESHOLD) {
-      trace.push({ type: "abstain", text: "confidence " + r.confidence.toFixed(2) + " < " + THRESHOLD + ", abstaining" });
-      return { trace, reply: fill(has("out_of_scope.say") ? "out_of_scope.say" : "fallback"), unknown: true };
-    }
-    if (r.intent === "out_of_scope") {
-      trace.push({ type: "abstain", text: "out of scope, no action" });
-      return { trace, reply: fill(has("out_of_scope.say") ? "out_of_scope.say" : "fallback"), unknown: true };
+    const low = r.confidence < THRESHOLD;
+    if (low || r.intent === ROLE.fallback) {
+      trace.push({ type: "abstain", text: low ? "confidence " + r.confidence.toFixed(2) + " < " + THRESHOLD + ", abstaining" : "out of scope, no action" });
+      return { trace, reply: fill(has(ROLE.fallback + ".say") ? ROLE.fallback + ".say" : "fallback"), unknown: true };
     }
     if (!SKILLS[r.intent]) { // taught through the inbox: recognised, but no skill folder does it yet
       const got = Object.entries(r.slots).map(([k, v]) => k + " “" + cleanValue(v) + "”").join(", ");
@@ -221,13 +230,14 @@ class Agent {
   // ---------- running a skill ----------
   run(intent, slots, trace) {
     const sk = SKILLS[intent];
+    this.raw = slots; // what the model heard, before the slots are filled
     if ((sk.params.uses || "").includes("network") && !online()) {
       trace.push({ type: "abstain", text: "offline, " + intent + " uses the network" });
       return { trace, reply: fill("network", { what: doing(sk) }) };
     }
     if (sk.slots) { // declared slots: fill them, ask for what's missing, before the skill runs
       const got = this.fillSlots(sk, slots, trace);
-      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace);
+      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace, got.ask[2]);
       slots = got.values;
     }
     if (sk.code || sk.params.script) return this.runScript(intent, sk, slots, trace);
@@ -244,47 +254,41 @@ class Agent {
   // doesn't fit its type is asked for again (with the slot's invalid: reply if it has one).
   fillSlots(sk, slots, trace) {
     const text = this.lastText, values = { ...slots };
+    let ents = null;
+    const parsed = () => (ents = ents || ENT.parse(text, { now: this.now() }));
     for (const [name, slot] of Object.entries(sk.slots)) {
-      const raw = slots[name] != null && typeof slots[name] === "string" ? cleanValue(slots[name]) : slots[name];
+      if (slots[name] && typeof slots[name] === "object") continue; // filled on an earlier turn
+      const raw = slots[name] ? cleanValue(slots[name]) : null;
+      const list = sk.values[slot.list];
       let v = null;
-      if (slot.type === "text") v = raw || null;
-      else if (slot.type === "place") v = raw ? SV.places.placeIn(text, raw) : null;
+      if (slot.type === "text") v = raw;
+      else if (slot.type === "place") v = raw && SV.places.placeIn(text, raw);
+      else if (slot.type === "list") v = raw ? findValue(list, raw, slot.ignore) : slot.guess ? guessValue(list, text) : null;
+      else if (slot.type === "duration") v = parsed().find(x => x.type === "duration") || null;
       else if (slot.type === "datetime") {
-        const ents = ENT.parse(text, { now: this.now() }).filter(x => x.type !== "duration");
-        v = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range") || null;
-        if (v) trace.push({ type: "entity", e: v });
+        const e = parsed().filter(x => x.type !== "duration");
+        v = e.find(x => x.type === "datetime" || x.type === "recurrence") || e.find(x => x.type === "date" || x.type === "range") || null;
       }
-      if (v == null && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
-      if (v == null && slot.required) {
+      if (v && (slot.type === "datetime" || slot.type === "duration")) trace.push({ type: "entity", e: v });
+      if (v && slot.type === "list" && !raw) trace.push({ type: "state", text: name + " found in the sentence ← " + v.key });
+      if (!v && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
+      if (!v && slot.required) {
         const wrong = raw && slot.invalid;
-        trace.push({ type: "state", text: wrong ? name + " “" + raw + "” isn't a " + slot.type : "missing " + name });
-        return { ask: [name, wrong ? slot.invalid : slot.ask] };
+        trace.push({ type: wrong ? "abstain" : "state", text: wrong ? name + " “" + raw + "” isn't a known " + (slot.list || slot.type) : "missing " + name });
+        return { ask: [name, wrong ? slot.invalid : slot.ask, { value: raw, choices: orList((list || []).map(x => x.key)) }] };
       }
-      values[name] = v;
+      values[name] = v || null;
     }
     return { values };
   }
 
-  // action: run — a command from the skill's front matter, filled with a value from its list
+  // action: run — the command from the front matter; a {slot} from a list becomes that value's
+  // command, so a sentence can't inject one
   runCommand(intent, sk, slots, trace) {
-    const need = sk.params.needs, list = sk.values[need] || [];
-    const choices = orList(list.map(v => v.key));
-    let raw = slots[need];
-    if (!raw) {
-      const guess = stripVerb(this.lastText);
-      if (!findValue(list, guess)) return this.ask(intent, slots, need, intent + ".ask_" + need, trace, { choices });
-      trace.push({ type: "state", text: need + " filled from the skill's list ← “" + cleanValue(guess) + "”" });
-      raw = guess;
-    }
-    const v = findValue(list, raw);
-    if (!v) {
-      trace.push({ type: "abstain", text: "no " + need + " matches “" + cleanValue(raw) + "” in " + sk.file });
-      return { trace, reply: fill(intent + ".unknown", { value: cleanValue(raw), choices }) };
-    }
-    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (k === need ? v.out : cleanValue(slots[k] || ""))) });
-    return { trace, reply: fill(intent + ".done", { [need]: v.key }) };
+    const say = v => (v && typeof v === "object" ? v.key : v);
+    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (slots[k] && slots[k].out) || cleanValue(String(slots[k] || ""))) });
+    return { trace, reply: fill(intent + ".done", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, say(v)]))) };
   }
-
   // the toolbox a skill script receives
   makeCtx(intent, sk, slots, trace) {
     const agent = this, now = this.now(), text = this.lastText;
@@ -304,14 +308,14 @@ class Agent {
       exec: cmd => ctx.live.push({ type: "exec", text: cmd }),
       // shared services
       entities: () => ENT.parse(text, { now }),
-      find: (list, raw) => findValue(sk.values[list], raw),
-      findIn: (skill, list, raw) => findValue(SKILLS[skill] && SKILLS[skill].values[list], raw), // another skill's list
+      raw: Object.fromEntries(Object.entries(agent.raw || {}).filter(([, v]) => typeof v === "string").map(([k, v]) => [k, cleanValue(v)])),
+      find: (list, raw) => findValue(sk.values[list], raw, ignoreFor(intent, list)),
+      findIn: (skill, list, raw) => findValue(SKILLS[skill] && SKILLS[skill].values[list], raw, ignoreFor(skill, list)), // another skill's list
       lookup: (list, key) => ((sk.values[list] || []).find(v => v.key === String(key)) || {}).out,
       guess: () => stripVerb(text),
       state: { get: (k, d) => (k in agent.levels ? agent.levels[k] : d), set: (k, v) => { agent.levels[k] = v; } },
       me: { get: () => agent.mem(), set: m => agent.setMem(m) },
       geocode: name => agent.geocode(name),
-      place: () => SV.places.placeIn(text, ctx.slots.place),  // the place named, whole ("hong kong")
       request: vars => agent.request(sk, vars, ctx),
       arm: (at, message) => agent.arm(at, message),
       skills: () => Object.values(SKILLS).filter(s => s.params.help).map(s => s.params.help),

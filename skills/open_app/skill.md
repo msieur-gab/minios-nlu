@@ -3,13 +3,15 @@ skill: open_app
 help: open apps (“open the terminal”)
 action: run
 command: "{app} &"
-needs: app
 samples: 16
 ---
 # Open an app
 
 Starts a desktop application on the device. Add an app by adding a line under Values:
 the name, the other words people use for it, then the command after the arrow.
+
+## Slots
+- app: list app, required, guess, ask: ask_app, invalid: unknown, ignore: app application program window
 
 ## Examples
 - {open|launch|start|run} {the |my |}[{app}](app)

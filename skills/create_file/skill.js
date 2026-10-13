@@ -3,7 +3,6 @@ module.exports = {
   run(ctx) {
     let { name } = ctx.slots;
     const { file_type, location } = ctx.slots;
-    if (!name) return ctx.ask("name", "ask_name");
     let note = "";
     if (!/\.[A-Za-z0-9]{1,5}$/.test(name)) {
       const ext = file_type && ctx.find("ext", file_type);

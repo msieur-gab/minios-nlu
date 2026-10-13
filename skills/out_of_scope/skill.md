@@ -2,6 +2,7 @@
 skill: out_of_scope
 kind: chat
 action: say
+role: fallback         # the dialogue's “I can't do that”
 ---
 # Out of scope
 

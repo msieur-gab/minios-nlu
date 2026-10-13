@@ -9,6 +9,9 @@ train_only: day
 Today's date, the date of "next friday" or "the 14th", and how many days until a date. Dates are
 read by the date parser (web/entities.js); holidays are not known.
 
+## Slots
+- day: datetime
+
 ## Examples
 - what's the date{ today|}{?|}
 - what is {today's|the} date{?|}

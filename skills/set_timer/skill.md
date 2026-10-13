@@ -10,6 +10,9 @@ Counts down a duration and rings. The duration is read by the date and time pars
 (web/entities.js), not by the model, so it is not marked as a slot here. If the sentence
 holds a time instead ("timer for 3pm"), the timer becomes a reminder.
 
+## Slots
+- duration: duration
+
 ## Examples
 - {set|start|make} a timer for {dur}{ please|}
 - {set|start} a {dur} timer{ please|}

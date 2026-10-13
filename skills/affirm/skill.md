@@ -2,6 +2,7 @@
 skill: affirm
 kind: chat
 action: say
+role: yes              # how the dialogue recognises a yes
 ---
 # Yes
 

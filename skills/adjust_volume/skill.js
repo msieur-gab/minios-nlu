@@ -1,21 +1,5 @@
 // A level from 0 to 100: up and down by 10, set to a value, mute and unmute.
 // Shared by Volume and Brightness: the commands and the starting level are in each skill.md.
-const PHRASES = [ // what people say when they mean down or up
-  [/too (loud|bright|much (noise|light))|deafening|blinding|glare|squint|ears|eyes (are )?hurt|headache|head hurts/i, "down"],
-  [/(can'?t|cannot|barely) (hear|see)|too (quiet|low|dark|dim)|barely (audible|visible)|blast/i, "up"],
-];
-function direction(ctx) {
-  const v = ctx.slots.direction && ctx.find("direction", ctx.slots.direction);
-  if (v) return v.out;
-  if (ctx.slots.direction) return null;
-  for (const [re, dir] of PHRASES) if (re.test(ctx.text)) return dir;
-  const words = " " + ctx.text.toLowerCase().replace(/[^a-z\s]/g, " ") + " ";
-  for (const dir of ["unmute", "mute", "up", "down"]) {
-    const entry = ctx.values.direction.find(x => x.out === dir);
-    if (entry.words.some(w => words.includes(" " + w + " "))) return dir;
-  }
-  return null;
-}
 function level(raw, text, fromSlot) {
   const v = (raw || "").toLowerCase();
   if (/\b(max|maximum|full)\b/.test(v)) return 100;
@@ -27,8 +11,9 @@ function level(raw, text, fromSlot) {
 module.exports = {
   run(ctx) {
     const p = ctx.params, key = p.state;
-    let dir = direction(ctx);
-    const n = ctx.slots.level ? level(ctx.slots.level, "", true) : level(null, ctx.slots.direction || ctx.text, false);
+    // direction: a list slot, also found from phrases like "it's too loud" (skill.md)
+    let dir = ctx.slots.direction ? ctx.slots.direction.out : null;
+    const n = ctx.slots.level ? level(ctx.slots.level, "", true) : level(null, ctx.raw.direction || ctx.text, false);
     if (dir === null && n === null) return ctx.ask("direction", "ask");
     if (!p.mute && (dir === "mute" || dir === "unmute")) dir = dir === "mute" ? "down" : "up"; // brightness: no mute
     const before = ctx.state.get(key, +p.start);

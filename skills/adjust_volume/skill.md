@@ -17,6 +17,10 @@ Up and down by 10, to a level ("40%", "half", "max"), mute and unmute. The comma
 front matter; skill.js reads the direction (also from phrases like "it's too loud") and keeps
 track of the level. Brightness uses the same script with its own commands.
 
+## Slots
+- direction: list direction, guess
+- level: text
+
 ## Examples
 - {turn|crank|bump|put} {the |}{volume|sound|music} [up](direction){ please| a bit| a little|}
 - {turn|put} {the |}{volume|sound|music} [down](direction){ please| a bit| a little|}
@@ -64,8 +68,8 @@ track of the level. Brightness uses the same script with its own commands.
 - 5%
 
 ## Values: direction
-- up: increase, increased, incrase, raise, louder, higher, more, brighter, brighten, boost, turn up, crank → up
-- down: dwn, decrease, decrse, lower, quieter, quietr, softer, dimmer, dimmr, dim, dimmed, dimming, darker, less, reduce, hush → down
+- up: increase, increased, incrase, raise, louder, higher, more, brighter, brighten, boost, turn up, crank, too quiet, too low, too dark, too dim, can't hear, cannot hear, barely hear, can't see, cannot see, barely see, barely audible, barely visible, blast → up
+- down: dwn, decrease, decrse, lower, quieter, quietr, softer, dimmer, dimmr, dim, dimmed, dimming, darker, less, reduce, hush, too loud, too bright, too much noise, too much light, deafening, blinding, glare, squint, ears hurt, eyes hurt, headache, head hurts → down
 - mute: muted, muting, mut, silence, quiet → mute
 - unmute: unmuted, unmut → unmute
 

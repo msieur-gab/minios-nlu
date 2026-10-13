@@ -9,6 +9,9 @@ samples: 8
 Local time comes from the device. For a place ("what time is it in Tokyo?") the agent asks
 Open-Meteo's place search for that place's time zone, so it needs a connection.
 
+## Slots
+- place: place
+
 ## Examples
 - what time is it{ now| right now| at the moment|}{?|}
 - what's the time{ now| please|}{?|}

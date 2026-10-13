@@ -36,7 +36,28 @@
      "Brightness already at {n}%."
     ]
    },
-   "slots": null,
+   "slots": {
+    "direction": {
+     "type": "list",
+     "list": "direction",
+     "required": false,
+     "guess": true,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "level": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 96,
    "values": {
     "direction": [
@@ -55,7 +76,20 @@
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "say": [
        "up",
@@ -70,7 +104,20 @@
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "out": "up"
      },
@@ -93,7 +140,19 @@
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "say": [
        "down",
@@ -112,7 +171,19 @@
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "out": "down"
      },
@@ -196,7 +267,28 @@
      "Sound back on, at {n}%."
     ]
    },
-   "slots": null,
+   "slots": {
+    "direction": {
+     "type": "list",
+     "list": "direction",
+     "required": false,
+     "guess": true,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "level": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 117,
    "values": {
     "direction": [
@@ -215,7 +307,20 @@
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "say": [
        "up",
@@ -230,7 +335,20 @@
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "out": "up"
      },
@@ -253,7 +371,19 @@
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "say": [
        "down",
@@ -272,7 +402,19 @@
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "out": "down"
      },
@@ -321,7 +463,8 @@
    "params": {
     "skill": "affirm",
     "kind": "chat",
-    "action": "say"
+    "action": "say",
+    "role": "yes"
    },
    "request": null,
    "answer": {},
@@ -361,7 +504,38 @@
      "OK. What's the file name?"
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_name",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "file_type": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 352,
    "values": {
     "ext": [
@@ -494,7 +668,28 @@
      "Sure. What name do you want for the folder?"
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_name",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 316,
    "values": {}
   },
@@ -506,7 +701,8 @@
    "params": {
     "skill": "deny",
     "kind": "chat",
-    "action": "say"
+    "action": "say",
+    "role": "no"
    },
    "request": null,
    "answer": {},
@@ -599,7 +795,18 @@
      "It's {year}."
     ]
    },
-   "slots": null,
+   "slots": {
+    "day": {
+     "type": "datetime",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 82,
    "values": {}
   },
@@ -635,7 +842,18 @@
      "Looking up {place}…"
     ]
    },
-   "slots": null,
+   "slots": {
+    "place": {
+     "type": "place",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 111,
    "values": {}
   },
@@ -709,17 +927,23 @@
    "slots": {
     "place": {
      "type": "place",
+     "list": null,
      "required": true,
+     "guess": false,
      "ask": "ask_place",
      "invalid": null,
-     "default": "home"
+     "default": "home",
+     "ignore": []
     },
     "day": {
      "type": "datetime",
+     "list": null,
      "required": false,
+     "guess": false,
      "ask": null,
      "invalid": null,
-     "default": null
+     "default": null,
+     "ignore": []
     }
    },
    "sentences": 203,
@@ -1065,7 +1289,6 @@
     "help": "open apps (“open the terminal”)",
     "action": "run",
     "command": "{app} &",
-    "needs": "app",
     "samples": "16"
    },
    "request": null,
@@ -1082,7 +1305,23 @@
      "I don't know an app called “{value}”. I can open the {choices}."
     ]
    },
-   "slots": null,
+   "slots": {
+    "app": {
+     "type": "list",
+     "list": "app",
+     "required": true,
+     "guess": true,
+     "ask": "ask_app",
+     "invalid": "unknown",
+     "default": null,
+     "ignore": [
+      "app",
+      "application",
+      "program",
+      "window"
+     ]
+    }
+   },
    "sentences": 204,
    "values": {
     "app": [
@@ -1241,7 +1480,28 @@
      "Which file or folder should I open?"
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 253,
    "values": {}
   },
@@ -1253,7 +1513,8 @@
    "params": {
     "skill": "out_of_scope",
     "kind": "chat",
-    "action": "say"
+    "action": "say",
+    "role": "fallback"
    },
    "request": null,
    "answer": {},
@@ -1307,7 +1568,18 @@
      "Cancelled. Nothing changes."
     ]
    },
-   "slots": null,
+   "slots": {
+    "power_action": {
+     "type": "list",
+     "list": "action",
+     "required": true,
+     "guess": true,
+     "ask": "ask",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 104,
    "values": {
     "action": [
@@ -1322,7 +1594,13 @@
        "turn off",
        "switch off",
        "halt",
-       "off"
+       "off",
+       "down",
+       "dwn",
+       "pwr",
+       "kill power",
+       "drop power",
+       "unplug"
       ],
       "say": [
        "shutdown",
@@ -1333,7 +1611,13 @@
        "turn off",
        "switch off",
        "halt",
-       "off"
+       "off",
+       "down",
+       "dwn",
+       "pwr",
+       "kill power",
+       "drop power",
+       "unplug"
       ],
       "out": "sudo systemctl poweroff"
      },
@@ -1341,11 +1625,21 @@
       "key": "reboot",
       "words": [
        "reboot",
-       "restart"
+       "restart",
+       "rebot",
+       "restrat",
+       "restart it",
+       "power cycle",
+       "hard reset"
       ],
       "say": [
        "reboot",
-       "restart"
+       "restart",
+       "rebot",
+       "restrat",
+       "restart it",
+       "power cycle",
+       "hard reset"
       ],
       "out": "sudo systemctl reboot"
      },
@@ -1354,12 +1648,24 @@
       "words": [
        "sleep",
        "suspend",
-       "sleep mode"
+       "sleep mode",
+       "slepp",
+       "standby",
+       "nap",
+       "bed",
+       "rest",
+       "goodnight"
       ],
       "say": [
        "sleep",
        "suspend",
-       "sleep mode"
+       "sleep mode",
+       "slepp",
+       "standby",
+       "nap",
+       "bed",
+       "rest",
+       "goodnight"
       ],
       "out": "sudo systemctl suspend"
      }
@@ -1435,7 +1741,28 @@
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "place": {
+     "type": "place",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 181,
    "values": {}
   },
@@ -1488,17 +1815,23 @@
    "slots": {
     "task": {
      "type": "text",
+     "list": null,
      "required": false,
+     "guess": false,
      "ask": null,
      "invalid": null,
-     "default": null
+     "default": null,
+     "ignore": []
     },
     "when": {
      "type": "datetime",
+     "list": null,
      "required": true,
+     "guess": false,
      "ask": "ask_when",
      "invalid": "when_invalid",
-     "default": null
+     "default": null,
+     "ignore": []
     }
    },
    "sentences": 215,
@@ -1533,7 +1866,18 @@
      "That's a time rather than a duration, so here's a reminder instead:"
     ]
    },
-   "slots": null,
+   "slots": {
+    "duration": {
+     "type": "duration",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 123,
    "values": {}
   },
@@ -1558,7 +1902,18 @@
      "System overview (simulated values):"
     ]
    },
-   "slots": null,
+   "slots": {
+    "metric": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 216,
    "values": {
     "check": [

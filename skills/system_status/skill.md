@@ -9,6 +9,9 @@ train_only: metric
 Disk, CPU, temperature, memory, network and uptime. Each metric's command is after the arrow.
 In the PWA the values are examples (the "sample" list); on the device the command's output is used.
 
+## Slots
+- metric: text
+
 ## Examples
 - how much [{metric}](metric) {is left|do I have|is there|is free|is available}{?|}
 - {show|show me|check|what's|what is|tell me} {the |my |}[{metric}](metric){?|}

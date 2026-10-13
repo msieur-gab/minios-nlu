@@ -2,8 +2,7 @@
 module.exports = {
   run(ctx) {
     const { fmt } = ctx, now = ctx.now, text = ctx.text;
-    const e = ctx.entities().find(x => x.type === "date" || x.type === "datetime" || x.type === "range");
-    if (e) ctx.used(e);
+    const e = ctx.slots.day && ctx.slots.day.type !== "recurrence" ? ctx.slots.day : null;
     if (!e && /what (month|year)/i.test(text))
       return /year/i.test(text) ? ctx.say("year", { year: now.getFullYear() }) : ctx.say("month", { month: fmt.MONTHS[now.getMonth()] + " " + now.getFullYear() });
     const unknown = /\b(?:is|until|till|before)\s+(?!it\b|today\b|we\b)([a-z][a-z' -]*?)\s*\??$/i.exec(text);

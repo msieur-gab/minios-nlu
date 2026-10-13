@@ -10,6 +10,10 @@ Saves your name and the place you live, on this device only (browser storage). T
 looked up once on Open-Meteo's place search to get its coordinates and time zone, which the
 weather and time skills then use.
 
+## Slots
+- name: text
+- place: place
+
 ## Examples
 - my name is [{first}](name)
 - {call me|you can call me|just call me} [{first}](name)

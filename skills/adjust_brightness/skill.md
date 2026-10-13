@@ -15,6 +15,10 @@ down: "brightnessctl set 10%-"
 Same script as Volume (front matter "script: adjust_volume"), with brightness commands and no
 mute: "mute" means darker here.
 
+## Slots
+- direction: list direction, guess
+- level: text
+
 ## Examples
 - {turn|put} {the |}{brightness|screen brightness} [up](direction){ please| a bit|}
 - {turn|put} {the |}{brightness|screen brightness} [down](direction){ please| a bit|}
@@ -58,8 +62,8 @@ mute: "mute" means darker here.
 - 5%
 
 ## Values: direction
-- up: increase, increased, incrase, raise, louder, higher, more, brighter, brighten, boost, turn up, crank → up
-- down: dwn, decrease, decrse, lower, quieter, quietr, softer, dimmer, dimmr, dim, dimmed, dimming, darker, less, reduce, hush → down
+- up: increase, increased, incrase, raise, louder, higher, more, brighter, brighten, boost, turn up, crank, too quiet, too low, too dark, too dim, can't hear, cannot hear, barely hear, can't see, cannot see, barely see, barely audible, barely visible, blast → up
+- down: dwn, decrease, decrse, lower, quieter, quietr, softer, dimmer, dimmr, dim, dimmed, dimming, darker, less, reduce, hush, too loud, too bright, too much noise, too much light, deafening, blinding, glare, squint, ears hurt, eyes hurt, headache, head hurts → down
 - mute: muted, muting, mut, silence, quiet → mute
 - unmute: unmuted, unmut → unmute
 

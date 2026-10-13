@@ -2,6 +2,7 @@
 skill: deny
 kind: chat
 action: say
+role: no               # how the dialogue recognises a no
 ---
 # No
 

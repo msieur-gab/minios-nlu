@@ -51,7 +51,7 @@ GET https://api.open-meteo.com/v1/forecast
 - done: {place}: {sky}, {temp}°C.
 ```
 
-## Slots, confidence, network (pilot: set_reminder, get_weather)
+## Slots, confidence, network
 
 ```markdown
 ---
@@ -73,12 +73,22 @@ script runs, so `skill.js` gets `ctx.slots.when` ready to use and never asks by 
 | `text` | the words the model marked |
 | `place` | the place named, whole (“hong kong”) |
 | `datetime` | a date, time, range or repeat from the date parser |
+| `duration` | a duration from the date parser (“10 minutes”, “1h30”) |
+| `list app` | an entry of `## Values: app`; the script gets the whole entry (`.key`, `.out`) |
 
 | option | |
 |---|---|
 | `required` | if it's missing, ask with the `ask:` reply; the answer comes back to this skill |
 | `invalid: reply` | asked instead when an answer doesn't fit the type (“banana” for a time) |
 | `default: home` | the place the person told the agent they live in |
+| `guess` | list slots: when the model marked nothing, look for the list's words in the whole sentence (“it's too loud” → down) |
+| `ignore: app window` | list slots: words dropped from the end before matching (“the terminal app”) |
+
+A list slot's `ask:` and `invalid:` replies can use `{choices}` (the list's names) and `{value}`
+(what was said). The words the model marked, before filling, are in `ctx.raw`.
+
+A script still asks by itself only when the rule isn't one slot: a file *or* a folder
+(open_file), a level *or* a direction (volume), a time that should become a reminder (timer).
 
 **confidence.** How sure the model must be to act straight away. Between the global
 threshold and this, the agent asks first, with the skill's `unsure` reply or a generic
@@ -90,7 +100,8 @@ uses it to give the local time anyway).
 
 **Checked when compiling.** `node skills.js` stops with the file and the reason when a slot
 has an unknown type, a required slot has no `ask:` reply, a reply named in a slot doesn't
-exist, or the examples mark a `[...](slot)` the Slots section doesn't declare.
+exist, the examples mark a `[...](slot)` the Slots section doesn't declare, a `command:` uses
+an undeclared `{slot}`, or a list slot names a list that doesn't exist.
 
 **Examples.** Each line is a template.
 - `{a|b|}` picks an alternative; an empty one makes it optional.
@@ -119,20 +130,23 @@ A skill with a Request and no script simply replies `checking`, then `done` (or
 skill: open_app
 action: run
 command: "{app} &"
-needs: app
 ---
+## Slots
+- app: list app, required, guess, ask: ask_app, invalid: unknown, ignore: app application program window
+
 ## Values: app
 - terminal: console, shell → x-terminal-emulator
 ```
 
-`run` fills the command with the output of the matched value and hands it to the
-device's executor (simulated in the PWA). Only values from the list can be used, so a
-sentence can't inject a command.
+`run` fills each `{slot}` in the command with its value's output and hands it to the
+device's executor (simulated in the PWA), then answers with the `done` reply. Only values
+from the list can be used, so a sentence can't inject a command.
 
 ## Other front matter
 
 | key | |
 |---|---|
+| `role: yes` / `no` / `fallback` | the skills the dialogue relies on: yes and no to its questions, and “I can't do that” |
 | `kind: chat` | conversational (greet, thanks, yes, no…): never split out of a sentence as a command |
 | `action: say` | no script: answer with the `say` reply |
 | `script: adjust_volume` | use another skill's skill.js (Brightness reuses Volume's, with its own commands) |
@@ -165,7 +179,7 @@ module.exports = {
 | `later(reply, values, async work)` | answer now, update the reply when the work is done |
 | `handover(skill, slots, prefix)` | let another skill answer ("timer for 3pm" → set_reminder) |
 | **reading** | |
-| `slots`, `text`, `now`, `params` | what was understood, the sentence, the time, the front matter |
+| `slots`, `raw`, `text`, `now`, `params` | the filled slots, the words the model marked, the sentence, the time, the front matter |
 | `entities()` | dates, times and durations from the date parser |
 | `find(list, words)`, `findIn(skill, list, words)`, `lookup(list, key)` | match words against a value list; a value's output |
 | **services** | |

@@ -10,6 +10,10 @@ Makes a folder, in your home folder unless you say where. "documents", "download
 standard folders map to their real names; "here" means the current folder. The name is quoted
 before it reaches the command line.
 
+## Slots
+- name: text, required, ask: ask_name
+- location: text
+
 ## Examples
 - {please |}{create|make|add|set up|build} {a |a new |}{folder|directory|dir} {called|named} [{folder}](name)
 - {please |}{create|make|add} {a |a new |}{folder|directory} {called|named} [{folder}](name) {in|inside|under|within} {|||the |my }[{loc}](location){||| folder}

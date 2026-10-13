@@ -9,6 +9,11 @@ train_only: fname, fext, type, loc
 Makes an empty file. A type ("a python file") becomes the extension; a name that already has one
 ("notes.md") keeps it; with neither, it's a plain text file.
 
+## Slots
+- name: text, required, ask: ask_name
+- file_type: text
+- location: text
+
 ## Examples
 - {please |}{create|make|add|start} {a |a new |}file {called|named} [{fname}](name)
 - {please |}{create|make|add|start|write} {a |}{new |}[{type}](file_type) file {called|named} [{fname}](name)

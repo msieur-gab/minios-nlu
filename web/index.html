@@ -1050,7 +1050,28 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Brightness already at {n}%."
     ]
    },
-   "slots": null,
+   "slots": {
+    "direction": {
+     "type": "list",
+     "list": "direction",
+     "required": false,
+     "guess": true,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "level": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 96,
    "values": {
     "direction": [
@@ -1069,7 +1090,20 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "say": [
        "up",
@@ -1084,7 +1118,20 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "out": "up"
      },
@@ -1107,7 +1154,19 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "say": [
        "down",
@@ -1126,7 +1185,19 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "out": "down"
      },
@@ -1210,7 +1281,28 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Sound back on, at {n}%."
     ]
    },
-   "slots": null,
+   "slots": {
+    "direction": {
+     "type": "list",
+     "list": "direction",
+     "required": false,
+     "guess": true,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "level": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 117,
    "values": {
     "direction": [
@@ -1229,7 +1321,20 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "say": [
        "up",
@@ -1244,7 +1349,20 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "brighten",
        "boost",
        "turn up",
-       "crank"
+       "crank",
+       "too quiet",
+       "too low",
+       "too dark",
+       "too dim",
+       "can't hear",
+       "cannot hear",
+       "barely hear",
+       "can't see",
+       "cannot see",
+       "barely see",
+       "barely audible",
+       "barely visible",
+       "blast"
       ],
       "out": "up"
      },
@@ -1267,7 +1385,19 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "say": [
        "down",
@@ -1286,7 +1416,19 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "darker",
        "less",
        "reduce",
-       "hush"
+       "hush",
+       "too loud",
+       "too bright",
+       "too much noise",
+       "too much light",
+       "deafening",
+       "blinding",
+       "glare",
+       "squint",
+       "ears hurt",
+       "eyes hurt",
+       "headache",
+       "head hurts"
       ],
       "out": "down"
      },
@@ -1335,7 +1477,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
    "params": {
     "skill": "affirm",
     "kind": "chat",
-    "action": "say"
+    "action": "say",
+    "role": "yes"
    },
    "request": null,
    "answer": {},
@@ -1375,7 +1518,38 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "OK. What's the file name?"
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_name",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "file_type": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 352,
    "values": {
     "ext": [
@@ -1508,7 +1682,28 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Sure. What name do you want for the folder?"
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_name",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 316,
    "values": {}
   },
@@ -1520,7 +1715,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
    "params": {
     "skill": "deny",
     "kind": "chat",
-    "action": "say"
+    "action": "say",
+    "role": "no"
    },
    "request": null,
    "answer": {},
@@ -1613,7 +1809,18 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "It's {year}."
     ]
    },
-   "slots": null,
+   "slots": {
+    "day": {
+     "type": "datetime",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 82,
    "values": {}
   },
@@ -1649,7 +1856,18 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Looking up {place}…"
     ]
    },
-   "slots": null,
+   "slots": {
+    "place": {
+     "type": "place",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 111,
    "values": {}
   },
@@ -1723,17 +1941,23 @@ if (typeof module !== "undefined") module.exports = NLUServices;
    "slots": {
     "place": {
      "type": "place",
+     "list": null,
      "required": true,
+     "guess": false,
      "ask": "ask_place",
      "invalid": null,
-     "default": "home"
+     "default": "home",
+     "ignore": []
     },
     "day": {
      "type": "datetime",
+     "list": null,
      "required": false,
+     "guess": false,
      "ask": null,
      "invalid": null,
-     "default": null
+     "default": null,
+     "ignore": []
     }
    },
    "sentences": 203,
@@ -2079,7 +2303,6 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "help": "open apps (“open the terminal”)",
     "action": "run",
     "command": "{app} &",
-    "needs": "app",
     "samples": "16"
    },
    "request": null,
@@ -2096,7 +2319,23 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "I don't know an app called “{value}”. I can open the {choices}."
     ]
    },
-   "slots": null,
+   "slots": {
+    "app": {
+     "type": "list",
+     "list": "app",
+     "required": true,
+     "guess": true,
+     "ask": "ask_app",
+     "invalid": "unknown",
+     "default": null,
+     "ignore": [
+      "app",
+      "application",
+      "program",
+      "window"
+     ]
+    }
+   },
    "sentences": 204,
    "values": {
     "app": [
@@ -2255,7 +2494,28 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Which file or folder should I open?"
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "location": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 253,
    "values": {}
   },
@@ -2267,7 +2527,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
    "params": {
     "skill": "out_of_scope",
     "kind": "chat",
-    "action": "say"
+    "action": "say",
+    "role": "fallback"
    },
    "request": null,
    "answer": {},
@@ -2321,7 +2582,18 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "Cancelled. Nothing changes."
     ]
    },
-   "slots": null,
+   "slots": {
+    "power_action": {
+     "type": "list",
+     "list": "action",
+     "required": true,
+     "guess": true,
+     "ask": "ask",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 104,
    "values": {
     "action": [
@@ -2336,7 +2608,13 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "turn off",
        "switch off",
        "halt",
-       "off"
+       "off",
+       "down",
+       "dwn",
+       "pwr",
+       "kill power",
+       "drop power",
+       "unplug"
       ],
       "say": [
        "shutdown",
@@ -2347,7 +2625,13 @@ if (typeof module !== "undefined") module.exports = NLUServices;
        "turn off",
        "switch off",
        "halt",
-       "off"
+       "off",
+       "down",
+       "dwn",
+       "pwr",
+       "kill power",
+       "drop power",
+       "unplug"
       ],
       "out": "sudo systemctl poweroff"
      },
@@ -2355,11 +2639,21 @@ if (typeof module !== "undefined") module.exports = NLUServices;
       "key": "reboot",
       "words": [
        "reboot",
-       "restart"
+       "restart",
+       "rebot",
+       "restrat",
+       "restart it",
+       "power cycle",
+       "hard reset"
       ],
       "say": [
        "reboot",
-       "restart"
+       "restart",
+       "rebot",
+       "restrat",
+       "restart it",
+       "power cycle",
+       "hard reset"
       ],
       "out": "sudo systemctl reboot"
      },
@@ -2368,12 +2662,24 @@ if (typeof module !== "undefined") module.exports = NLUServices;
       "words": [
        "sleep",
        "suspend",
-       "sleep mode"
+       "sleep mode",
+       "slepp",
+       "standby",
+       "nap",
+       "bed",
+       "rest",
+       "goodnight"
       ],
       "say": [
        "sleep",
        "suspend",
-       "sleep mode"
+       "sleep mode",
+       "slepp",
+       "standby",
+       "nap",
+       "bed",
+       "rest",
+       "goodnight"
       ],
       "out": "sudo systemctl suspend"
      }
@@ -2449,7 +2755,28 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "What should I remember? Your name (“my name is …”) or where you live (“I live in …”)."
     ]
    },
-   "slots": null,
+   "slots": {
+    "name": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "place": {
+     "type": "place",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 181,
    "values": {}
   },
@@ -2502,17 +2829,23 @@ if (typeof module !== "undefined") module.exports = NLUServices;
    "slots": {
     "task": {
      "type": "text",
+     "list": null,
      "required": false,
+     "guess": false,
      "ask": null,
      "invalid": null,
-     "default": null
+     "default": null,
+     "ignore": []
     },
     "when": {
      "type": "datetime",
+     "list": null,
      "required": true,
+     "guess": false,
      "ask": "ask_when",
      "invalid": "when_invalid",
-     "default": null
+     "default": null,
+     "ignore": []
     }
    },
    "sentences": 215,
@@ -2547,7 +2880,18 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "That's a time rather than a duration, so here's a reminder instead:"
     ]
    },
-   "slots": null,
+   "slots": {
+    "duration": {
+     "type": "duration",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 123,
    "values": {}
   },
@@ -2572,7 +2916,18 @@ if (typeof module !== "undefined") module.exports = NLUServices;
      "System overview (simulated values):"
     ]
    },
-   "slots": null,
+   "slots": {
+    "metric": {
+     "type": "text",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
    "sentences": 216,
    "values": {
     "check": [
@@ -2789,22 +3144,6 @@ if (typeof module !== "undefined") module.exports = NLUServices;
 SKILL_CODE["adjust_volume"] = (() => { const module = { exports: {} };
 // A level from 0 to 100: up and down by 10, set to a value, mute and unmute.
 // Shared by Volume and Brightness: the commands and the starting level are in each skill.md.
-const PHRASES = [ // what people say when they mean down or up
-  [/too (loud|bright|much (noise|light))|deafening|blinding|glare|squint|ears|eyes (are )?hurt|headache|head hurts/i, "down"],
-  [/(can'?t|cannot|barely) (hear|see)|too (quiet|low|dark|dim)|barely (audible|visible)|blast/i, "up"],
-];
-function direction(ctx) {
-  const v = ctx.slots.direction && ctx.find("direction", ctx.slots.direction);
-  if (v) return v.out;
-  if (ctx.slots.direction) return null;
-  for (const [re, dir] of PHRASES) if (re.test(ctx.text)) return dir;
-  const words = " " + ctx.text.toLowerCase().replace(/[^a-z\s]/g, " ") + " ";
-  for (const dir of ["unmute", "mute", "up", "down"]) {
-    const entry = ctx.values.direction.find(x => x.out === dir);
-    if (entry.words.some(w => words.includes(" " + w + " "))) return dir;
-  }
-  return null;
-}
 function level(raw, text, fromSlot) {
   const v = (raw || "").toLowerCase();
   if (/\b(max|maximum|full)\b/.test(v)) return 100;
@@ -2816,8 +3155,9 @@ function level(raw, text, fromSlot) {
 module.exports = {
   run(ctx) {
     const p = ctx.params, key = p.state;
-    let dir = direction(ctx);
-    const n = ctx.slots.level ? level(ctx.slots.level, "", true) : level(null, ctx.slots.direction || ctx.text, false);
+    // direction: a list slot, also found from phrases like "it's too loud" (skill.md)
+    let dir = ctx.slots.direction ? ctx.slots.direction.out : null;
+    const n = ctx.slots.level ? level(ctx.slots.level, "", true) : level(null, ctx.raw.direction || ctx.text, false);
     if (dir === null && n === null) return ctx.ask("direction", "ask");
     if (!p.mute && (dir === "mute" || dir === "unmute")) dir = dir === "mute" ? "down" : "up"; // brightness: no mute
     const before = ctx.state.get(key, +p.start);
@@ -2838,7 +3178,6 @@ module.exports = {
   run(ctx) {
     let { name } = ctx.slots;
     const { file_type, location } = ctx.slots;
-    if (!name) return ctx.ask("name", "ask_name");
     let note = "";
     if (!/\.[A-Za-z0-9]{1,5}$/.test(name)) {
       const ext = file_type && ctx.find("ext", file_type);
@@ -2857,7 +3196,6 @@ SKILL_CODE["create_folder"] = (() => { const module = { exports: {} };
 module.exports = {
   run(ctx) {
     const { name, location } = ctx.slots;
-    if (!name) return ctx.ask("name", "ask_name");
     const at = ctx.files.where(location);
     ctx.exec("mkdir -p " + ctx.files.quote(at.path + "/" + name));
     return ctx.say("done", { name: "“" + name + "”", where: at.label });
@@ -2890,8 +3228,7 @@ SKILL_CODE["get_date"] = (() => { const module = { exports: {} };
 module.exports = {
   run(ctx) {
     const { fmt } = ctx, now = ctx.now, text = ctx.text;
-    const e = ctx.entities().find(x => x.type === "date" || x.type === "datetime" || x.type === "range");
-    if (e) ctx.used(e);
+    const e = ctx.slots.day && ctx.slots.day.type !== "recurrence" ? ctx.slots.day : null;
     if (!e && /what (month|year)/i.test(text))
       return /year/i.test(text) ? ctx.say("year", { year: now.getFullYear() }) : ctx.say("month", { month: fmt.MONTHS[now.getMonth()] + " " + now.getFullYear() });
     const unknown = /\b(?:is|until|till|before)\s+(?!it\b|today\b|we\b)([a-z][a-z' -]*?)\s*\??$/i.exec(text);
@@ -2918,7 +3255,7 @@ module.exports = {
     const me = ctx.me.get();
     // a capitalised name after "in" also counts, if the model didn't mark a place
     const m = /\b(?:in|at)\s+([A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)/.exec(ctx.text);
-    const place = ctx.place() || (m && m[1]);
+    const place = ctx.slots.place || (m && m[1]);
     if (!place || (me.place && same(place, me.place.name))) {
       ctx.exec("date +%H:%M");
       return ctx.say("done", { time: ctx.fmt.clock(ctx.now) });
@@ -3017,17 +3354,11 @@ module.exports = {
 
 return module.exports; })();
 SKILL_CODE["power"] = (() => { const module = { exports: {} };
-// Shut down, restart or sleep, after a yes. The commands are in skill.md (## Values: action).
-const GUESS = [ // typos and phrasings the model may not tag
-  [/reboo?t|rebot|rest?r?a?r?t|restrat|re strt|power cycle|hard reset/i, "reboot"],
-  [/sle+p|slepp|suspend|standby|nap|bed\b|rest\b|goodnight/i, "sleep"],
-  [/\b(off|of|down|dwn|dw|halt)\b|pwr|plug|juice|kill power|drop power/i, "shutdown"],
-];
+// Shut down, restart or sleep, after a yes. The action is a list slot (skill.md): the core finds it,
+// also from words like "rebot" or "goodnight", and asks when there's none.
 module.exports = {
   run(ctx) {
-    const named = ctx.slots.power_action && ctx.find("action", ctx.slots.power_action);
-    const act = named ? named.key : ctx.slots.power_action ? null : (GUESS.find(([re]) => re.test(ctx.text)) || [])[1];
-    if (!act) return ctx.ask("power_action", "ask");
+    const act = ctx.slots.power_action.key;
     return ctx.confirm(act, ctx.say("confirm_" + act), c => {
       c.exec(c.lookup("action", act));
       return c.say("done_" + act);
@@ -3159,12 +3490,10 @@ SKILL_CODE["set_timer"] = (() => { const module = { exports: {} };
 // Timer: the duration comes from the date parser. A time instead ("timer for 3pm") becomes a reminder.
 module.exports = {
   run(ctx) {
-    const ents = ctx.entities();
-    const dur = ents.find(x => x.type === "duration");
-    const at = ents.find(x => x.type === "datetime");
-    if (!dur && at) { ctx.used(at); return ctx.handover("set_reminder", {}, ctx.say("is_time")); }
+    const dur = ctx.slots.duration;
+    // not required in skill.md: a time instead of a duration goes to reminders before anyone asks
+    if (!dur && ctx.entities().some(x => x.type === "datetime")) return ctx.handover("set_reminder", {}, ctx.say("is_time"));
     if (!dur) return ctx.ask("duration", "ask");
-    ctx.used(dur);
     const end = new Date(ctx.now.getTime() + dur.seconds * 1000);
     const words = ctx.fmt.durWords(dur.seconds);
     ctx.exec(`systemd-run --user --on-active=${dur.seconds}s notify-send "Timer" "${words} is up"`);
@@ -3210,6 +3539,8 @@ const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./service
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
 // skills that do something (conversational ones are marked "kind: chat")
 const ACTIONABLE = new Set(Object.keys(SKILLS).filter(k => SKILLS[k].params.kind !== "chat"));
+// the skills the dialogue relies on, by the role their file declares: yes, no, fallback
+const ROLE = Object.fromEntries(Object.entries(SKILLS).filter(([, s]) => s.params.role).map(([k, s]) => [s.params.role, k]));
 
 // the dialogue's own replies; every skill brings its own as "<skill>.<name>"
 const RESPONSES = {
@@ -3233,11 +3564,21 @@ const NO_RE = /^(n|no|nope|nah|nvm|cancel|stop|don'?t|never ?mind|abort|not now)
 const stripVerb = t => t.replace(/^(please\s+)?((can|could|would) you\s+)?/i, "")
   .replace(/^(open|launch|start|run|bring up|fire up|show( me)?|give me|get me|pull up|display|view)\s+(up\s+)?/i, "")
   .replace(/\s+(please|for me)\s*\??$/i, "");
-// a word from a skill's value list: "the Terminal app" → the "terminal" entry
-const findValue = (list, raw) => {
-  const v = cleanValue(raw).toLowerCase().replace(/^(the|my|a|an)\s+/, "").replace(/\s+(app|application|program|window)$/, "").trim();
-  return (list || []).find(x => x.words.includes(v)) || null;
+// a word from a skill's value list: "the Terminal app" → the "terminal" entry (the slot's ignore: words dropped)
+const words = t => " " + t.toLowerCase().replace(/[^a-z0-9%]+/g, " ").trim() + " ";
+const findValue = (list, raw, ignore = []) => {
+  let v = words(cleanValue(raw)).replace(/^ (the|my|a|an) /, " ");
+  for (const w of ignore) v = v.replace(new RegExp(" " + w + " $"), " ");
+  return (list || []).find(x => x.words.some(w => words(w) === v)) || null;
 };
+// a value named anywhere in a sentence, longest words first ("too quiet" before "quiet")
+const guessValue = (list, text) => {
+  const t = words(text);
+  const all = (list || []).flatMap(x => x.words.map(w => [words(w), x])).sort((a, b) => b[0].length - a[0].length);
+  return (all.find(([w]) => t.includes(w)) || [])[1] || null;
+};
+// a list slot's ignore: words, for matching against another skill's list
+const ignoreFor = (skill, list) => Object.values((SKILLS[skill] && SKILLS[skill].slots) || {}).filter(s => s.list === list).flatMap(s => s.ignore);
 // what a skill does, from its help line: "check the weather (“weather tomorrow”)" → "check the weather"
 const doing = sk => (sk.params.help || "do that").replace(/\s*\(.*$/, "").trim();
 const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
@@ -3341,12 +3682,12 @@ class Agent {
     const r = this.nlu.parse(text);
     trace.push({ type: "nlu", r });
     const p = this.pending, t = text.trim();
-    const no = NO_RE.test(t) || (r.intent === "deny" && r.confidence >= 0.5);
+    const no = NO_RE.test(t) || (r.intent === ROLE.no && r.confidence >= 0.5);
     const drop = why => { this.dropQueue = true; this.pending = null; trace.push({ type: "state", text: why }); };
 
     if (p && p.type === "confirm") {
       this.pending = null;
-      const yes = YES_RE.test(t) || (r.intent === "affirm" && r.confidence >= 0.5);
+      const yes = YES_RE.test(t) || (r.intent === ROLE.yes && r.confidence >= 0.5);
       if (yes && !no) {
         trace.push({ type: "state", text: "confirmed " + p.what });
         if (p.sentence) { this.lastText = p.sentence; return this.run(p.intent, p.slots, trace); }
@@ -3367,18 +3708,15 @@ class Agent {
         trace.push({ type: "state", text: "same skill with " + p.need + ", merged into the question" });
         return this.run(p.intent, { ...p.slots, ...r.slots }, trace);
       }
-      if (r.intent === "out_of_scope" && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
+      if (r.intent === ROLE.fallback && r.confidence >= 0.55 && t.split(/\s+/).length >= 4) drop("off-topic sentence, dropped the question");
       else if (ACTIONABLE.has(r.intent) && r.confidence >= 0.8 && Object.keys(r.slots).length) drop("new command, dropped the question");
       else return this.answer(p, r, text, trace);
     }
 
-    if (r.confidence < THRESHOLD) {
-      trace.push({ type: "abstain", text: "confidence " + r.confidence.toFixed(2) + " < " + THRESHOLD + ", abstaining" });
-      return { trace, reply: fill(has("out_of_scope.say") ? "out_of_scope.say" : "fallback"), unknown: true };
-    }
-    if (r.intent === "out_of_scope") {
-      trace.push({ type: "abstain", text: "out of scope, no action" });
-      return { trace, reply: fill(has("out_of_scope.say") ? "out_of_scope.say" : "fallback"), unknown: true };
+    const low = r.confidence < THRESHOLD;
+    if (low || r.intent === ROLE.fallback) {
+      trace.push({ type: "abstain", text: low ? "confidence " + r.confidence.toFixed(2) + " < " + THRESHOLD + ", abstaining" : "out of scope, no action" });
+      return { trace, reply: fill(has(ROLE.fallback + ".say") ? ROLE.fallback + ".say" : "fallback"), unknown: true };
     }
     if (!SKILLS[r.intent]) { // taught through the inbox: recognised, but no skill folder does it yet
       const got = Object.entries(r.slots).map(([k, v]) => k + " “" + cleanValue(v) + "”").join(", ");
@@ -3421,13 +3759,14 @@ class Agent {
   // ---------- running a skill ----------
   run(intent, slots, trace) {
     const sk = SKILLS[intent];
+    this.raw = slots; // what the model heard, before the slots are filled
     if ((sk.params.uses || "").includes("network") && !online()) {
       trace.push({ type: "abstain", text: "offline, " + intent + " uses the network" });
       return { trace, reply: fill("network", { what: doing(sk) }) };
     }
     if (sk.slots) { // declared slots: fill them, ask for what's missing, before the skill runs
       const got = this.fillSlots(sk, slots, trace);
-      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace);
+      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace, got.ask[2]);
       slots = got.values;
     }
     if (sk.code || sk.params.script) return this.runScript(intent, sk, slots, trace);
@@ -3444,47 +3783,41 @@ class Agent {
   // doesn't fit its type is asked for again (with the slot's invalid: reply if it has one).
   fillSlots(sk, slots, trace) {
     const text = this.lastText, values = { ...slots };
+    let ents = null;
+    const parsed = () => (ents = ents || ENT.parse(text, { now: this.now() }));
     for (const [name, slot] of Object.entries(sk.slots)) {
-      const raw = slots[name] != null && typeof slots[name] === "string" ? cleanValue(slots[name]) : slots[name];
+      if (slots[name] && typeof slots[name] === "object") continue; // filled on an earlier turn
+      const raw = slots[name] ? cleanValue(slots[name]) : null;
+      const list = sk.values[slot.list];
       let v = null;
-      if (slot.type === "text") v = raw || null;
-      else if (slot.type === "place") v = raw ? SV.places.placeIn(text, raw) : null;
+      if (slot.type === "text") v = raw;
+      else if (slot.type === "place") v = raw && SV.places.placeIn(text, raw);
+      else if (slot.type === "list") v = raw ? findValue(list, raw, slot.ignore) : slot.guess ? guessValue(list, text) : null;
+      else if (slot.type === "duration") v = parsed().find(x => x.type === "duration") || null;
       else if (slot.type === "datetime") {
-        const ents = ENT.parse(text, { now: this.now() }).filter(x => x.type !== "duration");
-        v = ents.find(x => x.type === "datetime" || x.type === "recurrence") || ents.find(x => x.type === "date" || x.type === "range") || null;
-        if (v) trace.push({ type: "entity", e: v });
+        const e = parsed().filter(x => x.type !== "duration");
+        v = e.find(x => x.type === "datetime" || x.type === "recurrence") || e.find(x => x.type === "date" || x.type === "range") || null;
       }
-      if (v == null && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
-      if (v == null && slot.required) {
+      if (v && (slot.type === "datetime" || slot.type === "duration")) trace.push({ type: "entity", e: v });
+      if (v && slot.type === "list" && !raw) trace.push({ type: "state", text: name + " found in the sentence ← " + v.key });
+      if (!v && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
+      if (!v && slot.required) {
         const wrong = raw && slot.invalid;
-        trace.push({ type: "state", text: wrong ? name + " “" + raw + "” isn't a " + slot.type : "missing " + name });
-        return { ask: [name, wrong ? slot.invalid : slot.ask] };
+        trace.push({ type: wrong ? "abstain" : "state", text: wrong ? name + " “" + raw + "” isn't a known " + (slot.list || slot.type) : "missing " + name });
+        return { ask: [name, wrong ? slot.invalid : slot.ask, { value: raw, choices: orList((list || []).map(x => x.key)) }] };
       }
-      values[name] = v;
+      values[name] = v || null;
     }
     return { values };
   }
 
-  // action: run — a command from the skill's front matter, filled with a value from its list
+  // action: run — the command from the front matter; a {slot} from a list becomes that value's
+  // command, so a sentence can't inject one
   runCommand(intent, sk, slots, trace) {
-    const need = sk.params.needs, list = sk.values[need] || [];
-    const choices = orList(list.map(v => v.key));
-    let raw = slots[need];
-    if (!raw) {
-      const guess = stripVerb(this.lastText);
-      if (!findValue(list, guess)) return this.ask(intent, slots, need, intent + ".ask_" + need, trace, { choices });
-      trace.push({ type: "state", text: need + " filled from the skill's list ← “" + cleanValue(guess) + "”" });
-      raw = guess;
-    }
-    const v = findValue(list, raw);
-    if (!v) {
-      trace.push({ type: "abstain", text: "no " + need + " matches “" + cleanValue(raw) + "” in " + sk.file });
-      return { trace, reply: fill(intent + ".unknown", { value: cleanValue(raw), choices }) };
-    }
-    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (k === need ? v.out : cleanValue(slots[k] || ""))) });
-    return { trace, reply: fill(intent + ".done", { [need]: v.key }) };
+    const say = v => (v && typeof v === "object" ? v.key : v);
+    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (slots[k] && slots[k].out) || cleanValue(String(slots[k] || ""))) });
+    return { trace, reply: fill(intent + ".done", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, say(v)]))) };
   }
-
   // the toolbox a skill script receives
   makeCtx(intent, sk, slots, trace) {
     const agent = this, now = this.now(), text = this.lastText;
@@ -3504,14 +3837,14 @@ class Agent {
       exec: cmd => ctx.live.push({ type: "exec", text: cmd }),
       // shared services
       entities: () => ENT.parse(text, { now }),
-      find: (list, raw) => findValue(sk.values[list], raw),
-      findIn: (skill, list, raw) => findValue(SKILLS[skill] && SKILLS[skill].values[list], raw), // another skill's list
+      raw: Object.fromEntries(Object.entries(agent.raw || {}).filter(([, v]) => typeof v === "string").map(([k, v]) => [k, cleanValue(v)])),
+      find: (list, raw) => findValue(sk.values[list], raw, ignoreFor(intent, list)),
+      findIn: (skill, list, raw) => findValue(SKILLS[skill] && SKILLS[skill].values[list], raw, ignoreFor(skill, list)), // another skill's list
       lookup: (list, key) => ((sk.values[list] || []).find(v => v.key === String(key)) || {}).out,
       guess: () => stripVerb(text),
       state: { get: (k, d) => (k in agent.levels ? agent.levels[k] : d), set: (k, v) => { agent.levels[k] = v; } },
       me: { get: () => agent.mem(), set: m => agent.setMem(m) },
       geocode: name => agent.geocode(name),
-      place: () => SV.places.placeIn(text, ctx.slots.place),  // the place named, whole ("hong kong")
       request: vars => agent.request(sk, vars, ctx),
       arm: (at, message) => agent.arm(at, message),
       skills: () => Object.values(SKILLS).filter(s => s.params.help).map(s => s.params.help),
