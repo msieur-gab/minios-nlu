@@ -1,6 +1,6 @@
 # ptiLU
 
-**ptiLU** (*p'tit LU*): **P**rivate, **T**iny, **I**nterpretable **L**anguage **U**nderstanding.
+**ptiLU** (*p'tit LU*): **P**rivate, **T**eachable, **I**nterpretable **L**anguage **U**nderstanding.
 A model of about 350 KB that understands short commands on the device, offline, and says
 "I can't" rather than guessing. Formerly MiniOS NLU.
 
