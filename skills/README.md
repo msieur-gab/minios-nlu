@@ -175,7 +175,9 @@ POST https://ntfy.sh/
 `round` for whole numbers, `→ list` to translate a code through a values list. A path can
 pick an array item by a value in another array: `daily.temperature_2m_max[daily.time = {date}]`.
 `{date}` makes it a per-day line: read once for each day of the skill's datetime slot. A name
-may appear twice, once for “now” and once per day (`sky` in get_weather).
+may appear twice, once for “now” and once per day (`sky` in get_weather). `required` at the
+end of a line means the thing asked for exists only if that field does: when it's missing,
+the agent answers `not_found` (show_map: `- lat: results[0].latitude required`).
 
 **Replies.** `name: variant | variant`, one picked at random, `{value}` filled in.
 
@@ -186,12 +188,44 @@ A skill with a Request and no script replies `checking`, then:
 | `done` | no day asked, or no per-day Answer lines |
 | `day` | one day; `{when}` is “tomorrow”, “Friday 16 October”… |
 | `days` then `line` per day | a range (“this weekend”, up to a week); `{when}` in `days` is the words said |
-| `not_found` | the place doesn't exist (skills with a place slot) |
+| `not_found` | the place doesn't exist, or a `required` Answer field is missing |
 | `failed` | optional: the service answered with an error (`{status}`) |
 
-Weather (pull) and send_to_phone (push) are both written this way: skill.md plus action.md,
-no skill.js. The
-compiler checks that the replies a skill needs are there.
+Weather, the map, Telegram and send_to_phone are all written this way: skill.md plus
+action.md, no skill.js. The compiler checks that the replies a skill needs are there.
+
+## Handing over to a webhook
+
+When a service needs a sign-in ptiLU doesn't hold (Google, Outlook), several calls in a row
+(a route: two places, then the route), a key that must not sit on the phone (DeepL), or turns
+a list into one sentence, the skill hands its values to a webhook of your own and says what
+comes back. The webhook can be an n8n, Activepieces or Node-RED flow, or any endpoint.
+
+The convention: the webhook gets the slots as JSON and answers `{"say": "…"}`. The skill's
+`done` reply is `{say}`; a missing `say` gives its `not_found` reply; an error status, its
+`failed` reply. The address itself is a secret, asked once.
+
+```markdown
+## Request
+POST {hook}
+- body.from: {from}
+- body.to: {to}
+
+## Answer
+- say: say required
+
+## Secrets
+- hook: Which webhook plans routes? Paste its address.
+```
+
+Values go out as text: a list entry as its output, a date as `2026-10-16`, a time as
+`2026-10-16T09:00`, a range as `2026-10-17/2026-10-18`, a missing value as empty. A skill
+that only needs a success (add_event) can leave out the Answer and confirm in its own words.
+
+`tools/webhook.js` is a small reference webhook with no dependencies: `/route` (Open-Meteo
+places, OpenStreetMap routing) and `/agenda` (a calendar's private iCal address). The PWA is
+served over https, so the browser only reaches an https webhook (a tunnel or a reverse proxy).
+
 
 ## Running a command instead
 

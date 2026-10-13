@@ -42,7 +42,8 @@ GitHub Pages.
 - **APIs:** weather and world time via Open-Meteo (no key). Name and home place on the device.
 
 Run: `node train.js` (compiles the skills too), `python build_web.py`,
-`TZ=Europe/Berlin node test_entities.js`, `TZ=Europe/Berlin node test_dialogue.js`.
+`TZ=Europe/Berlin node test_entities.js`, `TZ=Europe/Berlin node test_dialogue.js`,
+`TZ=Europe/Berlin node tests/test_webhook.js`.
 
 ## Declarative requests (13 October, afternoon)
 
@@ -68,6 +69,31 @@ A skill can now pull data from an API or push data to one with nothing but its `
   `command:` of open_app, power, volume… could move the same way.
 - **send_to_phone** (new): POST to ntfy.sh, message in a JSON body, topic as a secret. The
   model finds the message in 6 of its 8 test sentences; otherwise it asks for it.
+
+## The boundary, and five new skills (13 October, evening)
+
+**Decided:** ptiLU understands, asks, confirms and hands over; it doesn't keep time, hold
+sign-ins or chain calls. Two ways to hand over: a command for the device's executor, or one
+HTTP call, either to a service directly (no key, or a key fine on the device, browser
+allowed) or to a webhook of the person's own (n8n, Activepieces, Node-RED, an endpoint) that
+answers `{"say": "…"}`. Skills stay self-contained folders; `skill.js` is the escape hatch.
+
+- **send_telegram** (direct): Bot API, token and chat id as secrets.
+- **show_map** (direct): place search → OpenStreetMap link; links are clickable in the PWA.
+- **get_route**, **add_event**, **get_agenda** (webhooks): the address is a secret per skill.
+  `tools/webhook.js` answers `/route` and `/agenda` (private iCal address, single events only).
+- **Core, small:** `required` on an Answer line → `not_found` when it's missing; secrets kept
+  per skill (`skill.name`, the old bare keys still read); a range goes out as
+  `2026-10-17/2026-10-18`; values filled from the first sentence (a date) are kept while the
+  agent asks for another one (the date was lost before).
+- **Model:** 433 KB, 28 skills. Held-out intent 97.2%, slot F1 0.93 (178 sentences; 36 new for
+  the five skills). Event titles are the weak spot (3 of 6 missed: the agent then asks).
+- **Not tested for real:** Telegram from the browser (CORS unknown), the routing servers, an
+  https tunnel to the webhook, an n8n flow for add_event.
+- **Known gap, older than today:** the tokenizer reads letters A–Z only, so “Kraków” or
+  “Tübingen” are cut. Matters for European place names; needs the same change in nlu/ (Python).
+- **Next:** weather's day logic back into its skill.js (only weather needs it); a skill.js guide
+  built on three patterns; a tests.md per skill folder.
 
 ## Decided on 13 October
 

@@ -98,10 +98,10 @@
   [set_reminder {"task":"send the invoice"}]
   When should I remind you?
 > next week
-  [get_weather · range 2026-10-19/2026-10-25]
+  [get_agenda · range 2026-10-19/2026-10-25]
   Next week runs from Monday 19 October to Sunday 25 October. Which day?
 > wednesday at 10am
-  [out_of_scope · datetime 2026-10-14T10:00]
+  [add_event · datetime 2026-10-14T10:00]
   I'll remind you to send the invoice on Wednesday 14 October at 10:00.
   $ systemd-run --user --on-calendar="2026-10-14 10:00:00" notify-send Reminder 'send the invoice'
 
@@ -114,7 +114,7 @@
   $ systemd-run --user --on-calendar="2026-10-13 20:00:00" notify-send Reminder 'take the bread out'
 
 > remind me to stretch every weekday at 3pm
-  [set_reminder {"task":"stretch every"} · recurrence FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=15;BYMINUTE=0]
+  [set_reminder {"task":"stretch"} · recurrence FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=15;BYMINUTE=0]
   OK, I'll remind you to stretch every weekday at 15:00. First one tomorrow at 15:00.
   $ systemd-run --user --on-calendar="Mon,Tue,Wed,Thu,Fri *-*-* 15:00:00" notify-send Reminder stretch
 
@@ -138,8 +138,8 @@
   I didn't understand that. Say help to see what I can do.
 
 > what's on my calendar tomorrow
-  [out_of_scope]
-  I didn't understand that. Say help to see what I can do.
+  [get_agenda · date 2026-10-13]
+  Which webhook reads your calendar? Paste its address.
 
 > make a folder called Monday in Schedule
   [create_folder {"name":"Monday","location":"Schedule"}]
@@ -167,7 +167,7 @@
   [get_weather]
   Which city? Tip: say “I live in …” and I'll remember it for next time.
 > Munich
-  [out_of_scope {"name":"Munich"}]
+  [get_route {"name":"Munich"}]
   Checking the weather for Munich…
   → Munich right now: overcast, 11°C, wind 10 km/h.
   $ GET api.open-meteo.com/v1/forecast?latitude=48.13743&longitude=11.57549&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
@@ -404,7 +404,7 @@ Uptime: 3 hours 12 minutes.
 
 > help
   [help]
-  I can change the brightness, change the volume, create files, create folders, tell the date, tell the time, here or in another city, check the weather, open apps, open files and folders, shut down or restart, remember your name and where you live, send a message to your phone, set reminders, set timers and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
+  I can add an event to your calendar, change the brightness, change the volume, create files, create folders, tell what's in your calendar, tell the date, plan a route, tell the time, here or in another city, check the weather, open apps, open files and folders, shut down or restart, remember your name and where you live, send yourself a Telegram message, send a message to your phone, set reminders, set timers, show a place on a map and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
 
 > hello
   [greet]
@@ -503,7 +503,7 @@ Uptime: 3 hours 12 minutes.
   [send_to_phone]
   What should I send to your phone?
 > check the oven
-  [out_of_scope]
+  [system_status]
   Sending it to your phone…
   → Sent to your phone: “check the oven”.
   $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"check the oven"}
@@ -512,8 +512,98 @@ Uptime: 3 hours 12 minutes.
   [send_to_phone]
   What should I send to your phone?
 > I love Cookie 🍪
-  [out_of_scope {"name":"Cookie 🍪"}]
+  [out_of_scope {"text":"love Cookie 🍪"}]
   Sending it to your phone…
   → Sent to your phone: “I love Cookie 🍪”.
   $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"I love Cookie 🍪"}
+
+> telegram me the glue is dry
+  [send_telegram {"text":"the glue is dry"}]
+  Paste the token @BotFather gave you for your bot.
+> 123:ABC
+  [out_of_scope]
+  What's your chat id? Write to your bot, then open api.telegram.org/bot<token>/getUpdates: it's the number after "chat":{"id":
+> 48151623
+  [out_of_scope]
+  Sending it on Telegram…
+  → Sent on Telegram: “the glue is dry”.
+  $ POST api.telegram.org/bot•••/sendMessage {"chat_id":"•••","text":"the glue is dry"}
+
+> send call the bank back on telegram
+  [send_telegram {"text":"call the bank back"}]
+  Sending it on Telegram…
+  → Sent on Telegram: “call the bank back”.
+  $ POST api.telegram.org/bot•••/sendMessage {"chat_id":"•••","text":"call the bank back"}
+
+> show me Kyoto on the map
+  [show_map {"place":"Kyoto"}]
+  Looking for Kyoto…
+  → Kyoto, Japan: https://www.openstreetmap.org/?mlat=35.02107&mlon=135.75385#map=12/35.02107/135.75385
+  $ GET geocoding-api.open-meteo.com/v1/search?name=Kyoto&count=1&language=en&format=json
+
+> where is Atlantis on the map
+  [show_map {"place":"Atlantis"}]
+  Looking for Atlantis…
+  → I couldn't find a place called “Atlantis”.
+  $ GET geocoding-api.open-meteo.com/v1/search?name=Atlantis&count=1&language=en&format=json
+
+> show me the map
+  [show_map]
+  Looking for Munich…
+  → Munich, Germany: https://www.openstreetmap.org/?mlat=48.13743&mlon=11.57549#map=12/48.13743/11.57549
+  $ GET geocoding-api.open-meteo.com/v1/search?name=Munich&count=1&language=en&format=json
+
+> how long from Munich to Salzburg by bike
+  [get_route {"from":"Munich","to":"Salzburg","mode":"bike"}]
+  Which webhook plans routes? Paste its address (for example https://…/route).
+> https://hooks.test/route
+  [get_route {"text":"//hooks.test/route"}]
+  Working out the route to Salzburg by bike…
+  → Munich to Salzburg by bike to Salzburg by bike: 1 h 40 min by bike, 142 km.
+  $ POST hooks.test/route {"from":"Munich to Salzburg by bike","to":"Salzburg by bike","mode":"bike"}
+
+> directions to Salzburg
+  [get_route {"to":"Salzburg"}]
+  Working out the route to Salzburg…
+  → Munich to Salzburg: 1 h 40 min by car, 142 km.
+  $ POST hooks.test/route {"from":"Munich","to":"Salzburg","mode":""}
+
+> how far is it to Atlantis
+  [get_route {"to":"Atlantis"}]
+  Working out the route to Atlantis…
+  → I couldn't find a route to Atlantis.
+  $ POST hooks.test/route {"from":"Munich","to":"Atlantis","mode":""}
+
+> add dentist on my calendar on friday at 9
+  [add_event {"title":"dentist"} · datetime 2026-10-16T09:00]
+  Which webhook adds events to your calendar? Paste its address.
+> https://hooks.test/event
+  [add_event {"text":"//hooks.test/event"}]
+  Adding “dentist”, 09:00 on Friday 16 October…
+  → Added “dentist”, 09:00 on Friday 16 October.
+  $ POST hooks.test/event {"title":"dentist","start":"2026-10-16T09:00"}
+
+> schedule a call with the bank
+  [add_event {"title":"a call with the bank"}]
+  When? For example “friday at 9”.
+> tomorrow at 3pm
+  [add_event · datetime 2026-10-13T15:00]
+  Adding “a call with the bank”, 15:00 tomorrow…
+  → Added “a call with the bank”, 15:00 tomorrow.
+  $ POST hooks.test/event {"title":"a call with the bank","start":"2026-10-13T15:00"}
+
+> what's on my calendar tomorrow
+  [get_agenda · date 2026-10-13]
+  Which webhook reads your calendar? Paste its address.
+> https://hooks.test/agenda
+  [get_agenda {"text":"//hooks.test/agenda"}]
+  Looking at your calendar…
+  → For 2026-10-13: dentist at 9:00, call with the bank at 14:00.
+  $ POST hooks.test/agenda {"when":"2026-10-13"}
+
+> what do I have this weekend
+  [get_agenda · range 2026-10-17/2026-10-18]
+  Looking at your calendar…
+  → For 2026-10-17/2026-10-18: dentist at 9:00, call with the bank at 14:00.
+  $ POST hooks.test/agenda {"when":"2026-10-17/2026-10-18"}
 

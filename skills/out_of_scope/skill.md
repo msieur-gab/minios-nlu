@@ -105,8 +105,6 @@ says "I can't" instead of guessing.
 - what's the battery level
 - set an alarm for 7am
 - wake me up at 6
-- what's on my calendar tomorrow
-- add a meeting on friday
 - when is the next train
 - how long does it take to boil an egg
 - what time does the bakery open

@@ -56,12 +56,12 @@ function parseSkill(md, file) {
     // ## Answer: "- name: path.in.json [round] [→ list]"; a path can pick an array item by a
     // value from another array: "daily.temperature_2m_max[daily.time = {date}]"
     if (section === "answer") {
-      const m = /^([a-z_]+)\s*:\s*(.+?)(\s+round)?(?:\s*(?:→|->)\s*([a-z_]+))?$/.exec(item);
+      const m = /^([a-z_]+)\s*:\s*(.+?)(\s+round)?(?:\s*(?:→|->)\s*([a-z_]+))?(\s+required)?$/.exec(item);
       if (!m) throw new Error(`${file}: can't read answer line “${item}” (expected "- name: path")`);
       // the same name may appear once for "now" and once per day ({date}): kept apart
       const key = m[1] + (m[2].includes("{date}") ? "@date" : "");
       if (skill.answer[key]) throw new Error(`${file}: ## Answer has “${m[1]}” twice`);
-      skill.answer[key] = { name: m[1], path: m[2], round: !!m[3], via: m[4] || null };
+      skill.answer[key] = { name: m[1], path: m[2], round: !!m[3], via: m[4] || null, required: !!m[5] };
       continue;
     }
     // ## Slots: "- name: type, required, ask: reply, invalid: reply, default: source"
@@ -156,7 +156,8 @@ function validate(s) {
   }
   // the request may only use declared values: {slot} or {slot.field}
   const r = s.request;
-  if (r) for (const v of [r.url, ...Object.values(r.query), ...Object.values(r.headers), ...Object.values(r.body || {})])
+  const all = q => [q.url, ...Object.values(q.query), ...Object.values(q.headers), ...Object.values(q.body || {})];
+  if (r) for (const v of all(r))
     for (const m of v.matchAll(/\{(\w+)[.\w]*\}/g)) if (!slots[m[1]]) throw new Error(`${s.action_file || s.file}: ## Request uses {${m[1]}}, which is no slot in skill.md and no secret`);
   // {date} in an answer path means one answer per day of the skill's datetime slot
   const dated = Object.values(s.answer).some(a => a.path.includes("{date}"));
@@ -168,7 +169,8 @@ function validate(s) {
       if (!known.has(m[1])) err(`reply ${k} uses {${m[1]}}, which is no slot or ## Answer field`);
   }
   if (r && !s.code && !p.script) {
-    const need = ["done", ...(slots && Object.values(slots).some(x => x.default === "home" || x.type === "place") ? ["not_found"] : []), ...(dated ? ["day", "days", "line"] : [])];
+    const found = Object.values(s.answer).some(a => a.required) || (r && all(r).some(v => v.includes("{place.")));
+    const need = ["done", ...(found ? ["not_found"] : []), ...(dated ? ["day", "days", "line"] : [])];
     for (const k of need) if (!s.replies[k]) err(`a skill with a ## Request and no script answers with the “${k}” reply, which ## Replies doesn't have`);
   }
   // every value the examples teach the model to pull out, or the command uses, must be declared
@@ -238,7 +240,7 @@ function compile(dir = "skills") {
 
 if (require.main === module) {
   const r = compile();
-  for (const [k, s] of Object.entries(r.skills)) console.log(`  ${k.padEnd(14)} ${String(s.sentences).padStart(4)} sentences  ${s.code ? "skill.md + skill.js" : "skill.md only"}${s.request ? " · request " + new URL(s.request.url).host : ""}`);
+  for (const [k, s] of Object.entries(r.skills)) console.log(`  ${k.padEnd(14)} ${String(s.sentences).padStart(4)} sentences  ${s.code ? "skill.md + skill.js" : "skill.md only"}${s.request ? " · request " + (/^https?:/.test(s.request.url) ? new URL(s.request.url.replace(/\{\w+\}/g, "x")).host : "webhook " + s.request.url) : ""}`);
   console.log(`data/skills.md: ${r.sentences} sentences · web/skills.json`);
 }
 module.exports = { compile, parseSkill, validate };

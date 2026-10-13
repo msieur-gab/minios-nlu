@@ -111,6 +111,20 @@ const CONVERSATIONS = [
   ["ping my phone saying the glue is dry"],
   ["send something to my phone", "check the oven"],
   ["send me a message", "I love Cookie 🍪"],
+  // direct calls declared in action.md: Telegram (two secrets), the map (a required answer field)
+  ["telegram me the glue is dry", "123:ABC", "48151623"],
+  ["send call the bank back on telegram"],
+  ["show me Kyoto on the map"],
+  ["where is Atlantis on the map"],
+  ["show me the map"],
+  // handed over to webhooks of the person's own, which answer with a sentence
+  ["how long from Munich to Salzburg by bike", "https://hooks.test/route"],
+  ["directions to Salzburg"],
+  ["how far is it to Atlantis"],
+  ["add dentist on my calendar on friday at 9", "https://hooks.test/event"],
+  ["schedule a call with the bank", "tomorrow at 3pm"],
+  ["what's on my calendar tomorrow", "https://hooks.test/agenda"],
+  ["what do I have this weekend"],
 ];
 const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)
 const UPDATE = process.argv.includes("--update"), VERBOSE = process.argv.includes("-v");

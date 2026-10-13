@@ -63,6 +63,14 @@ after you agree. A day without a time is 9:00.
 - check the laundry
 - start dinner
 - go to bed
+- send the quote to Marc
+- give the keys to Lea
+- talk to the neighbours
+- bring the drill to the workshop
+- go to the post office
+- write to the landlord
+- take the car to the garage
+- send the photos to grandma
 
 ## Values: when
 - tomorrow

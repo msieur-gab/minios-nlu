@@ -1,5 +1,87 @@
 {
  "skills": {
+  "add_event": {
+   "file": "skills/add_event/skill.md",
+   "dir": "skills/add_event",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "add_event",
+    "help": "add an event to your calendar (“add dentist on friday at 9”)",
+    "samples": "16",
+    "acts": "yes",
+    "train_only": "what, day",
+    "uses": "network"
+   },
+   "request": {
+    "method": "POST",
+    "url": "{hook}",
+    "query": {},
+    "headers": {},
+    "body": {
+     "title": "{title}",
+     "start": "{when}"
+    }
+   },
+   "answer": {},
+   "replies": {
+    "ask_title": [
+     "What should I add?"
+    ],
+    "ask_when": [
+     "When? For example “friday at 9”."
+    ],
+    "checking": [
+     "Adding “{title}”, {when}…"
+    ],
+    "done": [
+     "Added “{title}”, {when}."
+    ],
+    "failed": [
+     "The calendar answered with an error ({status}); nothing was added."
+    ],
+    "unsure": [
+     "Do you want me to add that to your calendar?"
+    ],
+    "ask_hook": [
+     "Which webhook adds events to your calendar? Paste its address."
+    ]
+   },
+   "slots": {
+    "title": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_title",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "when": {
+     "type": "datetime",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_when",
+     "invalid": "ask_when",
+     "default": null,
+     "ignore": []
+    },
+    "hook": {
+     "type": "secret",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_hook",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 181,
+   "values": {}
+  },
   "adjust_brightness": {
    "file": "skills/adjust_brightness/skill.md",
    "dir": "skills/adjust_brightness",
@@ -752,6 +834,78 @@
    "sentences": 33,
    "values": {}
   },
+  "get_agenda": {
+   "file": "skills/get_agenda/skill.md",
+   "dir": "skills/get_agenda",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "get_agenda",
+    "help": "tell what's in your calendar (“what's on tomorrow”)",
+    "samples": "10",
+    "train_only": "day",
+    "uses": "network"
+   },
+   "request": {
+    "method": "POST",
+    "url": "{hook}",
+    "query": {},
+    "headers": {},
+    "body": {
+     "when": "{day}"
+    }
+   },
+   "answer": {
+    "say": {
+     "name": "say",
+     "path": "say",
+     "round": false,
+     "via": null,
+     "required": true
+    }
+   },
+   "replies": {
+    "checking": [
+     "Looking at your calendar…"
+    ],
+    "done": [
+     "{say}"
+    ],
+    "not_found": [
+     "Nothing came back from your calendar."
+    ],
+    "failed": [
+     "The calendar answered with an error ({status})."
+    ],
+    "ask_hook": [
+     "Which webhook reads your calendar? Paste its address."
+    ]
+   },
+   "slots": {
+    "day": {
+     "type": "datetime",
+     "list": null,
+     "required": false,
+     "guess": false,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "hook": {
+     "type": "secret",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_hook",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 94,
+   "values": {}
+  },
   "get_date": {
    "file": "skills/get_date/skill.md",
    "dir": "skills/get_date",
@@ -817,6 +971,167 @@
    },
    "sentences": 82,
    "values": {}
+  },
+  "get_route": {
+   "file": "skills/get_route/skill.md",
+   "dir": "skills/get_route",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "get_route",
+    "help": "plan a route (“how long from Munich to Salzburg by bike”)",
+    "samples": "12",
+    "train_only": "city",
+    "uses": "network"
+   },
+   "request": {
+    "method": "POST",
+    "url": "{hook}",
+    "query": {},
+    "headers": {},
+    "body": {
+     "from": "{from}",
+     "to": "{to}",
+     "mode": "{mode}"
+    }
+   },
+   "answer": {
+    "say": {
+     "name": "say",
+     "path": "say",
+     "round": false,
+     "via": null,
+     "required": true
+    }
+   },
+   "replies": {
+    "ask_to": [
+     "Where to?"
+    ],
+    "ask_from": [
+     "From where? Tip: say “I live in …” and I'll start from there next time."
+    ],
+    "checking": [
+     "Working out the route to {to}…"
+    ],
+    "done": [
+     "{say}"
+    ],
+    "not_found": [
+     "I couldn't find a route to {to}."
+    ],
+    "failed": [
+     "The route service answered with an error ({status})."
+    ],
+    "ask_hook": [
+     "Which webhook plans routes? Paste its address (for example https://…/route)."
+    ]
+   },
+   "slots": {
+    "to": {
+     "type": "place",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_to",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "from": {
+     "type": "place",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_from",
+     "invalid": null,
+     "default": "home",
+     "ignore": []
+    },
+    "mode": {
+     "type": "list",
+     "list": "mode",
+     "required": false,
+     "guess": true,
+     "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "hook": {
+     "type": "secret",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_hook",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 174,
+   "values": {
+    "mode": [
+     {
+      "key": "car",
+      "words": [
+       "car",
+       "drive",
+       "driving",
+       "by car",
+       "the car"
+      ],
+      "say": [
+       "car",
+       "drive",
+       "driving",
+       "by car",
+       "the car"
+      ],
+      "out": "car"
+     },
+     {
+      "key": "bike",
+      "words": [
+       "bike",
+       "bicycle",
+       "cycle",
+       "cycling",
+       "ride",
+       "riding"
+      ],
+      "say": [
+       "bike",
+       "bicycle",
+       "cycle",
+       "cycling",
+       "ride",
+       "riding"
+      ],
+      "out": "bike"
+     },
+     {
+      "key": "foot",
+      "words": [
+       "foot",
+       "walk",
+       "walking",
+       "on foot",
+       "hike",
+       "hiking"
+      ],
+      "say": [
+       "foot",
+       "walk",
+       "walking",
+       "on foot",
+       "hike",
+       "hiking"
+      ],
+      "out": "foot"
+     }
+    ]
+   }
   },
   "get_time": {
    "file": "skills/get_time/skill.md",
@@ -896,43 +1211,50 @@
      "name": "temp",
      "path": "current.temperature_2m",
      "round": true,
-     "via": null
+     "via": null,
+     "required": false
     },
     "wind": {
      "name": "wind",
      "path": "current.wind_speed_10m",
      "round": true,
-     "via": null
+     "via": null,
+     "required": false
     },
     "sky": {
      "name": "sky",
      "path": "current.weather_code",
      "round": false,
-     "via": "sky"
+     "via": "sky",
+     "required": false
     },
     "min@date": {
      "name": "min",
      "path": "daily.temperature_2m_min[daily.time = {date}]",
      "round": true,
-     "via": null
+     "via": null,
+     "required": false
     },
     "max@date": {
      "name": "max",
      "path": "daily.temperature_2m_max[daily.time = {date}]",
      "round": true,
-     "via": null
+     "via": null,
+     "required": false
     },
     "rain@date": {
      "name": "rain",
      "path": "daily.precipitation_probability_max[daily.time = {date}]",
      "round": false,
-     "via": null
+     "via": null,
+     "required": false
     },
     "sky@date": {
      "name": "sky",
      "path": "daily.weather_code[daily.time = {date}]",
      "round": false,
-     "via": "sky"
+     "via": "sky",
+     "required": false
     }
    },
    "replies": {
@@ -1570,7 +1892,7 @@
     ]
    },
    "slots": null,
-   "sentences": 118,
+   "sentences": 116,
    "values": {}
   },
   "power": {
@@ -1812,6 +2134,88 @@
    "sentences": 181,
    "values": {}
   },
+  "send_telegram": {
+   "file": "skills/send_telegram/skill.md",
+   "dir": "skills/send_telegram",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "send_telegram",
+    "help": "send yourself a Telegram message (“telegram me buy milk”)",
+    "samples": "14",
+    "acts": "yes",
+    "train_only": "msg",
+    "uses": "network"
+   },
+   "request": {
+    "method": "POST",
+    "url": "https://api.telegram.org/bot{token}/sendMessage",
+    "query": {},
+    "headers": {},
+    "body": {
+     "chat_id": "{chat}",
+     "text": "{text}"
+    }
+   },
+   "answer": {},
+   "replies": {
+    "ask_text": [
+     "What should I send on Telegram?"
+    ],
+    "checking": [
+     "Sending it on Telegram…"
+    ],
+    "done": [
+     "Sent on Telegram: “{text}”."
+    ],
+    "failed": [
+     "Telegram refused the message (error {status}). Check the token and that you wrote to your bot first."
+    ],
+    "unsure": [
+     "Do you want me to send that on Telegram?"
+    ],
+    "ask_token": [
+     "Paste the token @BotFather gave you for your bot."
+    ],
+    "ask_chat": [
+     "What's your chat id? Write to your bot, then open api.telegram.org/bot<token>/getUpdates: it's the number after \"chat\":{\"id\":"
+    ]
+   },
+   "slots": {
+    "text": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_text",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "token": {
+     "type": "secret",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_token",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "chat": {
+     "type": "secret",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_chat",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 120,
+   "values": {}
+  },
   "send_to_phone": {
    "file": "skills/send_to_phone/skill.md",
    "dir": "skills/send_to_phone",
@@ -1950,7 +2354,7 @@
      "ignore": []
     }
    },
-   "sentences": 215,
+   "sentences": 209,
    "values": {}
   },
   "set_timer": {
@@ -1996,6 +2400,89 @@
     }
    },
    "sentences": 123,
+   "values": {}
+  },
+  "show_map": {
+   "file": "skills/show_map/skill.md",
+   "dir": "skills/show_map",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "show_map",
+    "help": "show a place on a map (“where is Kyoto on the map”)",
+    "samples": "10",
+    "train_only": "city",
+    "uses": "network"
+   },
+   "request": {
+    "method": "GET",
+    "url": "https://geocoding-api.open-meteo.com/v1/search",
+    "query": {
+     "name": "{place}",
+     "count": "1",
+     "language": "en",
+     "format": "json"
+    },
+    "headers": {},
+    "body": null
+   },
+   "answer": {
+    "lat": {
+     "name": "lat",
+     "path": "results[0].latitude",
+     "round": false,
+     "via": null,
+     "required": true
+    },
+    "lon": {
+     "name": "lon",
+     "path": "results[0].longitude",
+     "round": false,
+     "via": null,
+     "required": false
+    },
+    "name": {
+     "name": "name",
+     "path": "results[0].name",
+     "round": false,
+     "via": null,
+     "required": false
+    },
+    "country": {
+     "name": "country",
+     "path": "results[0].country",
+     "round": false,
+     "via": null,
+     "required": false
+    }
+   },
+   "replies": {
+    "ask_place": [
+     "Which place should I show? Tip: say “I live in …” and I'll use it next time."
+    ],
+    "checking": [
+     "Looking for {place}…"
+    ],
+    "done": [
+     "{name}, {country}: https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=12/{lat}/{lon}"
+    ],
+    "not_found": [
+     "I couldn't find a place called “{place}”."
+    ]
+   },
+   "slots": {
+    "place": {
+     "type": "place",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_place",
+     "invalid": null,
+     "default": "home",
+     "ignore": []
+    }
+   },
+   "sentences": 128,
    "values": {}
   },
   "system_status": {

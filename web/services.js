@@ -80,7 +80,8 @@ const NLUServices = (() => {
     return o;
   }
   // a value as it goes into a request: a list entry's output, a date's ISO form, else the words
-  const plain = v => (v && typeof v === "object" ? v.out ?? v.value ?? v.key ?? v.text ?? "" : v ?? "");
+  // a range goes out as an ISO interval ("2026-10-17/2026-10-18")
+  const plain = v => (v && typeof v === "object" ? v.out ?? v.value ?? (v.from && v.to ? v.from + "/" + v.to : null) ?? v.key ?? v.text ?? "" : v ?? "");
   const fillIn = (t, vars) => t.replace(/\{([\w.]+)\}/g, (_, path) => plain(getPath(vars, path)));
   // a place → coordinates and time zone (Open-Meteo place search), cached per agent
   async function geocode(agent, name) {
@@ -133,7 +134,10 @@ const NLUServices = (() => {
     if (!res.ok) throw Object.assign(new Error(new URL(url).host + " answered " + res.status), { status: res.status });
     let json = null;
     try { json = await res.json(); } catch { json = null; } // an empty or plain-text answer is fine for a push
-    return { place, answer: pick(sk, json, ctx, vars, false), json };
+    const answer = pick(sk, json, ctx, vars, false);
+    // a field marked required that the answer doesn't have: the thing asked for wasn't found
+    const missing = Object.values(sk.answer || {}).some(a => a.required && !a.path.includes("{date}") && getPath(json, a.path) == null);
+    return { place: missing ? null : place, answer, json };
   }
   // "## Answer": the fields that become reply values. Lines with {date} are read once per day
   // (dated = true, vars.date set); null when that day isn't in the answer at all.
@@ -171,7 +175,7 @@ const NLUServices = (() => {
   const SECRET_KEY = "ptilu.secrets.v1";
   const secrets = {
     all: (store, agent) => { try { return JSON.parse((store && store.getItem(SECRET_KEY)) || "null") || agent._secrets || {}; } catch { return agent._secrets || {}; } },
-    get: (store, agent, k) => secrets.all(store, agent)[k] || null,
+    get: (store, agent, k) => secrets.all(store, agent)[k] || secrets.all(store, agent)[k.split(".").pop()] || null, // "skill.name"; a bare name from before secrets were per skill
     set: (store, agent, k, v) => { const all = { ...secrets.all(store, agent), [k]: v }; agent._secrets = all; try { if (store) store.setItem(SECRET_KEY, JSON.stringify(all)); } catch { /* kept in memory only */ } },
   };
   const ME_KEY = "minios.me.v1"; // old name kept on purpose: name and place survive the rename

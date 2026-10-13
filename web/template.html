@@ -212,6 +212,8 @@ const $ = id => document.getElementById(id);
 const log = $("log");
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+// a reply with its web addresses as links (a map, a page): shown without the https://
+const linked = s => esc(s).replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)]/g, u => `<a href="${u}" target="_blank" rel="noopener">${u.replace(/^https?:\/\/(www\.)?/, "").replace(/[?#].*$/, "")}</a>`);
 
 function showModel(m, ev, where) {
   $("ver").textContent = "model " + m.version;
@@ -505,7 +507,7 @@ function renderAgent(el, text, out) {
   const icon = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   el.querySelector(".typing")?.remove();
   const send2inbox = out.inboxed ? "" : `<button class="btn quiet send-inbox" type="button">Not right? Send to the inbox</button>`;
-  el.insertAdjacentHTML("beforeend", `<div class="reply">${esc(out.reply)}</div>`
+  el.insertAdjacentHTML("beforeend", `<div class="reply">${linked(out.reply)}</div>`
     + (out.inboxed ? `<div class="inboxed">added to the inbox</div>` : "")
     + `<details class="why"><summary aria-label="Show what the agent did">${icon}<span class="dot ${dot}"></span>${esc(r.intent)} ${r.confidence.toFixed(2)}</summary><div class="trace">${t}${send2inbox}</div></details>`);
   el.querySelector(".send-inbox")?.addEventListener("click", ev => {
@@ -520,7 +522,7 @@ function renderAgent(el, text, out) {
     bubble.classList.add("waiting");
     out.later.then(res => {
       bubble.classList.remove("waiting");
-      bubble.textContent = res.reply;
+      bubble.innerHTML = linked(res.reply);
       const tr = el.querySelector(".trace");
       for (const x of res.trace || []) tr.insertAdjacentHTML("beforeend",
         x.type === "exec" ? row("exec", `$ ${esc(x.text)}<em>network</em>`, "exec") : row(x.type === "abstain" ? "skip" : "state", esc(x.text), x.type));

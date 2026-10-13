@@ -261,7 +261,7 @@ class Agent {
     }
     if (sk.slots) { // declared slots: fill them, ask for what's missing, before the skill runs
       const got = this.fillSlots(sk, slots, trace);
-      if (got.ask) return this.ask(intent, slots, got.ask[0], intent + "." + got.ask[1], trace, got.ask[2]);
+      if (got.ask) return this.ask(intent, { ...slots, ...got.values }, got.ask[0], intent + "." + got.ask[1], trace, got.ask[2]);
       if (got.stop) return { trace, reply: fill(intent + "." + got.stop) };
       slots = got.values;
     }
@@ -336,7 +336,7 @@ class Agent {
       if (slot.type === "text") v = raw;
       else if (slot.type === "place") v = raw && SV.places.placeIn(text, raw);
       else if (slot.type === "list") v = raw ? findValue(list, raw, slot.ignore) : slot.guess ? guessValue(list, text) : null;
-      else if (slot.type === "secret") { v = raw || this.secret(name); if (raw) this.setSecret(name, raw); } // asked once, kept on the device
+      else if (slot.type === "secret") { const k = sk.params.skill + "." + name; v = raw || this.secret(k); if (raw) this.setSecret(k, raw); } // asked once per skill, kept on the device
       else if (slot.type === "duration") v = parsed().find(x => x.type === "duration") || null;
       else if (slot.type === "datetime") {
         const e = parsed().filter(x => x.type !== "duration");
@@ -354,7 +354,9 @@ class Agent {
       if (!v && slot.required) {
         const wrong = raw && slot.invalid;
         trace.push({ type: wrong ? "abstain" : "state", text: wrong ? name + " “" + raw + "” isn't a known " + (slot.list || slot.type) : "missing " + name });
-        return { ask: [name, wrong ? slot.invalid : slot.ask, { value: raw, choices: orList((list || []).map(x => x.key)) }] };
+        // what's filled so far waits with the question: a date read from the first sentence isn't lost
+        const kept = Object.fromEntries(Object.entries(values).filter(([k, x]) => k !== name && x != null && !(sk.slots[k] && sk.slots[k].type === "secret")));
+        return { ask: [name, wrong ? slot.invalid : slot.ask, { value: raw, choices: orList((list || []).map(x => x.key)) }], values: kept };
       }
       values[name] = v || null;
     }
