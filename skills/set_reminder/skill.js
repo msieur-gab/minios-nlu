@@ -4,7 +4,7 @@ function schedule(ctx, task, when, noTime) {
   const { fmt } = ctx, now = ctx.now, what = task ? " to " + task : "";
   if (when.type === "recurrence") {
     const cal = fmt.onCalendar(when.rrule);
-    ctx.exec(cal ? `systemd-run --user --on-calendar="${cal}" notify-send "Reminder" "${task || "Reminder"}"` : "# rule " + when.rrule + " (needs a small scheduler, not a single systemd timer)");
+    ctx.exec(cal ? `systemd-run --user --on-calendar="${cal}" notify-send Reminder ${ctx.files.quote(task || "Reminder")}` : "# rule " + when.rrule + " (needs a small scheduler, not a single systemd timer)");
     return ctx.say("repeat", { what, rule: fmt.ruleWords(when.rrule), next: when.next ? fmt.whenText(fmt.fromIso(when.next), now) : "soon" });
   }
   const at = fmt.fromIso(when.value);
@@ -16,7 +16,7 @@ function schedule(ctx, task, when, noTime) {
     return ctx.choose(ctx.say("past", { at: fmt.cap(fmt.whenText(at, now)), next: fmt.whenText(next, now) }),
       [{ label: fmt.whenText(next, now), keys: ["tomorrow", "yes"], then: c => schedule(c, task, { type: "datetime", value: iso }) }]);
   }
-  ctx.exec(`systemd-run --user --on-calendar="${fmt.isoMinute(at).replace("T", " ")}:00" notify-send "Reminder" "${task || "Reminder"}"`);
+  ctx.exec(`systemd-run --user --on-calendar="${fmt.isoMinute(at).replace("T", " ")}:00" notify-send Reminder ${ctx.files.quote(task || "Reminder")}`);
   ctx.arm(at, ctx.say("ring", { what: task || "time's up" }));
   return ctx.say("done", { what, at: fmt.whenText(at, now) }) + (noTime ? " " + ctx.say("no_time") : "");
 }

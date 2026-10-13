@@ -95,10 +95,41 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 - Names containing "and" ("a folder called salt and pepper" → "salt").
 - Date parser: "after lunch", "mid-november", "alarm for 7" (no time read after "for"),
   languages other than English.
-- Python reference tools (`lint.py`, `cv.py`) not rerun since the skill-file migration;
-  `DATASET_BRIEF.md` predates skill files.
+- A name with an apostrophe isn't read as a name ("create a folder called it's mine" → asks).
+
+## Cleanup (13 October, after a review of the whole system)
+
+- **Removed:** the scikit-learn reference stack (`train.py`, `cv.py`, `lint.py`,
+  `clean_batches.py`, `requirements-train.txt`, `models/model_sklearn.json`), the raw generated
+  batches (`data/raw/`), `DATASET_BRIEF.md`, and the second copy of the built page
+  (`web/index.html`; only `docs/` is served). All of it is in the history before this date.
+  Kept: `nlu/` (the Python runtime for the Pi) and `evaluate.py`, which checks it.
+- **Build without scikit-learn:** `build_web.py` used to import `train.py`, so building the page
+  needed scikit-learn. `node train.js` now stores the held-out scores in the model (only test
+  sentences that appear in no training file, the same rule as on the phone) and the build reads
+  them: standard library only.
+- **Shell quoting:** the old quote helper left `$(...)`, `;` and `&` live in folder names, and
+  reminder and timer texts went into `notify-send` unquoted. Free text is now single-quoted; a
+  path's leading `$HOME` stays outside the quotes.
+- **Dialogue test passes or fails:** `test_dialogue.js` compares the 88 conversations with
+  `tests/dialogue.expected.txt` (intent, slots, dates, reply, command; not confidences) and
+  shows each turn that changed. `--update` accepts new replies, `-v` prints the transcript.
+
+**Still open from the review**
+- **One source of training data.** About 2,980 sentences still live in `data/synth_*.md`, outside
+  the skill folders. Skill files alone: 94.9% intent, F1 0.94, 238 KB, 25 s training (all data:
+  97.7%, 0.97, 358 KB, 61 s, on all 177). The gap is short answers ("yup", "nah", "open the
+  terminal") and out-of-scope edges: a few dozen lines in `affirm`, `deny`, `open_app` and
+  `out_of_scope` could replace the batches. Decide after the larger test set.
+- **Decide the Pi side before writing Python.** A Python agent means porting `agent.js`,
+  `entities.js`, `services.js` and every `skill.js` (about 1,400 lines) and keeping them in step.
+  Alternative: one brain in JS, and the Pi as a thin executor of declared commands.
+- **No new `skill.md` fields** without removing one. Per-skill `confidence:` is the weakest
+  (tuned on 3–9 test sentences per skill); one rule for actionable skills could replace it.
+- **Several commands per sentence:** keep, don't extend (source of the "salt and pepper" gap).
 
 ## Branches
 
-All merged into `main` (fast-forward), kept for history: `time-skills`, `js-trainer`, `inbox`,
-`skill-files`, `multi-intent`, `core-split`, `place-names`, `dates`, `typed-slots`.
+All merged into `main` and deleted on 13 October: `time-skills`, `js-trainer`, `inbox`,
+`skill-files`, `multi-intent`, `core-split`, `place-names`, `dates`, `typed-slots`,
+`inbox-slots`, `time-values`. Their commits are all on `main`.

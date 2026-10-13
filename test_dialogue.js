@@ -1,4 +1,7 @@
-// node test_dialogue.js : scripted conversations through the real model + agent, clock fixed at Mon 12 Oct 2026 20:14
+// node test_dialogue.js          : replay the conversations, fail if any reply differs from tests/dialogue.expected.txt
+// node test_dialogue.js --update : accept the current replies as the new expected transcript
+// node test_dialogue.js -v       : print the transcript (with confidences)
+// Scripted conversations through the real model + agent, clock fixed at Mon 12 Oct 2026 20:14
 const fs = require("fs");
 const R = require("./web/runtime.js");
 const { Agent } = require("./web/agent.js");
@@ -105,7 +108,10 @@ const CONVERSATIONS = [
   ["how many days until december 24"],
 ];
 const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)
+const UPDATE = process.argv.includes("--update"), VERBOSE = process.argv.includes("-v");
+const EXPECTED = "tests/dialogue.expected.txt";
 (async () => {
+const lines = [];  // what is compared: intent, slots, dates, reply, command (not confidences, which move with every retrain)
 for (const conv of CONVERSATIONS) {
   agent.reset();
   for (const t of conv) {
@@ -114,8 +120,24 @@ for (const conv of CONVERSATIONS) {
     const r = out.trace[0].r;
     const ent = out.trace.find(x => x.type === "entity");
     const exec = out.trace.filter(x => x.type === "exec").map(x => x.text).join(" | ");
-    console.log(`> ${t}\n  [${r.intent} ${r.confidence.toFixed(2)}${Object.keys(r.slots).length ? " " + JSON.stringify(r.slots) : ""}${ent ? " · " + ent.e.type + " " + (ent.e.value || ent.e.rrule) : ""}]\n  ${out.reply}${exec ? "\n  $ " + exec : ""}`);
+    const tag = `${Object.keys(r.slots).length ? " " + JSON.stringify(r.slots) : ""}${ent ? " · " + ent.e.type + " " + (ent.e.value || ent.e.rrule) : ""}`;
+    const rest = `]\n  ${out.reply}${exec ? "\n  $ " + exec : ""}`;
+    lines.push(`> ${t}\n  [${r.intent}${tag}${rest}`);
+    if (VERBOSE) console.log(`> ${t}\n  [${r.intent} ${r.confidence.toFixed(2)}${tag}${rest}`);
   }
-  console.log();
+  lines.push("");
+  if (VERBOSE) console.log();
 }
+const got = lines.join("\n") + "\n";
+if (UPDATE || !fs.existsSync(EXPECTED)) { fs.writeFileSync(EXPECTED, got); return console.log(`${EXPECTED} written (${CONVERSATIONS.length} conversations)`); }
+const want = fs.readFileSync(EXPECTED, "utf8");
+if (got === want) return console.log(`${CONVERSATIONS.length}/${CONVERSATIONS.length} conversations as expected`);
+// show each turn that changed
+const turns = x => x.split(/\n(?=> )/);
+const a = turns(want), b = turns(got);
+let shown = 0;
+for (let i = 0; i < Math.max(a.length, b.length) && shown < 10; i++)
+  if (a[i] !== b[i]) { shown++; console.log("--- expected\n" + (a[i] || "").trim() + "\n+++ got\n" + (b[i] || "").trim() + "\n"); }
+console.log("Dialogue changed. If the new replies are right: node test_dialogue.js --update");
+process.exit(1);
 })();

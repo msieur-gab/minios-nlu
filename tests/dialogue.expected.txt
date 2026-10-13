@@ -1,0 +1,486 @@
+> what time is it
+  [get_time]
+  It's 20:14.
+  $ date +%H:%M
+
+> what's the time in tokyo?
+  [get_time {"place":"tokyo"}]
+  Looking up tokyo…
+  → In Tokyo it's 03:14 on Tuesday.
+  $ GET geocoding-api.open-meteo.com/v1/search?name=tokyo
+
+> what's the date
+  [get_date]
+  Today is Monday 12 October.
+
+> what day is next friday
+  [get_date · date 2026-10-16]
+  Next friday is Friday 16 October. If you meant the other one, that's Friday 23 October.
+
+> what date is christmas
+  [get_date · date 2026-12-25]
+  Christmas is Friday 25 December.
+
+> how many days until december 24
+  [get_date · date 2026-12-24]
+  73 days until Thursday 24 December.
+
+> what day is the 14th
+  [get_date · date 2026-10-14]
+  The 14th is Wednesday 14 October.
+
+> is it friday yet
+  [get_date · date 2026-10-16]
+  No, today is Monday 12 October.
+
+> what year is it
+  [get_date]
+  It's 2026.
+
+> set a timer for 10 minutes
+  [set_timer · duration 10 min]
+  Timer set for 10 minutes. It rings at 20:24.
+  $ systemd-run --user --on-active=600s notify-send Timer '10 minutes is up'
+
+> timer 1h30
+  [set_timer · duration 1 h 30 min]
+  Timer set for 1 hour 30 minutes. It rings at 21:44.
+  $ systemd-run --user --on-active=5400s notify-send Timer '1 hour 30 minutes is up'
+
+> start a timer
+  [set_timer]
+  How long? For example “10 minutes” or “1h30”.
+> 25 minutes
+  [set_timer · duration 25 min]
+  Timer set for 25 minutes. It rings at 20:39.
+  $ systemd-run --user --on-active=1500s notify-send Timer '25 minutes is up'
+
+> set a timer for 3pm
+  [set_timer · datetime 2026-10-13T15:00]
+  That's a time rather than a duration, so here's a reminder instead: I'll remind you tomorrow at 15:00.
+  $ systemd-run --user --on-calendar="2026-10-13 15:00:00" notify-send Reminder Reminder
+
+> remind me to call mum next friday at 3pm
+  [set_reminder {"task":"call mum"} · datetime 2026-10-16T15:00]
+  On Friday 16 October at 15:00, or on Friday 23 October at 15:00?
+> the 16th
+  [out_of_scope]
+  I'll remind you to call mum on Friday 16 October at 15:00.
+  $ systemd-run --user --on-calendar="2026-10-16 15:00:00" notify-send Reminder 'call mum'
+
+> remind me to call mum next friday at 3pm
+  [set_reminder {"task":"call mum"} · datetime 2026-10-16T15:00]
+  On Friday 16 October at 15:00, or on Friday 23 October at 15:00?
+> next one
+  [thanks]
+  I'll remind you to call mum on Friday 23 October at 15:00.
+  $ systemd-run --user --on-calendar="2026-10-23 15:00:00" notify-send Reminder 'call mum'
+
+> remind me to buy milk tomorrow at 9
+  [set_reminder {"task":"buy milk"} · datetime 2026-10-13T09:00]
+  Tomorrow at 09:00, or tomorrow at 21:00?
+> morning
+  [greet]
+  I'll remind you to buy milk tomorrow at 09:00.
+  $ systemd-run --user --on-calendar="2026-10-13 09:00:00" notify-send Reminder 'buy milk'
+
+> remind me to water the plants in 2 days
+  [set_reminder {"task":"water the plants"} · date 2026-10-14]
+  I'll remind you to water the plants on Wednesday 14 October at 09:00. You didn't give a time, so I used 09:00.
+  $ systemd-run --user --on-calendar="2026-10-14 09:00:00" notify-send Reminder 'water the plants'
+
+> remind me in an hour
+  [set_reminder · datetime 2026-10-12T21:14]
+  I'll remind you today at 21:14.
+  $ systemd-run --user --on-calendar="2026-10-12 21:14:00" notify-send Reminder Reminder
+
+> remind me to send the invoice
+  [set_reminder {"task":"send the invoice"}]
+  When should I remind you?
+> next week
+  [get_weather · range 2026-10-19/2026-10-25]
+  Next week runs from Monday 19 October to Sunday 25 October. Which day?
+> wednesday at 10am
+  [out_of_scope · datetime 2026-10-14T10:00]
+  I'll remind you to send the invoice on Wednesday 14 October at 10:00.
+  $ systemd-run --user --on-calendar="2026-10-14 10:00:00" notify-send Reminder 'send the invoice'
+
+> remind me to take the bread out tonight at 8
+  [set_reminder {"task":"take the bread out"} · datetime 2026-10-12T20:00]
+  Today at 20:00 has already passed. Shall I make it tomorrow at 20:00?
+> yes
+  [affirm]
+  I'll remind you to take the bread out tomorrow at 20:00.
+  $ systemd-run --user --on-calendar="2026-10-13 20:00:00" notify-send Reminder 'take the bread out'
+
+> remind me to stretch every weekday at 3pm
+  [set_reminder {"task":"stretch every"} · recurrence FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=15;BYMINUTE=0]
+  OK, I'll remind you to stretch every weekday at 15:00. First one tomorrow at 15:00.
+  $ systemd-run --user --on-calendar="Mon,Tue,Wed,Thu,Fri *-*-* 15:00:00" notify-send Reminder stretch
+
+> remind me to back up the photos every monday at 9
+  [set_reminder {"task":"back up the photos"} · recurrence FREQ=WEEKLY;BYDAY=MO;BYHOUR=9;BYMINUTE=0]
+  Every Monday at 09:00, or at 21:00?
+> morning
+  [greet]
+  OK, I'll remind you to back up the photos every Monday at 09:00. First one on Monday 19 October at 09:00.
+  $ systemd-run --user --on-calendar="Mon *-*-* 09:00:00" notify-send Reminder 'back up the photos'
+
+> set a reminder
+  [set_reminder]
+  When should I remind you?
+> never mind
+  [deny]
+  Cancelled.
+
+> set an alarm for 7am
+  [out_of_scope]
+  I didn't understand that. Say help to see what I can do.
+
+> what's on my calendar tomorrow
+  [out_of_scope]
+  I didn't understand that. Say help to see what I can do.
+
+> make a folder called Monday in Schedule
+  [create_folder {"name":"Monday","location":"Schedule"}]
+  Done. “Monday” is now in Schedule.
+  $ mkdir -p $HOME/Schedule/Monday
+
+> open firefox
+  [open_app {"app":"firefox"}]
+  Opening the Firefox browser.
+  $ firefox &
+
+> launch the thing
+  [open_app]
+  Which app? I can open the terminal, browser, Firefox browser, Chromium browser, file manager, text editor, calculator or settings.
+
+> open an app
+  [open_app]
+  Which app? I can open the terminal, browser, Firefox browser, Chromium browser, file manager, text editor, calculator or settings.
+> calculator
+  [open_app {"app":"calculator"}]
+  Opening the calculator.
+  $ galculator &
+
+> what's the weather like
+  [get_weather]
+  Which city? Tip: say “I live in …” and I'll remember it for next time.
+> Munich
+  [out_of_scope {"name":"Munich"}]
+  Checking the weather for Munich…
+  → Munich right now: overcast, 11°C, wind 10 km/h.
+  $ GET api.open-meteo.com/v1/forecast?latitude=48.13743&longitude=11.57549&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
+
+> what do you know about me
+  [recall_me]
+  I don't know anything about you yet. Tell me “my name is …” or “I live in …”.
+
+> hi, my name is Gab
+  [remember_me {"name":"Gab"}]
+  Nice to meet you, Gab. I'll remember your name, on this phone only.
+
+> I live in Munich
+  [remember_me {"place":"Munich"}]
+  Got it: you live in Munich. I'll use it for the weather.
+  → Found it: Munich, Bavaria, Germany. Saved on this phone, I'll use it for the weather and the time.
+  $ GET geocoding-api.open-meteo.com/v1/search?name=Munich
+
+> hello
+  [greet]
+  Hi Gab. What can I do for you?
+
+> what do you know about me
+  [recall_me]
+  Here is everything I know about you: your name is Gab, and you live in Munich, Bavaria, Germany. It's stored on this phone only.
+
+> what's the weather like
+  [get_weather]
+  Checking the weather for Munich…
+  → Munich right now: overcast, 11°C, wind 10 km/h.
+  $ GET api.open-meteo.com/v1/forecast?latitude=48.13743&longitude=11.57549&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
+
+> will it rain tomorrow?
+  [get_weather · date 2026-10-13]
+  Checking the weather for Munich…
+  → Tomorrow in Munich: light rain, 6 to 15°C, 70% chance of rain.
+  $ GET api.open-meteo.com/v1/forecast?latitude=48.13743&longitude=11.57549&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
+
+> weather in Lisbon this weekend
+  [get_weather {"place":"Lisbon"} · range 2026-10-17/2026-10-18]
+  Checking the weather for Lisbon…
+  → Lisbon, this weekend:
+    Saturday 17 October: rain, 6 to 14°C, 70% rain
+    Sunday 18 October: mostly clear, 7 to 15°C, 10% rain
+  $ GET api.open-meteo.com/v1/forecast?latitude=38.71667&longitude=-9.13333&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
+
+> what's the weather in Tokyo on friday
+  [get_weather {"place":"Tokyo"} · date 2026-10-16]
+  Checking the weather for Tokyo…
+  → Friday 16 October in Tokyo: light showers, 5 to 18°C, 70% chance of rain.
+  $ GET api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.69171&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=16
+
+> weather in Atlantis
+  [get_weather {"place":"Atlantis"}]
+  Checking the weather for Atlantis…
+  → I couldn't find a place called “Atlantis”.
+
+> what time is it in tokyo
+  [get_time {"place":"tokyo"}]
+  Looking up tokyo…
+  → In Tokyo it's 03:14 on Tuesday.
+  $ GET geocoding-api.open-meteo.com/v1/search?name=tokyo
+
+> what time is it in New York
+  [get_time {"place":"New York"}]
+  Looking up New York…
+  → In New York it's 14:14 on Monday.
+  $ GET geocoding-api.open-meteo.com/v1/search?name=New%20York
+
+> what time is it
+  [get_time]
+  It's 20:14.
+  $ date +%H:%M
+
+> weather in 3 weeks
+  [get_weather · date 2026-11-02]
+  I can only see 16 days ahead.
+
+> forget where I live
+  [forget_me]
+  OK, I've forgotten where you live.
+
+> where do I live
+  [recall_me]
+  I don't know where you live yet. Tell me “I live in …”.
+
+> forget everything about me
+  [forget_me]
+  Done. I don't remember anything about you anymore.
+
+> what's my name
+  [recall_me]
+  I don't know your name yet. Tell me “my name is …”.
+
+> i live in munich and my name is gab
+  [remember_me {"place":"munich","name":"gab"}]
+  Got it: you live in munich. I'll use it for the weather.
+  → Nice to meet you, Gab. I'll remember your name, on this phone only. Found it: Munich, Bavaria, Germany. Saved on this phone, I'll use it for the weather and the time.
+  $ GET geocoding-api.open-meteo.com/v1/search?name=munich
+
+> open the terminal and set a timer for 10 minutes
+  [set_timer {"app":"terminal"} · duration 10 min]
+  Opening the terminal.
+Timer set for 10 minutes. It rings at 20:24.
+  $ x-terminal-emulator & | systemd-run --user --on-active=600s notify-send Timer '10 minutes is up'
+
+> open the terminal and the browser
+  [open_app {"app":"terminal"}]
+  Opening the terminal.
+Opening the browser.
+  $ x-terminal-emulator & | x-www-browser &
+
+> set a timer and open firefox
+  [open_app {"app":"firefox"}]
+  How long? For example “10 minutes” or “1h30”.
+> 10 minutes
+  [set_timer · duration 10 min]
+  Timer set for 10 minutes. It rings at 20:24.
+Opening the Firefox browser.
+  $ systemd-run --user --on-active=600s notify-send Timer '10 minutes is up' | firefox &
+
+> set a timer and open firefox
+  [open_app {"app":"firefox"}]
+  How long? For example “10 minutes” or “1h30”.
+> cancel
+  [deny]
+  Cancelled.
+
+> create a folder called reports and open the browser
+  [create_folder {"name":"reports","app":"browser"}]
+  Done. “reports” is now in your home folder.
+Opening the browser.
+  $ mkdir -p $HOME/reports | x-www-browser &
+
+> make a folder called salt and pepper
+  [create_folder {"name":"salt"}]
+  Done. “salt” is now in your home folder.
+  $ mkdir -p $HOME/salt
+
+> shut down
+  [power {"power_action":"shut down"}]
+  Shut down the device now? Say yes to confirm or no to cancel.
+> yes
+  [affirm]
+  Shutting down.
+  $ sudo systemctl poweroff
+
+> restart the pi
+  [power {"power_action":"restart"}]
+  Restart the device now? Say yes to confirm or no to cancel.
+> no
+  [deny]
+  OK, I'll leave it running.
+
+> power
+  [power]
+  Shut down, restart or sleep?
+> sleep
+  [power {"power_action":"sleep"}]
+  Put the device to sleep now? Say yes to confirm or no to cancel.
+> yes
+  [affirm]
+  Going to sleep.
+  $ sudo systemctl suspend
+
+> turn the volume up
+  [adjust_volume {"direction":"up"}]
+  Volume up to 60%.
+  $ pactl set-sink-volume @DEFAULT_SINK@ +10%
+
+> volume to 30%
+  [adjust_volume {"level":"30%"}]
+  Volume set to 30%.
+  $ pactl set-sink-volume @DEFAULT_SINK@ 30%
+
+> it's too loud
+  [adjust_volume]
+  Volume down to 40%.
+  $ pactl set-sink-volume @DEFAULT_SINK@ -10%
+
+> mute
+  [adjust_volume {"direction":"mute"}]
+  Sound muted.
+  $ pactl set-sink-mute @DEFAULT_SINK@ 1
+
+> unmute
+  [adjust_volume {"direction":"unmute"}]
+  Sound back on, at 50%.
+  $ pactl set-sink-mute @DEFAULT_SINK@ 0
+
+> change the volume
+  [adjust_volume]
+  Up or down? You can also give a level, like 40%.
+> up
+  [greet {"direction":"up"}]
+  Volume up to 60%.
+  $ pactl set-sink-volume @DEFAULT_SINK@ +10%
+
+> brightness 40%
+  [adjust_brightness {"level":"40%"}]
+  Brightness set to 40%.
+  $ brightnessctl set 40%
+
+> make the screen darker
+  [adjust_brightness {"direction":"darker"}]
+  Brightness down to 70%.
+  $ brightnessctl set 10%-
+
+> dim the screen
+  [adjust_brightness {"direction":"dim"}]
+  Brightness down to 70%.
+  $ brightnessctl set 10%-
+
+> is the pi overheating?
+  [system_status]
+  (Simulated) Temperature: 52 °C, well below the 80 °C where the board starts throttling.
+  $ cat /sys/class/thermal/thermal_zone0/temp
+
+> how's the system doing
+  [system_status]
+  System overview (simulated values):
+Disk: 9.8 GB free of 29 GB (66% used).
+CPU: 11% busy, load 0.42 on 4 cores.
+Temperature: 52 °C, well below the 80 °C where the board starts throttling.
+Memory: 1.3 GB used of 3.8 GB.
+Network: Wi-Fi connected, IP 192.168.1.42.
+Uptime: 3 hours 12 minutes.
+  $ df -h / | uptime && top -bn1 | head -3 | cat /sys/class/thermal/thermal_zone0/temp | free -h | hostname -I && iwgetid -r | uptime -p
+
+> how much disk space is left
+  [system_status {"metric":"disk space"}]
+  (Simulated) Disk: 9.8 GB free of 29 GB (66% used).
+  $ df -h /
+
+> help
+  [help]
+  I can change the brightness, change the volume, create files, create folders, tell the date, tell the time, here or in another city, check the weather, open apps, open files and folders, shut down or restart, remember your name and where you live, set reminders, set timers and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
+
+> hello
+  [greet]
+  Hi Gab. What can I do for you?
+
+> thanks
+  [thanks]
+  You're welcome.
+
+> yes
+  [affirm]
+  OK. What would you like to do?
+
+> no
+  [deny]
+  OK. There's nothing to cancel.
+
+> create a folder
+  [create_folder]
+  What should I call the folder?
+
+> make a folder
+  [create_folder]
+  What should I call the folder?
+> drafts in documents
+  [create_file {"location":"documents"}]
+  Done. “drafts” is now in Documents.
+  $ mkdir -p $HOME/Documents/drafts
+
+> create a python file called main
+  [create_file {"file_type":"python","name":"main"}]
+  Created “main.py” in your home folder.
+  $ mkdir -p $HOME && touch $HOME/main.py
+
+> new file called notes
+  [create_file {"name":"notes"}]
+  Created “notes.txt” in your home folder. You didn't say which type, so I made a plain text file.
+  $ mkdir -p $HOME && touch $HOME/notes.txt
+
+> touch todo.txt
+  [create_file {"name":"todo.txt"}]
+  Created “todo.txt” in your home folder.
+  $ mkdir -p $HOME && touch $HOME/todo.txt
+
+> open budget.csv
+  [open_file {"name":"budget.csv"}]
+  Opening “budget.csv”.
+  $ xdg-open $HOME/budget.csv
+
+> open the notes file in documents
+  [open_file {"name":"notes","location":"documents"}]
+  Opening “notes” from Documents.
+  $ xdg-open $HOME/Documents/notes
+
+> open the documents folder
+  [open_file {"location":"documents"}]
+  Opening Documents.
+  $ xdg-open $HOME/Documents
+
+> open a file
+  [open_file]
+  Which file or folder should I open?
+
+> delete the reports folder
+  [out_of_scope {"name":"reports"}]
+  I didn't understand that. Say help to see what I can do.
+
+> what's the date
+  [get_date]
+  Today is Monday 12 October.
+
+> what day is next friday
+  [get_date · date 2026-10-16]
+  Next friday is Friday 16 October. If you meant the other one, that's Friday 23 October.
+
+> how many days until december 24
+  [get_date · date 2026-12-24]
+  73 days until Thursday 24 December.
+

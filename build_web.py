@@ -1,25 +1,13 @@
-"""Bundle model + runtime + agent into one self-contained page: web/index.html"""
-import io
+"""Bundle model + runtime + agent + skills into the offline PWA in docs/. Standard library only;
+the held-out numbers shown in the page come from the model (written by node train.js)."""
+import hashlib
 import json
-import re
-from contextlib import redirect_stdout
+import os
+import shutil
 
-import evaluate
-
-from nlu.dataset import load
-from train import TRAIN_FILES
-
-# Report only on test sentences that do not appear in any training file
-norm = lambda t: " ".join(t.lower().replace("?", "").split())
-seen = {norm(e["text"]) for p in TRAIN_FILES for e in load(p)}
-test = [e for e in load("data/test.md") if norm(e["text"]) not in seen]
-buf = io.StringIO()
-with redirect_stdout(buf):
-    evaluate.main(None, "models/model.json", examples=test)
-out = buf.getvalue()
-acc = re.search(r"= ([\d.]+)%", out).group(1)
-n = re.search(r"intent accuracy: \d+/(\d+)", out).group(1)
-f1 = re.search(r"F1=([\d.]+)", out).group(1)
+model = json.load(open("models/model.json"))
+ev = model["stats"]["eval"]
+acc, f1, n = ev["accuracy"], ev["slot_f1"], ev["n"]
 
 page = open("web/template.html").read()
 page = page.replace("/*MODEL*/", open("models/model.json").read().replace("</", "<\\/"))
@@ -57,12 +45,10 @@ page = page.replace("/*DATA*/", json.dumps(data).replace("</", "<\\/"))
 page = page.replace("/*WORKER_SRC*/", json.dumps(worker_src).replace("</", "<\\/"))
 page = page.replace("/*AGENT*/", open("web/agent.js").read())
 page = page.replace("/*INBOX*/", open("web/inbox.js").read())
-page = page.replace("/*EVAL*/", json.dumps({"accuracy": acc, "slot_f1": f1, "n": int(n)}))
-open("web/index.html", "w").write(page)
-print("web/index.html %.0f KB  (accuracy %s%%, slot F1 %s, n=%s)" % (len(page) / 1024, acc, f1, n))
+page = page.replace("/*EVAL*/", json.dumps({"accuracy": acc, "slot_f1": f1, "n": n}))
+print("page %.0f KB  (accuracy %s%%, slot F1 %s, n=%s)" % (len(page) / 1024, acc, f1, n))
 
 # PWA build: full document with manifest, icons and service worker
-import hashlib
 version = hashlib.sha1((page + open("pwa/manifest.webmanifest").read() + open("pwa/sw.template.js").read()).encode()).hexdigest()[:10]
 head = """<!doctype html>
 <html lang="en">
@@ -101,8 +87,6 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 """
-import os
-import shutil
 os.makedirs("docs", exist_ok=True)
 for f in ["manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable.png", "apple-touch-icon.png"]:
     shutil.copy("pwa/" + f, "docs/" + f)

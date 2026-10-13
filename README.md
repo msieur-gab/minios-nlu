@@ -6,12 +6,11 @@ Inspired by Snips NLU: no deep learning, no network, deterministic at runtime.
 
 - **Intent:** TF-IDF features (words, word pairs, character 3–4-grams) and a logistic regression.
 - **Slots:** a linear-chain CRF tagger (BIO labels).
-- **Training:** plain JavaScript, no dependencies (`web/trainer.js`). The same file trains in Node (`node train.js`) and in the browser, so the PWA can retrain itself on the phone. Weak weights are dropped and the rest stored as 1-byte numbers: 317 KB instead of 1,234 KB, with the same held-out accuracy.
+- **Training:** plain JavaScript, no dependencies (`web/trainer.js`). The same file trains in Node (`node train.js`) and in the browser, so the PWA can retrain itself on the phone. Weak weights are dropped and the rest stored as 1-byte numbers: 358 KB for 22 skills.
 - **Skills as folders:** every skill is `skills/<name>/`: a `skill.md` in plain Markdown (example sentences, the values it knows, the API request it makes, what it says) and, only where needed, a short `skill.js`. They are also the training data: `node skills.js` turns the examples into sentences. `web/agent.js` is the dialogue only (questions, confirmations, choices, several commands per sentence) and knows no skill by name; `web/services.js` holds what skills share (dates in words, folders, network, memory). See `skills/README.md`.
 - **Real APIs:** weather and the time in other places come from Open-Meteo (free, no key). Only the place name and its coordinates are sent; your name and place are stored on the device only.
 - **Inbox:** every sentence the agent can't handle lands in an inbox on the device (plus any reply you flag as wrong). For each one: add it to an existing skill (tap words, then pick which of the skill's declared values they are), make a new skill from it with the answer it should give, or mark it "not for me". Retrain on the phone, keep the trained model across reloads, and export what was taught: training lines for existing skills, and a draft `skills/<name>/skill.md` for each new skill, ready to commit.
-- **Runtime:** dependency-free Python and plain JavaScript, both reading the same exported `model.json`.
-- **Reference:** `train.py` still trains the same models with scikit-learn into `models/model_sklearn.json`, for comparison.
+- **Runtime:** dependency-free Python (`nlu/`, for the Pi) and plain JavaScript, both reading the same exported `model.json`. `python evaluate.py` checks the Python side against the test set.
 - **Dates, times, durations:** a rule-based parser (`web/entities.js`), not part of the model. It reads "next friday at 3pm", "in 2 days", "next year", "timer 1h30", "every weekday at 8" and flags what is ambiguous ("next friday" on a Monday, "at 9", "3/4") or already past, so the agent asks instead of guessing. Every skill that needs time shares it; adding one needs no retraining of this layer.
 - **Dialogue:** asks for missing slots, confirms risky actions (power), offers a choice when a date or time is ambiguous, abstains below a confidence threshold, and falls back on small dictionaries (apps, directions, metrics) when the model is unsure.
 
@@ -45,11 +44,12 @@ data/
   synth_*.md            externally generated batches, cleaned
   synth_moved.md        time requests that were labelled out_of_scope before the time skills
   test.md               handwritten held-out set
-  raw/                  batches as received, plus the cleaning log
+  skills.md             generated from skills/ (don't edit)
 nlu/
   features.py           tokenizer and features (mirrored in web/runtime.js)
   dataset.py            annotated Markdown parser
-  runtime.py            dependency-free inference
+  runtime.py            dependency-free inference (the Pi side)
+skills/                 one folder per skill: skill.md + optional skill.js (see skills/README.md)
 web/
   runtime.js            JS inference, same model.json
   trainer.js            JS training: TF-IDF + logistic regression (L-BFGS), CRF, pruning, export
@@ -57,11 +57,11 @@ web/
   entities.js           rule-based dates, times, durations, recurrences
   agent.js              dialogue: routes to skills, questions, confirmations, choices, sequences
   services.js           shared services for skills: dates in words, folders, network, memory
-  template.html         test page
+  template.html         the page; build_web.py fills in model, code and data
 pwa/                    PWA assets (manifest, icons, service worker template)
 docs/                   built PWA, served by GitHub Pages
-models/model.json       exported model
-DATASET_BRIEF.md        brief given to the model that generates training data
+models/model.json       exported model (with its held-out scores)
+tests/                  recorded API answers, expected dialogue transcript
 ```
 
 ## Data format
@@ -74,24 +74,16 @@ DATASET_BRIEF.md        brief given to the model that generates training data
 ## Commands
 
 ```
-pip install -r requirements-train.txt   # only for the Python reference tools
-python clean_batches.py          # clean raw external batches into data/synth_*.md
-python lint.py data/raw/x.md     # duplicates, conflicts, structure diversity
-node skills.js                   # compile the skill folders (train.js also does it)
-node train.js                    # train the shipped model (no dependencies), print held-out scores
-python train.py                  # optional reference: scikit-learn → models/model_sklearn.json
-python evaluate.py               # held-out metrics and error list
-python cv.py data/synth_x.md     # 5-fold before/after for a new dataset
-python build_web.py              # build web/index.html and the PWA in docs/
-node test_entities.js            # date/time parser against fixed phrases (TZ=Europe/Berlin)
-node test_dialogue.js            # scripted conversations through model + agent, fixed clock, recorded API answers
+node train.js                    # compile the skills, train the shipped model, print held-out scores
+python build_web.py              # build the PWA in docs/ (standard library only)
+TZ=Europe/Berlin node test_entities.js   # date/time parser against fixed phrases
+TZ=Europe/Berlin node test_dialogue.js   # replay scripted conversations; fails if a reply changed
+                                         # (--update accepts the new replies, -v prints them)
+python evaluate.py               # the Python runtime (Pi side) against the test set
 ```
 
-Training takes about 20 seconds on a laptop, in Node or in the browser (training files are listed in `data/manifest.json`). Inference runs in well under a millisecond per sentence.
+Training takes about a minute on a laptop, in Node or in the browser (training files are listed in `data/manifest.json`). Inference runs in well under a millisecond per sentence.
 
-| | size | intent accuracy | slot F1 |
-|---|---|---|---|
-| scikit-learn reference | 1,234 KB | 95.5% | 0.97 |
-| JavaScript trainer, pruned | 317 KB | 96.2% | 0.97 |
+Held-out, on the 144 handwritten test sentences that appear in no training file: intent accuracy 97.2%, slot F1 0.96.
 
-(held-out set of 157 handwritten sentences; the page shows the 124 that never appear in training)
+The scikit-learn reference trainer, the dataset cleaning and cross-validation scripts and the raw generated batches were removed on 13 October 2026; they are in the git history before that date.

@@ -7,7 +7,7 @@ module.exports = {
     if (!dur) return ctx.ask("duration", "ask");
     const end = new Date(ctx.now.getTime() + dur.seconds * 1000);
     const words = ctx.fmt.durWords(dur.seconds);
-    ctx.exec(`systemd-run --user --on-active=${dur.seconds}s notify-send "Timer" "${words} is up"`);
+    ctx.exec(`systemd-run --user --on-active=${dur.seconds}s notify-send Timer ${ctx.files.quote(words + " is up")}`);
     ctx.arm(end, ctx.say("ring", { dur: words }));
     return ctx.say("done", { dur: words, at: ctx.fmt.clock(end) });
   },

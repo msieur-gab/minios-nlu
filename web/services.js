@@ -59,8 +59,10 @@ const NLUServices = (() => {
     if (XDG[low]) return { path: "$HOME/" + XDG[low], label: XDG[low] };
     return { path: "$HOME/" + v, label: v };
   }
-  // a path made safe for the command line
-  const quote = p => (/[\s'"$`\\]/.test(p) ? '"' + p.replace(/(["\\`])/g, "\\$1") + '"' : p);
+  // text made safe for the command line: single quotes, so nothing in it ($, `, ;, &) is run.
+  // A path's leading $HOME stays outside the quotes so the shell still expands it.
+  const sq = t => (/^[\w./:-]+$/.test(t) ? t : "'" + t.replace(/'/g, "'\\''") + "'");
+  const quote = p => (p.startsWith("$HOME") ? "$HOME" + (p.length > 5 ? sq(p.slice(5)) : "") : sq(p));
 
 
   // ---------- network: the place lookup and the requests declared in skill.md ----------
