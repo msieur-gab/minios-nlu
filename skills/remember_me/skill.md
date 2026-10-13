@@ -3,6 +3,7 @@ skill: remember_me
 help: remember your name and where you live
 train_only: first, city
 samples: 8
+acts: yes
 ---
 # Remember me
 

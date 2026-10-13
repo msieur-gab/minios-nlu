@@ -9,6 +9,7 @@ start: 80
 set: "brightnessctl set {n}%"
 up: "brightnessctl set 10%+"
 down: "brightnessctl set 10%-"
+acts: yes
 ---
 # Brightness
 

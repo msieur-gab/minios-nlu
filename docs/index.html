@@ -1053,7 +1053,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "start": "80",
     "set": "brightnessctl set {n}%",
     "up": "brightnessctl set 10%+",
-    "down": "brightnessctl set 10%-"
+    "down": "brightnessctl set 10%-",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1278,7 +1279,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "up": "pactl set-sink-volume @DEFAULT_SINK@ +10%",
     "down": "pactl set-sink-volume @DEFAULT_SINK@ -10%",
     "mute": "pactl set-sink-mute @DEFAULT_SINK@ 1",
-    "unmute": "pactl set-sink-mute @DEFAULT_SINK@ 0"
+    "unmute": "pactl set-sink-mute @DEFAULT_SINK@ 0",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1524,7 +1526,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "create_file",
     "help": "create files (“new markdown file called notes”)",
     "samples": "12",
-    "train_only": "fname, fext, type, loc"
+    "train_only": "fname, fext, type, loc",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1691,7 +1694,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "create_folder",
     "help": "create folders (“make a folder called drafts in documents”)",
     "samples": "14",
-    "train_only": "folder, loc"
+    "train_only": "folder, loc",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1760,7 +1764,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
    "action": "say",
    "params": {
     "skill": "forget_me",
-    "samples": "10"
+    "samples": "10",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1776,6 +1781,9 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     ],
     "nothing": [
      "There was nothing to forget."
+    ],
+    "unsure": [
+     "Do you want me to forget what I know about you?"
     ]
    },
    "slots": null,
@@ -2327,7 +2335,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "help": "open apps (“open the terminal”)",
     "action": "run",
     "command": "{app} &",
-    "samples": "16"
+    "samples": "16",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -2505,7 +2514,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "open_file",
     "help": "open files and folders (“open budget.csv”)",
     "samples": "22",
-    "train_only": "fname, fext, folder, loc"
+    "train_only": "fname, fext, folder, loc",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -2754,7 +2764,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "remember_me",
     "help": "remember your name and where you live",
     "train_only": "first, city",
-    "samples": "8"
+    "samples": "8",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -2814,7 +2825,7 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "help": "set reminders (“remind me to call mum next friday at 3pm”)",
     "samples": "14",
     "train_only": "task, when",
-    "confidence": "0.7"
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -2884,7 +2895,8 @@ if (typeof module !== "undefined") module.exports = NLUServices;
     "skill": "set_timer",
     "help": "set timers (“timer 10 minutes”)",
     "train_only": "dur",
-    "samples": "10"
+    "samples": "10",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -3559,7 +3571,7 @@ return module.exports; })();
 // Commands are simulated: the trace shows what would run on the device.
 
 const THRESHOLD = 0.45;        // below this the agent abstains
-const SPLIT_CONFIDENCE = 0.7;  // each part of a multi-command sentence must be at least this sure
+const SURE = 0.7;              // below this, a skill that acts asks first, and a sentence isn't split into commands
 const ENT = typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js");
 const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./services.js");
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
@@ -3651,7 +3663,7 @@ class Agent {
     if (this.pending) return null;
     const parts = text.split(/\s*(?:,\s*)?\b(?:and then|and also|then|and)\b\s*|\s*;\s*/i).map(p => p.trim()).filter(Boolean);
     if (parts.length < 2 || parts.length > 4) return null;
-    const ok = r => ACTIONABLE.has(r.intent) && r.confidence >= SPLIT_CONFIDENCE;
+    const ok = r => ACTIONABLE.has(r.intent) && r.confidence >= SURE;
     const rs = parts.map(p => this.nlu.parse(p));
     for (let i = 1; i < parts.length; i++) {
       if (ok(rs[i])) continue;
@@ -3750,11 +3762,12 @@ class Agent {
       trace.push({ type: "state", text: "learned skill " + r.intent + ", no skill folder" });
       return { trace, reply: fill("learned", { intent: r.intent.replace(/_/g, " "), got: got ? " (" + got + ")" : "" }) };
     }
-    // a skill can ask for more certainty than the global threshold: in between, ask first
-    const sure = +(SKILLS[r.intent].params.confidence || 0);
-    if (r.confidence < sure) {
+    // a skill that changes something (acts: yes) asks first when the model isn't clearly sure,
+    // unless it's about to ask for a missing value anyway (nothing happens without that answer)
+    const sk = SKILLS[r.intent];
+    if (sk.params.acts === "yes" && r.confidence < SURE && !(sk.slots && this.fillSlots(sk, r.slots, []).ask)) {
       this.pending = { type: "confirm", intent: r.intent, slots: r.slots, what: r.intent, sentence: text };
-      trace.push({ type: "state", text: "confidence " + r.confidence.toFixed(2) + " < " + sure + " for " + r.intent + ", asking first" });
+      trace.push({ type: "state", text: "confidence " + r.confidence.toFixed(2) + " < " + SURE + " for " + r.intent + ", which acts: asking first" });
       return { trace, reply: fill(has(r.intent + ".unsure") ? r.intent + ".unsure" : "unsure", { what: doing(SKILLS[r.intent]) }) };
     }
     return this.run(r.intent, r.slots, trace);

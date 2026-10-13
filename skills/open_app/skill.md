@@ -4,6 +4,7 @@ help: open apps (“open the terminal”)
 action: run
 command: "{app} &"
 samples: 16
+acts: yes
 ---
 # Open an app
 

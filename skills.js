@@ -94,7 +94,8 @@ const USES = ["network"];
 function validate(s) {
   const err = msg => { throw new Error(`${s.file}: ${msg}`); };
   const p = s.params;
-  if (p.confidence !== undefined && !(+p.confidence > 0 && +p.confidence < 1)) err(`confidence must be between 0 and 1, not “${p.confidence}”`);
+  if (p.confidence !== undefined) err("confidence: is replaced by acts: yes (the skill changes something, so it asks first when unsure)");
+  if (p.acts !== undefined && !["yes", "no"].includes(p.acts)) err(`acts: yes or no, not “${p.acts}”`);
   for (const u of (p.uses || "").split(/\s*,\s*/).filter(Boolean)) if (!USES.includes(u)) err(`uses: unknown “${u}” (known: ${USES.join(", ")})`);
   if (p.role && !ROLES.includes(p.role)) err(`role: unknown “${p.role}” (known: ${ROLES.join(", ")})`);
   const slots = s.slots || {};

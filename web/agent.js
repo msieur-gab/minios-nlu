@@ -4,7 +4,7 @@
 // Commands are simulated: the trace shows what would run on the device.
 
 const THRESHOLD = 0.45;        // below this the agent abstains
-const SPLIT_CONFIDENCE = 0.7;  // each part of a multi-command sentence must be at least this sure
+const SURE = 0.7;              // below this, a skill that acts asks first, and a sentence isn't split into commands
 const ENT = typeof NLUEntities !== "undefined" ? NLUEntities : require("./entities.js");
 const SV = typeof NLUServices !== "undefined" ? NLUServices : require("./services.js");
 const SKILLS = (typeof SKILLS_DATA !== "undefined" ? SKILLS_DATA : require("./skills.json")).skills;
@@ -96,7 +96,7 @@ class Agent {
     if (this.pending) return null;
     const parts = text.split(/\s*(?:,\s*)?\b(?:and then|and also|then|and)\b\s*|\s*;\s*/i).map(p => p.trim()).filter(Boolean);
     if (parts.length < 2 || parts.length > 4) return null;
-    const ok = r => ACTIONABLE.has(r.intent) && r.confidence >= SPLIT_CONFIDENCE;
+    const ok = r => ACTIONABLE.has(r.intent) && r.confidence >= SURE;
     const rs = parts.map(p => this.nlu.parse(p));
     for (let i = 1; i < parts.length; i++) {
       if (ok(rs[i])) continue;
@@ -195,11 +195,12 @@ class Agent {
       trace.push({ type: "state", text: "learned skill " + r.intent + ", no skill folder" });
       return { trace, reply: fill("learned", { intent: r.intent.replace(/_/g, " "), got: got ? " (" + got + ")" : "" }) };
     }
-    // a skill can ask for more certainty than the global threshold: in between, ask first
-    const sure = +(SKILLS[r.intent].params.confidence || 0);
-    if (r.confidence < sure) {
+    // a skill that changes something (acts: yes) asks first when the model isn't clearly sure,
+    // unless it's about to ask for a missing value anyway (nothing happens without that answer)
+    const sk = SKILLS[r.intent];
+    if (sk.params.acts === "yes" && r.confidence < SURE && !(sk.slots && this.fillSlots(sk, r.slots, []).ask)) {
       this.pending = { type: "confirm", intent: r.intent, slots: r.slots, what: r.intent, sentence: text };
-      trace.push({ type: "state", text: "confidence " + r.confidence.toFixed(2) + " < " + sure + " for " + r.intent + ", asking first" });
+      trace.push({ type: "state", text: "confidence " + r.confidence.toFixed(2) + " < " + SURE + " for " + r.intent + ", which acts: asking first" });
       return { trace, reply: fill(has(r.intent + ".unsure") ? r.intent + ".unsure" : "unsure", { what: doing(SKILLS[r.intent]) }) };
     }
     return this.run(r.intent, r.slots, trace);

@@ -3,7 +3,7 @@ skill: set_reminder
 help: set reminders (“remind me to call mum next friday at 3pm”)
 samples: 14
 train_only: task, when
-confidence: 0.7          # it sets something that will ring later: below this, ask first
+acts: yes
 ---
 # Reminders
 

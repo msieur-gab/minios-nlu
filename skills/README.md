@@ -51,12 +51,12 @@ GET https://api.open-meteo.com/v1/forecast
 - done: {place}: {sky}, {temp}°C.
 ```
 
-## Slots, confidence, network
+## Slots, acts, network
 
 ```markdown
 ---
 skill: set_reminder
-confidence: 0.7      # below this (but above the global 0.45), ask “Do you want…?” first
+acts: yes            # it changes something: when the model isn't clearly sure, ask “Do you want…?” first
 uses: network        # only for skills that can't answer anything offline (get_weather)
 ---
 ## Slots
@@ -90,9 +90,12 @@ A list slot's `ask:` and `invalid:` replies can use `{choices}` (the list's name
 A script still asks by itself only when the rule isn't one slot: a file *or* a folder
 (open_file), a level *or* a direction (volume), a time that should become a reminder (timer).
 
-**confidence.** How sure the model must be to act straight away. Between the global
-threshold and this, the agent asks first, with the skill's `unsure` reply or a generic
-“Do you want me to {help line}?”. Leave it out and the skill acts at the global threshold.
+**acts: yes.** The skill changes something (makes a file, sets a reminder, opens an app,
+changes the volume, saves or forgets something). Below 0.7 confidence, the agent asks first,
+with the skill's `unsure` reply or a generic “Do you want me to {help line}?”. Above it, or
+for skills that only answer (time, weather, help), it acts at the global 0.45. No question
+when the skill is about to ask for a missing value anyway. Leave it off a skill that already
+confirms every time (power).
 
 **uses: network.** When the device is offline, or the request fails, the agent answers “I
 need a network connection to {help line}.” A skill's own `offline` reply still wins (get_time

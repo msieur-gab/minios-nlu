@@ -15,7 +15,10 @@ GitHub Pages.
   - `## Slots`: each value's type (`text`, `place`, `datetime`, `duration`, `list <values>`),
     whether it's `required`, the `ask:` and `invalid:` replies, `default: home`, and for lists
     `guess` (find the list's words anywhere in the sentence) and `ignore:` words.
-  - `confidence:` per skill. Between the global 0.45 and this, the agent asks first.
+  - `acts: yes` for skills that change something: below 0.7 confidence they ask "Do you want
+    me to …?" first (not when they're about to ask for a missing value anyway). One rule, one
+    threshold, replacing the per-skill `confidence:` number (13 October). Power has no `acts`:
+    it confirms every time.
   - `uses: network`: offline or failed call → "I need a network connection to …".
   - `role: yes / no / fallback` for affirm, deny and out_of_scope.
   Format guide: `skills/README.md`.
@@ -124,8 +127,8 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 - **Decide the Pi side before writing Python.** A Python agent means porting `agent.js`,
   `entities.js`, `services.js` and every `skill.js` (about 1,400 lines) and keeping them in step.
   Alternative: one brain in JS, and the Pi as a thin executor of declared commands.
-- **No new `skill.md` fields** without removing one. Per-skill `confidence:` is the weakest
-  (tuned on 3–9 test sentences per skill); one rule for actionable skills could replace it.
+- **No new `skill.md` fields** without removing one. Done for per-skill `confidence:`, replaced
+  by `acts: yes` and one threshold (0.7, the same one that decides splitting a sentence).
 - **Several commands per sentence:** keep, don't extend (source of the "salt and pepper" gap).
 
 ## Branches

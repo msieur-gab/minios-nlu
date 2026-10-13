@@ -3,6 +3,7 @@ skill: set_timer
 help: set timers (“timer 10 minutes”)
 train_only: dur
 samples: 10
+acts: yes
 ---
 # Timer
 

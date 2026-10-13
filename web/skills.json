@@ -15,7 +15,8 @@
     "start": "80",
     "set": "brightnessctl set {n}%",
     "up": "brightnessctl set 10%+",
-    "down": "brightnessctl set 10%-"
+    "down": "brightnessctl set 10%-",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -240,7 +241,8 @@
     "up": "pactl set-sink-volume @DEFAULT_SINK@ +10%",
     "down": "pactl set-sink-volume @DEFAULT_SINK@ -10%",
     "mute": "pactl set-sink-mute @DEFAULT_SINK@ 1",
-    "unmute": "pactl set-sink-mute @DEFAULT_SINK@ 0"
+    "unmute": "pactl set-sink-mute @DEFAULT_SINK@ 0",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -486,7 +488,8 @@
     "skill": "create_file",
     "help": "create files (“new markdown file called notes”)",
     "samples": "12",
-    "train_only": "fname, fext, type, loc"
+    "train_only": "fname, fext, type, loc",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -653,7 +656,8 @@
     "skill": "create_folder",
     "help": "create folders (“make a folder called drafts in documents”)",
     "samples": "14",
-    "train_only": "folder, loc"
+    "train_only": "folder, loc",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -722,7 +726,8 @@
    "action": "say",
    "params": {
     "skill": "forget_me",
-    "samples": "10"
+    "samples": "10",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -738,6 +743,9 @@
     ],
     "nothing": [
      "There was nothing to forget."
+    ],
+    "unsure": [
+     "Do you want me to forget what I know about you?"
     ]
    },
    "slots": null,
@@ -1289,7 +1297,8 @@
     "help": "open apps (“open the terminal”)",
     "action": "run",
     "command": "{app} &",
-    "samples": "16"
+    "samples": "16",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1467,7 +1476,8 @@
     "skill": "open_file",
     "help": "open files and folders (“open budget.csv”)",
     "samples": "22",
-    "train_only": "fname, fext, folder, loc"
+    "train_only": "fname, fext, folder, loc",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1716,7 +1726,8 @@
     "skill": "remember_me",
     "help": "remember your name and where you live",
     "train_only": "first, city",
-    "samples": "8"
+    "samples": "8",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1776,7 +1787,7 @@
     "help": "set reminders (“remind me to call mum next friday at 3pm”)",
     "samples": "14",
     "train_only": "task, when",
-    "confidence": "0.7"
+    "acts": "yes"
    },
    "request": null,
    "answer": {},
@@ -1846,7 +1857,8 @@
     "skill": "set_timer",
     "help": "set timers (“timer 10 minutes”)",
     "train_only": "dur",
-    "samples": "10"
+    "samples": "10",
+    "acts": "yes"
    },
    "request": null,
    "answer": {},

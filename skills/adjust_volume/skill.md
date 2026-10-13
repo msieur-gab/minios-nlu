@@ -10,6 +10,7 @@ up: "pactl set-sink-volume @DEFAULT_SINK@ +10%"
 down: "pactl set-sink-volume @DEFAULT_SINK@ -10%"
 mute: "pactl set-sink-mute @DEFAULT_SINK@ 1"
 unmute: "pactl set-sink-mute @DEFAULT_SINK@ 0"
+acts: yes
 ---
 # Volume
 

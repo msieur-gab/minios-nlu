@@ -3,6 +3,7 @@ skill: open_file
 help: open files and folders (“open budget.csv”)
 samples: 22
 train_only: fname, fext, folder, loc
+acts: yes
 ---
 # Open a file or folder
 

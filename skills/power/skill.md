@@ -3,6 +3,7 @@ skill: power
 help: shut down or restart (asks first)
 samples: 20
 train_only: power
+# no acts: yes — this skill asks for a yes itself, every time
 ---
 # Power
 
