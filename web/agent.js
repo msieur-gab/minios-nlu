@@ -239,7 +239,7 @@ class Agent {
       const at = rest.toLowerCase().lastIndexOf(v.toLowerCase());
       if (at > 0) { rest = rest.slice(0, at).replace(/\s+(in|inside|on|under|within|to|at)(\s+(the|my))?\s*$/i, ""); extra[k] = v; }
     }
-    const value = cleanValue(rest.replace(/^(please\s+)?(call it|name it|let'?s call it|it'?s|it is|its|name|called|named|use|make it|open|launch|start|run|fire up|i('?m| am)? (start(ing)? |leav(e|ing) |going |coming )?(from|at|to)|start(ing)? from|from|to)\s+/i, ""));
+    const value = cleanValue(rest.replace(/^(please\s+)?(call it|name it|let'?s call it|it'?s|it is|its|name|called|named|use|make it|open|launch|start|run|fire up)\s+/i, ""));
     if (!value) { trace.push({ type: "state", text: "still waiting for " + p.need }); return { trace, reply: fill("empty_value") }; }
     this.pending = null;
     const secret = SKILLS[p.intent] && SKILLS[p.intent].slots && (SKILLS[p.intent].slots[p.need] || {}).type === "secret";

@@ -155,6 +155,22 @@
   [open_app]
   Which app? I can open the terminal, browser, Firefox browser, Chromium browser, file manager, text editor, calculator or settings.
 
+> create a folder
+  [create_folder]
+  What should I call the folder?
+> to do list
+  [help]
+  Done. “to do list” is now in your home folder.
+  $ mkdir -p $HOME'/to do list'
+
+> make a file
+  [create_file]
+  What should I call the file?
+> to read
+  [open_file]
+  Created “to read.txt” in your home folder. You didn't say which type, so I made a plain text file.
+  $ mkdir -p $HOME && touch $HOME'/to read.txt'
+
 > open an app
   [open_app]
   Which app? I can open the terminal, browser, Firefox browser, Chromium browser, file manager, text editor, calculator or settings.

@@ -43,6 +43,9 @@ const CONVERSATIONS = [
   ["make a folder called Monday in Schedule"],
   ["open firefox"],
   ["launch the thing"],
+  // answers keep a leading "to" or "from": it's part of the name
+  ["create a folder", "to do list"],
+  ["make a file", "to read"],
   ["open an app", "calculator"],
   // memory + API skills (network answers are recorded, see tests/fixtures.js)
   ["what's the weather like", "Munich"],
