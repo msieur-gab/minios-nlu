@@ -106,6 +106,10 @@ const CONVERSATIONS = [
   ["what's the date"],
   ["what day is next friday"],
   ["how many days until december 24"],
+  // pushing data: a POST declared in skill.md, a secret asked once and kept on the device
+  ["send buy milk to my phone", "gab-workshop-7f3"],
+  ["ping my phone saying the glue is dry"],
+  ["send something to my phone", "check the oven"],
 ];
 const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)
 const UPDATE = process.argv.includes("--update"), VERBOSE = process.argv.includes("-v");

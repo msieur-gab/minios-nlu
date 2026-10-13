@@ -13,14 +13,15 @@ from the date parser ("tomorrow", "on friday", "this weekend").
 
 How it works: the request below is everything sent to the weather service. `{place.lat}`
 and `{place.lon}` come from the agent's place lookup, which turns a city name into
-coordinates. "Weather now" needs nothing more than the Answer section; skill.js only
-adds the forecast: finding the asked-for day(s) in the 16 days that come back.
+coordinates. The answer comes from the fields listed under Answer: the current weather, or,
+when the sentence names a day, that day's row in the 16-day forecast (`{date}` picks it).
+There is no skill.js: this file is the whole skill.
 
 Privacy: the place name and its coordinates are sent to Open-Meteo. Nothing else is.
 
 ## Slots
 - place: place, required, ask: ask_place, default: home
-- day: datetime
+- day: datetime, within: 15 days, past: past, too_far: too_far
 
 ## Request
 GET https://api.open-meteo.com/v1/forecast
@@ -35,6 +36,10 @@ GET https://api.open-meteo.com/v1/forecast
 - temp: current.temperature_2m round
 - wind: current.wind_speed_10m round
 - sky: current.weather_code → sky
+- min: daily.temperature_2m_min[daily.time = {date}] round
+- max: daily.temperature_2m_max[daily.time = {date}] round
+- rain: daily.precipitation_probability_max[daily.time = {date}]
+- sky: daily.weather_code[daily.time = {date}] → sky
 
 ## Examples
 - what's the weather{ like|}{ today| now|}{?|}
@@ -139,9 +144,10 @@ GET https://api.open-meteo.com/v1/forecast
 - 99 → thunderstorm with heavy hail
 
 ## Replies
-- now: {place} right now: {sky}, {temp}°C, wind {wind} km/h.
+- done: {place} right now: {sky}, {temp}°C, wind {wind} km/h.
 - day: {when} in {place}: {sky}, {min} to {max}°C, {rain}% chance of rain.
-- days: {place}, {phrase}:
+- days: {place}, {when}:
+- line: {when}: {sky}, {min} to {max}°C, {rain}% rain
 - ask_place: Which city? Tip: say “I live in …” and I'll remember it for next time.
 - not_found: I couldn't find a place called “{place}”.
 - too_far: I can only see 16 days ahead.

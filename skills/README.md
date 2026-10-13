@@ -75,6 +75,7 @@ script runs, so `skill.js` gets `ctx.slots.when` ready to use and never asks by 
 | `datetime` | a date, time, range or repeat from the date parser |
 | `duration` | a duration from the date parser (“10 minutes”, “1h30”) |
 | `list app` | an entry of `## Values: app`; the script gets the whole entry (`.key`, `.out`) |
+| `secret` | asked once, then kept on the device (an API key, a private topic): never in the model, never shown in the trace. Always `required` |
 
 | option | |
 |---|---|
@@ -83,6 +84,7 @@ script runs, so `skill.js` gets `ctx.slots.when` ready to use and never asks by 
 | `default: home` | the place the person told the agent they live in |
 | `guess` | list slots: when the model marked nothing, look for the list's words in the whole sentence (“it's too loud” → down) |
 | `ignore: app window` | list slots: words dropped from the end before matching (“the terminal app”) |
+| `within: 15 days` | datetime slots: the days a skill can answer for, from today. A day before today gets the `past:` reply, one beyond the window the `too_far:` reply (both required with it) |
 
 A list slot's `ask:` and `invalid:` replies can use `{choices}` (the list's names) and `{value}`
 (what was said). The words the model marked, before filling, are in `ctx.raw`.
@@ -114,17 +116,51 @@ an undeclared `{slot}`, or a list slot names a list that doesn't exist.
 **Values.** `key: other, words → output`. People say the words; the output is what the
 skill uses (a command, a description…).
 
-**Request.** The API call, all of it: method and URL, then one line per query parameter.
-`{slot}` inserts a value from the sentence. `{place.lat}`, `{place.lon}` and
-`{place.timezone}` make the agent look the place up first.
+**Request.** The API call, all of it: `GET`, `POST`, `PUT`, `PATCH` or `DELETE` and the URL,
+then one line per value sent:
+
+| line | goes into |
+|---|---|
+| `- name: value` | the query string (`?name=value`) |
+| `- body.name: value` | a JSON body; dots nest (`body.item.title` → `{"item":{"title":…}}`) |
+| `- header.Name: value` | a header (`header.Authorization: Bearer {key}`) |
+
+`{slot}` inserts a value from the sentence: a list entry's output, a date's ISO form, else
+the words. `{place.lat}`, `{place.lon}` and `{place.timezone}` make the agent look the place
+up first. Only declared slots can be used (checked when compiling). Put keys and private
+names in a `secret` slot, never in the file: the trace shows `•••` instead.
+
+```markdown
+## Slots
+- text: text, required, ask: ask_text
+- topic: secret, required, ask: ask_topic
+
+## Request
+POST https://ntfy.sh/
+- body.topic: {topic}
+- body.message: {text}
+```
 
 **Answer.** Which fields of the response become reply values: a path into the JSON,
-`round` for whole numbers, `→ list` to translate a code through a values list.
+`round` for whole numbers, `→ list` to translate a code through a values list. A path can
+pick an array item by a value in another array: `daily.temperature_2m_max[daily.time = {date}]`.
+`{date}` makes it a per-day line: read once for each day of the skill's datetime slot. A name
+may appear twice, once for “now” and once per day (`sky` in get_weather).
 
 **Replies.** `name: variant | variant`, one picked at random, `{value}` filled in.
 
-A skill with a Request and no script simply replies `checking`, then `done` (or
-`not_found` if the place doesn't exist). That is enough for many API skills.
+A skill with a Request and no script replies `checking`, then:
+
+| reply | when |
+|---|---|
+| `done` | no day asked, or no per-day Answer lines |
+| `day` | one day; `{when}` is “tomorrow”, “Friday 16 October”… |
+| `days` then `line` per day | a range (“this weekend”, up to a week); `{when}` in `days` is the words said |
+| `not_found` | the place doesn't exist (skills with a place slot) |
+| `failed` | optional: the service answered with an error (`{status}`) |
+
+Weather (pull) and send_to_phone (push) are both written this way, with no skill.js. The
+compiler checks that the replies a skill needs are there.
 
 ## Running a command instead
 

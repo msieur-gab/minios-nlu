@@ -2354,6 +2354,189 @@
 - we're now staying in [Montreal](place)
 - we're now living in [Kuala Lumpur](place)
 
+## intent: send_to_phone
+- send [the parcel is at the neighbour's](text) to my phone please
+- send [check the oven](text) to my phone
+- forward [turn off the heater in the shed](text) to my phone please
+- forward [put the bins out](text) to my phone please
+- push [lock the back door](text) to my phone please
+- forward [pay the electricity bill](text) to my phone please
+- forward [the backup finished](text) to my phone please
+- forward [book the dentist](text) to my phone
+- push [the kiln is cooling down](text) to my phone
+- forward [the delivery arrives at noon](text) to my phone
+- push [sand the second coat tomorrow](text) to my phone
+- push [the oil needs another hour to cure](text) to my phone please
+- push [sand the second coat tomorrow](text) to my phone please
+- push [book the dentist](text) to my phone please
+- push [don't forget the charger](text) to my phone please
+- forward [the oil needs another hour to cure](text) to my phone please
+- forward [the dishwasher is done](text) to my phone please
+- push [meeting moved to Thursday](text) to my phone please
+- send a note to my phone: [water the plants](text)
+- send a reminder to my phone [pick up the kids at 5](text)
+- push a reminder to my phone [bring the umbrella](text)
+- send a message to my phone: [sand the second coat tomorrow](text)
+- send a reminder to my phone: [the router needs a restart](text)
+- send a reminder to my phone: [water the plants](text)
+- push a note to my phone: [sand the second coat tomorrow](text)
+- send a reminder to my phone: [photos are uploaded](text)
+- push a reminder to my phone [feed the cat](text)
+- send a message to my phone: [book the dentist](text)
+- send a note to my phone [the door code is in the drawer](text)
+- push a message to my phone [buy milk](text)
+- send a message to my phone: [feed the cat](text)
+- push a reminder to my phone [the kiln is cooling down](text)
+- send a reminder to my phone [the kiln is cooling down](text)
+- push a message to my phone [order more cedar boards](text)
+- push a reminder to my phone: [meeting moved to Thursday](text)
+- send me a notification that says [the backup finished](text)
+- push a note saying [grab bread on the way home](text)
+- push me a message that says [bring the umbrella](text)
+- send me a message saying [the parcel is at the neighbour's](text)
+- send me a notification saying [photos are uploaded](text)
+- send a notification saying [dinner is ready](text)
+- push me a message saying [lock the back door](text)
+- push a note saying [start the slow cooker](text)
+- send a notification saying [put the bins out](text)
+- send a message that says [water the plants](text)
+- push me a notification that says [pick up the kids at 5](text)
+- push a message that says [start the slow cooker](text)
+- send me a notification saying [the bus is late](text)
+- push a notification saying [the dishwasher is done](text)
+- push a notification saying [don't forget the charger](text)
+- push me a note that says [clamps are on the bench](text)
+- send a notification saying [feed the cat](text)
+- text my phone: [the backup finished](text)
+- ping my phone [charge the drill batteries](text)
+- ping my phone that [the door code is in the drawer](text)
+- message my phone that [the printer is out of paper](text)
+- text my phone with [the printer is out of paper](text)
+- ping my phone with [meeting moved to Thursday](text)
+- message my phone that [the door code is in the drawer](text)
+- text my phone: [the bus is late](text)
+- message my phone with [feed the cat](text)
+- ping my phone: [I'm on my way](text)
+- ping my phone: [i'm on my way](text)
+- ping my phone: [the dishwasher is done](text)
+- notify my phone saying [dinner is ready](text)
+- message my phone: [pay the electricity bill](text)
+- notify my phone with [the train is cancelled](text)
+- ping my phone [start the slow cooker](text)
+- text my phone [call the bank back](text)
+- notify my phone that [the dishwasher is done](text)
+- notify my phone: [dinner is ready](text)
+- tell me on my phone to [put the bins out](text)
+- notify me on my phone that [buy milk](text)
+- remind me on my phone that [clamps are on the bench](text)
+- notify me on my phone to [turn off the heater in the shed](text)
+- tell me on my phone [sand the second coat tomorrow](text)
+- tell me on my phone that [meeting moved to Thursday](text)
+- remind me on my phone that [the router needs a restart](text)
+- tell me on my phone to [the router needs a restart](text)
+- notify me on my phone to [the oil needs another hour to cure](text)
+- notify me on my phone that [ask the neighbours about Saturday](text)
+- notify me on my phone that [ask the neighbours about saturday](text)
+- notify me on my phone [the router needs a restart](text)
+- remind me on my phone [check the oven](text)
+- notify me on my phone [the paint is dry](text)
+- remind me on my phone that [photos are uploaded](text)
+- notify me on my phone to [book the dentist](text)
+- notify me on my phone to [bring the umbrella](text)
+- tell me on my phone [bring the drill to the workshop](text)
+- remind me on my phone [feed the cat](text)
+- push me a notification with [the dishwasher is done](text)
+- send me a push that says [water the plants](text)
+- push me a note with [turn off the heater in the shed](text)
+- send me a ping that says [turn off the heater in the shed](text)
+- send me a ping with [book the dentist](text)
+- send me a note saying [the door code is in the drawer](text)
+- push me a ping that says [I'm on my way](text)
+- push me a notification with [call the plumber](text)
+- push me a ping saying [grab bread on the way home](text)
+- push me a ping that says [the paint is dry](text)
+- push me a ping that says [book the dentist](text)
+- send me a notification with [lock the back door](text)
+- push me a push saying [the backup finished](text)
+- send me a ping with [clamps are on the bench](text)
+- send me a note that says [return the library books](text)
+- push me a ping saying [meeting moved to Thursday](text)
+- send me a push saying [the paint is dry](text)
+- push me a ping that says [clamps are on the bench](text)
+- can you send [the printer is out of paper](text) to my phone?
+- can you send [the door code is in the drawer](text) to my phone?
+- can you send [water the plants](text) to my phone
+- could you send [water the plants](text) to my phone
+- can you send [dinner is ready](text) to my phone
+- could you send [the paint is dry](text) to my phone?
+- can you send [the parcel is at the neighbour's](text) to my phone
+- could you send [check the oven](text) to my phone
+- can you send [the kiln is cooling down](text) to my phone?
+- can you send [pick up the kids at 5](text) to my phone?
+- can you send [ask the neighbours about Saturday](text) to my phone
+- can you send [ask the neighbours about saturday](text) to my phone
+- could you send [pay the electricity bill](text) to my phone
+- can you send [call the bank back](text) to my phone?
+- could you send [turn off the heater in the shed](text) to my phone
+- could you send [return the library books](text) to my phone
+- can you send [bring the umbrella](text) to my phone
+- can you send [book the dentist](text) to my phone
+- put [call the plumber](text) on my phone
+- put [book the dentist](text) on my phone
+- put [order more cedar boards](text) on my phone
+- put [I'm on my way](text) on my phone
+- push [put the bins out](text) on my phone
+- push [the router needs a restart](text) on my phone
+- push [the train is cancelled](text) on my phone
+- put [feed the cat](text) on my phone
+- put [return the library books](text) on my phone
+- put [pay the electricity bill](text) on my phone
+- put [the parcel is at the neighbour's](text) on my phone
+- push [order more cedar boards](text) on my phone
+- put [the delivery arrives at noon](text) on my phone
+- put [the bus is late](text) on my phone
+- put [lock the back door](text) on my phone
+- send that to my phone
+- push that to my phone
+- push something to my phone
+- send something to my phone
+- send a message to my phone
+- push a note to my phone
+- push a message to my phone
+- send a note to my phone
+- ping my phone please
+- notify my phone
+- notify my phone please
+- ping my phone
+- send me a notification
+- give me a notification
+- give me a ping on my phone
+- send me a push notification
+- send me a push notification on my phone
+- give me a push notification
+- send me a notification on my phone
+- send me a ping on my phone
+- give me a push notification on my phone
+- give me a notification on my phone
+- message me on my phone [the train is cancelled](text)
+- notify me on my phone [the train is cancelled](text)
+- notify me on my phone [the oil needs another hour to cure](text)
+- notify me on my phone [ask the neighbours about Saturday](text)
+- notify me on my phone [ask the neighbours about saturday](text)
+- message me on my phone [the oil needs another hour to cure](text)
+- message me on my phone [meeting moved to Thursday](text)
+- message me on my phone [lock the back door](text)
+- message me on my phone: [call the plumber](text)
+- notify me on my phone [water the plants](text)
+- message me on my phone [water the plants](text)
+- message me on my phone [the door code is in the drawer](text)
+- notify me on my phone [bring the umbrella](text)
+- notify me on my phone [clamps are on the bench](text)
+- notify me on my phone [sand the second coat tomorrow](text)
+- notify me on my phone [the parcel is at the neighbour's](text)
+- notify me on my phone [turn off the heater in the shed](text)
+- notify me on my phone [the kiln is cooling down](text)
+
 ## intent: set_reminder
 - remind me to [call mum](task) in 10 minutes
 - remind me to [call mum](task) next tuesday afternoon

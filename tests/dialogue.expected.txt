@@ -404,7 +404,7 @@ Uptime: 3 hours 12 minutes.
 
 > help
   [help]
-  I can change the brightness, change the volume, create files, create folders, tell the date, tell the time, here or in another city, check the weather, open apps, open files and folders, shut down or restart, remember your name and where you live, set reminders, set timers and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
+  I can change the brightness, change the volume, create files, create folders, tell the date, tell the time, here or in another city, check the weather, open apps, open files and folders, shut down or restart, remember your name and where you live, send a message to your phone, set reminders, set timers and check the system. Try “make a folder called drafts in documents”, “remind me to call mum next friday at 3pm”, “weather tomorrow” or “I live in Munich”.
 
 > hello
   [greet]
@@ -483,4 +483,28 @@ Uptime: 3 hours 12 minutes.
 > how many days until december 24
   [get_date · date 2026-12-24]
   73 days until Thursday 24 December.
+
+> send buy milk to my phone
+  [send_to_phone {"text":"buy milk"}]
+  Which ntfy topic should I send to? Subscribe to it in the ntfy app first; I'll keep it on this device.
+> gab-workshop-7f3
+  [out_of_scope]
+  Sending it to your phone…
+  → Sent to your phone: “buy milk”.
+  $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"buy milk"}
+
+> ping my phone saying the glue is dry
+  [send_to_phone {"text":"the glue is dry"}]
+  Sending it to your phone…
+  → Sent to your phone: “the glue is dry”.
+  $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"the glue is dry"}
+
+> send something to my phone
+  [send_to_phone]
+  What should I send to your phone?
+> check the oven
+  [out_of_scope]
+  Sending it to your phone…
+  → Sent to your phone: “check the oven”.
+  $ POST ntfy.sh/ {"topic":"•••","title":"ptiLU","message":"check the oven"}
 

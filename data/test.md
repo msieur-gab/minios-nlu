@@ -224,3 +224,13 @@
 ## intent: get_time
 - what time is it over in [Seoul](place)
 - current time in [Chicago](place)
+
+## intent: send_to_phone
+- send [remember the passport](text) to my phone
+- push [table saw blade arrived](text) to my phone
+- ping my phone saying [laundry is done](text)
+- notify my phone that [the glue is dry](text)
+- could you send [call grandma](text) to my phone
+- send me a notification saying [leave now](text)
+- send a note to my phone
+- text my phone [buy screws](text)

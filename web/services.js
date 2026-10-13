@@ -66,7 +66,22 @@ const NLUServices = (() => {
 
 
   // ---------- network: the place lookup and the requests declared in skill.md ----------
-  const getPath = (obj, path) => path.replace(/\[(\d+)\]/g, ".$1").split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj);
+  // a path into JSON: "current.temperature_2m", "list[0].name", or an item picked by a value
+  // in another array: "daily.temperature_2m_max[daily.time = 2026-10-13]"
+  function getPath(obj, path) {
+    let o = obj;
+    for (const t of path.match(/\[[^\]]*\]|[^.\[\]]+/g) || []) {
+      if (o == null) return undefined;
+      const k = t[0] === "[" ? t.slice(1, -1).trim() : t;
+      const eq = /^(.+?)\s*=\s*(.*)$/.exec(k);
+      if (eq) { const keys = getPath(obj, eq[1]); o = o[Array.isArray(keys) ? keys.map(String).indexOf(eq[2]) : -1]; }
+      else o = o[k];
+    }
+    return o;
+  }
+  // a value as it goes into a request: a list entry's output, a date's ISO form, else the words
+  const plain = v => (v && typeof v === "object" ? v.out ?? v.value ?? v.key ?? v.text ?? "" : v ?? "");
+  const fillIn = (t, vars) => t.replace(/\{([\w.]+)\}/g, (_, path) => plain(getPath(vars, path)));
   // a place → coordinates and time zone (Open-Meteo place search), cached per agent
   async function geocode(agent, name) {
     const key = name.toLowerCase();
@@ -81,33 +96,60 @@ const NLUServices = (() => {
     agent.geoCache[key] = out;
     return out;
   }
-  // the call under "## Request": {slot} from the sentence, {place.lat} after a place lookup;
-  // "## Answer" picks the fields that become reply values
+  // the call under "## Request": {slot} from the sentence, {place.lat} after a place lookup.
+  // Secret values (an API key, a private topic) never show in the trace.
   async function request(agent, sk, vars, ctx) {
     const r = sk.request;
     if (!r) throw new Error(sk.file + " has no ## Request section");
     vars = { ...vars };
-    let place = null;
-    if (Object.values(r.query).some(v => v.includes("{place."))) {
-      place = typeof vars.place === "string" ? await geocode(agent, vars.place) : vars.place;
+    const all = [r.url, ...Object.values(r.query), ...Object.values(r.headers || {}), ...Object.values(r.body || {})];
+    let place; // stays undefined when the request needs no place; null means the place wasn't found
+    if (all.some(v => v.includes("{place."))) {
+      const me = agent.mem(), same = typeof vars.place === "string" && me.place && vars.place.toLowerCase() === me.place.name.toLowerCase();
+      place = same && me.place.lat != null ? me.place : typeof vars.place === "string" ? await geocode(agent, vars.place) : vars.place;
       if (!place) return { place: null, answer: {}, json: null };
+      if (same && me.place.lat == null) agent.setMem({ ...me, place }); // home found on the map
       vars.place = place;
     }
-    const q = Object.entries(r.query).map(([k, v]) => k + "=" + encodeURIComponent(v.replace(/\{([\w.]+)\}/g, (_, path) => getPath(vars, path) ?? "")));
-    const url = r.url + (q.length ? "?" + q.join("&") : "");
-    ctx.exec(r.method + " " + url.replace(/^https?:\/\//, "").replace(/%2C/g, ","));
-    if (!agent.fetch) throw new Error("no network access");
-    const res = await agent.fetch(url);
-    if (!res.ok) throw new Error(new URL(url).host + " answered " + res.status);
-    const json = await res.json();
-    const answer = {};
-    for (const [name, a] of Object.entries(sk.answer || {})) {
-      let v = getPath(json, a.path);
-      if (a.round && typeof v === "number") v = Math.round(v);
-      if (a.via) v = ctx.lookup(a.via, v) ?? v;
-      answer[name] = v;
+    const q = Object.entries(r.query).map(([k, v]) => k + "=" + encodeURIComponent(fillIn(v, vars)));
+    const url = fillIn(r.url, vars) + (q.length ? (r.url.includes("?") ? "&" : "?") + q.join("&") : "");
+    const headers = Object.fromEntries(Object.entries(r.headers || {}).map(([k, v]) => [k, fillIn(v, vars)]));
+    let body;
+    if (r.body) {
+      const obj = {};
+      for (const [k, v] of Object.entries(r.body)) {
+        const keys = k.split("."), last = keys.pop();
+        keys.reduce((o, x) => (o[x] = o[x] || {}), obj)[last] = fillIn(v, vars);
+      }
+      body = JSON.stringify(obj);
+      headers["Content-Type"] = headers["Content-Type"] || "application/json";
     }
-    return { place, answer, json };
+    const secrets = Object.entries(sk.slots || {}).filter(([, s]) => s.type === "secret").map(([k]) => String(plain(vars[k]))).filter(Boolean);
+    const hide = t => secrets.reduce((t, x) => t.split(x).join("•••").split(encodeURIComponent(x)).join("•••"), t);
+    ctx.exec(hide(r.method + " " + url.replace(/^https?:\/\//, "").replace(/%2C/g, ",") + (body ? " " + body : "")));
+    if (!agent.fetch) throw new Error("no network access");
+    const opts = { method: r.method, headers, body };
+    const res = r.method === "GET" && !Object.keys(headers).length ? await agent.fetch(url) : await agent.fetch(url, opts);
+    if (!res.ok) throw Object.assign(new Error(new URL(url).host + " answered " + res.status), { status: res.status });
+    let json = null;
+    try { json = await res.json(); } catch { json = null; } // an empty or plain-text answer is fine for a push
+    return { place, answer: pick(sk, json, ctx, vars, false), json };
+  }
+  // "## Answer": the fields that become reply values. Lines with {date} are read once per day
+  // (dated = true, vars.date set); null when that day isn't in the answer at all.
+  function pick(sk, json, ctx, vars, dated) {
+    const out = {};
+    let found = !dated;
+    for (const [key, a] of Object.entries(sk.answer || {})) {
+      const name = a.name || key;
+      if (a.path.includes("{date}") !== dated) continue;
+      let v = getPath(json, a.path.replace(/\{([\w.]+)\}/g, (_, k) => plain(getPath(vars, k))));
+      if (v !== undefined) found = true;
+      if (a.round && typeof v === "number") v = Math.round(v);
+      if (a.via && v != null) v = ctx.lookup(a.via, v) ?? v;
+      out[name] = v ?? "?";
+    }
+    return found ? out : null;
   }
 
   // the place a sentence names: the tagged words, extended to the rest of a multi-word name
@@ -124,13 +166,21 @@ const NLUServices = (() => {
   }
 
   // ---------- what the agent remembers about the person: on this device only ----------
+  // secret values a skill asked for once (an API key, a private topic): on this device only,
+  // never sent to the model, never shown in the trace
+  const SECRET_KEY = "ptilu.secrets.v1";
+  const secrets = {
+    all: (store, agent) => { try { return JSON.parse((store && store.getItem(SECRET_KEY)) || "null") || agent._secrets || {}; } catch { return agent._secrets || {}; } },
+    get: (store, agent, k) => secrets.all(store, agent)[k] || null,
+    set: (store, agent, k, v) => { const all = { ...secrets.all(store, agent), [k]: v }; agent._secrets = all; try { if (store) store.setItem(SECRET_KEY, JSON.stringify(all)); } catch { /* kept in memory only */ } },
+  };
   const ME_KEY = "minios.me.v1"; // old name kept on purpose: name and place survive the rename
   const me = {
     get: (store, agent) => { try { return JSON.parse((store && store.getItem(ME_KEY)) || "null") || agent._mem || {}; } catch { return agent._mem || {}; } },
     set: (store, agent, m) => { agent._mem = m; try { if (store) store.setItem(ME_KEY, JSON.stringify(m)); } catch { /* kept in memory only */ } },
   };
 
-  return { net: { geocode, request }, me, places: { placeIn }, fmt: { DAYS, MONTHS, pad2, cap, plural, day0, daysApart, fromIso, isoMinute, clock, dayText, whenText, durWords, ruleWords, onCalendar },
+  return { net: { geocode, request, pick }, me, secrets, places: { placeIn }, fmt: { DAYS, MONTHS, pad2, cap, plural, day0, daysApart, fromIso, isoMinute, clock, dayText, whenText, durWords, ruleWords, onCalendar },
     files: { where, quote } };
 })();
 if (typeof module !== "undefined") module.exports = NLUServices;

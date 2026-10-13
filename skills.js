@@ -36,22 +36,31 @@ function parseSkill(md, file) {
       if (v) list = skill.values[v[1]] = [];
       continue;
     }
-    // ## Request: first line "GET https://...", then "- name: value" query parameters
+    // ## Request: first line "METHOD https://...", then one "- name: value" line per query
+    // parameter, "- header.Name: value" per header, "- body.path: value" per field of a JSON body
     if (section === "request") {
-      const r = /^(GET|POST)\s+(\S+)$/.exec(line);
-      if (r) { skill.request = { method: r[1], url: r[2], query: {} }; continue; }
+      const r = /^(GET|POST|PUT|PATCH|DELETE)\s+(\S+)$/.exec(line);
+      if (r) { skill.request = { method: r[1], url: r[2], query: {}, headers: {}, body: null }; continue; }
     }
     if (!line.startsWith("- ")) continue;
     const item = line.slice(2).trim();
     if (section === "request" && skill.request) {
-      const m = /^([A-Za-z0-9_]+)\s*:\s*(.+)$/.exec(item);
-      if (m) skill.request.query[m[1]] = m[2];
+      const m = /^([A-Za-z0-9_.-]+)\s*:\s*(.+)$/.exec(item);
+      if (!m) throw new Error(`${file}: can't read request line “${item}” (expected "- name: value")`);
+      if (m[1].startsWith("header.")) skill.request.headers[m[1].slice(7)] = m[2];
+      else if (m[1].startsWith("body.")) (skill.request.body = skill.request.body || {})[m[1].slice(5)] = m[2];
+      else skill.request.query[m[1]] = m[2];
       continue;
     }
-    // ## Answer: "- name: path.in.json [round] [→ list]"
+    // ## Answer: "- name: path.in.json [round] [→ list]"; a path can pick an array item by a
+    // value from another array: "daily.temperature_2m_max[daily.time = {date}]"
     if (section === "answer") {
-      const m = /^([a-z_]+)\s*:\s*([A-Za-z0-9_.\[\]]+)(\s+round)?(?:\s*(?:→|->)\s*([a-z_]+))?$/.exec(item);
-      if (m) skill.answer[m[1]] = { path: m[2], round: !!m[3], via: m[4] || null };
+      const m = /^([a-z_]+)\s*:\s*(.+?)(\s+round)?(?:\s*(?:→|->)\s*([a-z_]+))?$/.exec(item);
+      if (!m) throw new Error(`${file}: can't read answer line “${item}” (expected "- name: path")`);
+      // the same name may appear once for "now" and once per day ({date}): kept apart
+      const key = m[1] + (m[2].includes("{date}") ? "@date" : "");
+      if (skill.answer[key]) throw new Error(`${file}: ## Answer has “${m[1]}” twice`);
+      skill.answer[key] = { name: m[1], path: m[2], round: !!m[3], via: m[4] || null };
       continue;
     }
     // ## Slots: "- name: type, required, ask: reply, invalid: reply, default: source"
@@ -62,7 +71,7 @@ function parseSkill(md, file) {
       const [kind, list] = type.split(/\s+/);  // "list app": a value from ## Values: app
       const slot = { type: kind, list: list || null, required: false, guess: false, ask: null, invalid: null, default: null, ignore: [] };
       for (const opt of rest) {
-        const o = /^(required|guess|ask|invalid|default|ignore)(?:\s*:\s*(.+))?$/.exec(opt);
+        const o = /^(required|guess|ask|invalid|default|ignore|within|past|too_far)(?:\s*:\s*(.+))?$/.exec(opt);
         const flag = o && (o[1] === "required" || o[1] === "guess");
         if (!o || flag === !!o[2]) throw new Error(`${file}: slot ${m[1]}: unknown option “${opt}”`);
         slot[o[1]] = flag ? true : o[1] === "ignore" ? o[2].toLowerCase().split(/\s+/) : o[2];
@@ -87,7 +96,7 @@ function parseSkill(md, file) {
 
 // Checks that run when the skills are compiled, so a mistake shows up while writing the skill,
 // not when someone talks to the agent.
-const SLOT_TYPES = ["text", "place", "datetime", "duration", "list"];
+const SLOT_TYPES = ["text", "place", "datetime", "duration", "list", "secret"];
 const ROLES = ["yes", "no", "fallback"];   // the skills the dialogue itself relies on
 const DEFAULTS = ["home"];   // home: the place the person told the agent they live in
 const USES = ["network"];
@@ -107,6 +116,23 @@ function validate(s) {
     if (slot.required && !slot.ask) err(`slot ${name} is required but has no ask: reply to ask for it`);
     for (const k of ["ask", "invalid"]) if (slot[k] && !s.replies[slot[k]]) err(`slot ${name}: ${k}: “${slot[k]}” is not in ## Replies`);
     if (slot.default && !DEFAULTS.includes(slot.default)) err(`slot ${name}: unknown default “${slot.default}” (known: ${DEFAULTS.join(", ")})`);
+    // a date window: "within: 15 days" (from today), with the reply for a day before it and after it
+    if ((slot.within || slot.past || slot.too_far) && slot.type !== "datetime") err(`slot ${name}: within, past and too_far are for datetime slots only`);
+    if (slot.within && !/^\d+ days?$/.test(slot.within)) err(`slot ${name}: within: “${slot.within}” should read like “15 days”`);
+    if (slot.within && !(slot.past && slot.too_far)) err(`slot ${name}: within: needs a past: and a too_far: reply`);
+    for (const k of ["past", "too_far"]) if (slot[k] && !s.replies[slot[k]]) err(`slot ${name}: ${k}: “${slot[k]}” is not in ## Replies`);
+    if (slot.type === "secret" && !slot.required) err(`slot ${name}: a secret slot is required (asked once, then kept on the device)`);
+  }
+  // the request may only use declared values: {slot} or {slot.field}
+  const r = s.request;
+  if (r) for (const v of [r.url, ...Object.values(r.query), ...Object.values(r.headers), ...Object.values(r.body || {})])
+    for (const m of v.matchAll(/\{(\w+)[.\w]*\}/g)) if (!slots[m[1]]) err(`## Request uses {${m[1]}} but ## Slots doesn't declare it`);
+  // {date} in an answer path means one answer per day of the skill's datetime slot
+  const dated = Object.values(s.answer).some(a => a.path.includes("{date}"));
+  if (dated && !Object.values(slots).some(x => x.type === "datetime")) err("## Answer uses {date} but ## Slots has no datetime slot");
+  if (r && !s.code && !p.script) {
+    const need = ["done", ...(slots && Object.values(slots).some(x => x.default === "home" || x.type === "place") ? ["not_found"] : []), ...(dated ? ["day", "days", "line"] : [])];
+    for (const k of need) if (!s.replies[k]) err(`a skill with a ## Request and no script answers with the “${k}” reply, which ## Replies doesn't have`);
   }
   // every value the examples teach the model to pull out, or the command uses, must be declared
   for (const ex of s.examples) for (const m of ex.matchAll(/\]\(([a-z_]+)\)/g))

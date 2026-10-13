@@ -6,10 +6,9 @@ GitHub Pages.
 ## Where things are
 
 - **Model:** TF-IDF + logistic regression (intent) and a CRF (slots), trained by plain
-  JavaScript (`web/trainer.js`), in Node or on the phone. 358 KB for 22 skills, 5,863 training
-  sentences (2,887 from skill files). Held-out: intent 97.2% and slot F1 0.96 on the 144 test
-  sentences that appear nowhere in training (97.7% on all 177; 33 of them are also in training).
-  Not retrained on 13 October: training data unchanged.
+  JavaScript (`web/trainer.js`), in Node or on the phone. 377 KB for 23 skills. Held-out:
+  intent 98.0% and slot F1 0.95 on the 151 test sentences that appear nowhere in training
+  (98.4% on all 185). Retrained on 13 October for send_to_phone (8 fresh test sentences).
 - **Skills:** one folder per skill, `skill.md` plus an optional `skill.js`. Since 13 October
   every `skill.md` also declares:
   - `## Slots`: each value's type (`text`, `place`, `datetime`, `duration`, `list <values>`),
@@ -45,6 +44,24 @@ GitHub Pages.
 Run: `node train.js` (compiles the skills too), `python build_web.py`,
 `TZ=Europe/Berlin node test_entities.js`, `TZ=Europe/Berlin node test_dialogue.js`.
 
+## Declarative requests (13 October, afternoon)
+
+A skill can now pull data from an API or push data to one with nothing but its `skill.md`.
+- **`## Request`** takes any method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`), query lines,
+  `body.x:` lines (a JSON body, dots nest) and `header.X:` lines. Only declared slots can be
+  used; the compiler checks it.
+- **`## Answer`** paths can pick an array item by a value in another array:
+  `daily.temperature_2m_max[daily.time = {date}]`. `{date}` makes a per-day line, read for
+  each day of the datetime slot (one day → `day` reply, a range → `days` + `line` per day).
+- **`within: 15 days`** on a datetime slot, with `past:` and `too_far:` replies.
+- **`secret` slot type:** asked once, kept on the device (`ptilu.secrets.v1`), never in the
+  model, shown as `•••` in the trace.
+- **get_weather has no skill.js any more** (40 lines gone); the 88 old conversations give the
+  same replies. Core +45 lines (`runRequest`, `daysOf`), services +40 (body, headers,
+  secrets, `pick`), compiler +25 (mostly checks).
+- **send_to_phone** (new): POST to ntfy.sh, message in a JSON body, topic as a secret. The
+  model finds the message in 6 of its 8 test sentences; otherwise it asks for it.
+
 ## Decided on 13 October
 
 - **Skills declare their values, questions and answers.** The core fills slots and asks; a
@@ -66,6 +83,8 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 ## Open
 
 **Not yet tested in real life**
+- send_to_phone against the real ntfy.sh from the phone (CORS, topic answer). Tested only with
+  the recorded fixture; the sandbox couldn't reach ntfy.sh.
 - Everything merged on 13 October, on the phone (grey-zone question, invalid answers, offline
   message, list words like "it's too loud", "rebot the pi").
 - Open-Meteo calls from the phone; the browser's offline signal (`navigator.onLine`).
@@ -82,6 +101,14 @@ Run: `node train.js` (compiles the skills too), `python build_web.py`,
 4. **Typos in the rule-based parts:** the model copes ("creat a foldr", "set a timr"); value
    lists ("opne the termnal", "dowload") and date words ("tomorow") don't. Fuzzy matching once,
    in the list slot type and the date parser.
+
+**Next for actions (13 October)**
+- **Scheduled tasks:** a scheduler that calls the same declared actions without a dialogue
+  (every day, every Monday, at a date). ptiLU fills it ("every Monday at 8 send me the
+  weather"); it runs on the Pi (cron or systemd timers), not in the browser.
+- **A pull with a key:** a `header.Authorization: Bearer {key}` skill to try the header path
+  for real.
+- **Forgetting secrets:** "forget everything about me" clears name and place, not secrets.
 
 **Also open (from 12 October)**
 - **Place disambiguation:** name the country, ask between places, remember the choice.

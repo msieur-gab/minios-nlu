@@ -1,4 +1,4 @@
-// Recorded-style Open-Meteo responses so the API skills can be tested without a network.
+// Recorded-style Open-Meteo (and ntfy) responses so the API skills can be tested without a network.
 // Shapes follow open-meteo.com (place search: results[]; forecast: current{} and daily{} arrays).
 const PLACES = {
   munich: { name: "Munich", latitude: 48.13743, longitude: 11.57549, country: "Germany", admin1: "Bavaria", timezone: "Europe/Berlin" },
@@ -17,10 +17,15 @@ function forecast(start) {
       precipitation_probability_max: codes.map(c => (c >= 51 ? 70 : 10)) } };
 }
 function mockFetch(start, { offline = false, log = [] } = {}) {
-  return async url => {
-    log.push(url);
+  return async (url, opts = {}) => {
+    log.push(opts.body ? url + " " + opts.body : url);
     if (offline) throw new TypeError("Failed to fetch");
     const u = new URL(url);
+    if (u.hostname === "ntfy.sh") { // ntfy publish: answers with the message it stored
+      const m = JSON.parse(opts.body || "{}");
+      return m.topic ? { ok: true, status: 200, json: async () => ({ id: "x7Kq2", event: "message", topic: m.topic, title: m.title, message: m.message }) }
+        : { ok: false, status: 400, json: async () => ({ error: "topic missing" }) };
+    }
     const body = u.hostname.startsWith("geocoding")
       ? { results: PLACES[u.searchParams.get("name").toLowerCase()] ? [PLACES[u.searchParams.get("name").toLowerCase()]] : undefined }
       : forecast(start);

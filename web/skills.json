@@ -868,7 +868,7 @@
   "get_weather": {
    "file": "skills/get_weather/skill.md",
    "dir": "skills/get_weather",
-   "code": true,
+   "code": false,
    "action": "say",
    "params": {
     "skill": "get_weather",
@@ -887,34 +887,66 @@
      "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
      "timezone": "auto",
      "forecast_days": "16"
-    }
+    },
+    "headers": {},
+    "body": null
    },
    "answer": {
     "temp": {
+     "name": "temp",
      "path": "current.temperature_2m",
      "round": true,
      "via": null
     },
     "wind": {
+     "name": "wind",
      "path": "current.wind_speed_10m",
      "round": true,
      "via": null
     },
     "sky": {
+     "name": "sky",
      "path": "current.weather_code",
+     "round": false,
+     "via": "sky"
+    },
+    "min@date": {
+     "name": "min",
+     "path": "daily.temperature_2m_min[daily.time = {date}]",
+     "round": true,
+     "via": null
+    },
+    "max@date": {
+     "name": "max",
+     "path": "daily.temperature_2m_max[daily.time = {date}]",
+     "round": true,
+     "via": null
+    },
+    "rain@date": {
+     "name": "rain",
+     "path": "daily.precipitation_probability_max[daily.time = {date}]",
+     "round": false,
+     "via": null
+    },
+    "sky@date": {
+     "name": "sky",
+     "path": "daily.weather_code[daily.time = {date}]",
      "round": false,
      "via": "sky"
     }
    },
    "replies": {
-    "now": [
+    "done": [
      "{place} right now: {sky}, {temp}°C, wind {wind} km/h."
     ],
     "day": [
      "{when} in {place}: {sky}, {min} to {max}°C, {rain}% chance of rain."
     ],
     "days": [
-     "{place}, {phrase}:"
+     "{place}, {when}:"
+    ],
+    "line": [
+     "{when}: {sky}, {min} to {max}°C, {rain}% rain"
     ],
     "ask_place": [
      "Which city? Tip: say “I live in …” and I'll remember it for next time."
@@ -951,7 +983,10 @@
      "ask": null,
      "invalid": null,
      "default": null,
-     "ignore": []
+     "ignore": [],
+     "within": "15 days",
+     "past": "past",
+     "too_far": "too_far"
     }
    },
    "sentences": 203,
@@ -1769,6 +1804,76 @@
      "required": false,
      "guess": false,
      "ask": null,
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    }
+   },
+   "sentences": 181,
+   "values": {}
+  },
+  "send_to_phone": {
+   "file": "skills/send_to_phone/skill.md",
+   "dir": "skills/send_to_phone",
+   "code": false,
+   "action": "say",
+   "params": {
+    "skill": "send_to_phone",
+    "help": "send a message to your phone (“send buy milk to my phone”)",
+    "samples": "18",
+    "acts": "yes",
+    "uses": "network",
+    "train_only": "msg"
+   },
+   "request": {
+    "method": "POST",
+    "url": "https://ntfy.sh/",
+    "query": {},
+    "headers": {},
+    "body": {
+     "topic": "{topic}",
+     "title": "ptiLU",
+     "message": "{text}"
+    }
+   },
+   "answer": {},
+   "replies": {
+    "ask_text": [
+     "What should I send to your phone?"
+    ],
+    "ask_topic": [
+     "Which ntfy topic should I send to? Subscribe to it in the ntfy app first; I'll keep it on this device."
+    ],
+    "checking": [
+     "Sending it to your phone…"
+    ],
+    "done": [
+     "Sent to your phone: “{text}”."
+    ],
+    "failed": [
+     "ntfy refused the message (error {status})."
+    ],
+    "unsure": [
+     "Do you want me to send that to your phone?"
+    ]
+   },
+   "slots": {
+    "text": {
+     "type": "text",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_text",
+     "invalid": null,
+     "default": null,
+     "ignore": []
+    },
+    "topic": {
+     "type": "secret",
+     "list": null,
+     "required": true,
+     "guess": false,
+     "ask": "ask_topic",
      "invalid": null,
      "default": null,
      "ignore": []
