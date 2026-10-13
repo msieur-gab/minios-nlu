@@ -3889,10 +3889,10 @@ class Agent {
   }
 
   // action: run — the command from the front matter; a {slot} from a list becomes that value's
-  // command, so a sentence can't inject one
+  // command, any other value is single-quoted, so a sentence can't inject one
   runCommand(intent, sk, slots, trace) {
     const say = v => (v && typeof v === "object" ? v.key : v);
-    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (slots[k] && slots[k].out) || cleanValue(String(slots[k] || ""))) });
+    trace.push({ type: "exec", text: sk.params.command.replace(/\{(\w+)\}/g, (_, k) => (slots[k] && slots[k].out) || SV.files.quote(cleanValue(String(this.spoken(slots[k]) || "")))) });
     return { trace, reply: fill(intent + ".done", Object.fromEntries(Object.entries(slots).map(([k, v]) => [k, say(v)]))) };
   }
   // the toolbox a skill script receives
