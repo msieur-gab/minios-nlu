@@ -27,7 +27,6 @@ const RESPONSES = {
 };
 for (const [name, sk] of Object.entries(SKILLS)) for (const [k, v] of Object.entries(sk.replies)) RESPONSES[name + "." + k] = v;
 
-const isoDay = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const fill = (key, vars = {}) => pick(RESPONSES[key]).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
 const has = key => key in RESPONSES;
@@ -265,7 +264,6 @@ class Agent {
     if (sk.slots) { // declared slots: fill them, ask for what's missing, before the skill runs
       const got = this.fillSlots(sk, slots, trace);
       if (got.ask) return this.ask(intent, { ...slots, ...got.values }, got.ask[0], intent + "." + got.ask[1], trace, got.ask[2]);
-      if (got.stop) return { trace, reply: fill(intent + "." + got.stop) };
       slots = got.values;
     }
     if (sk.code || sk.params.script) return this.runScript(intent, sk, slots, trace);
@@ -274,35 +272,15 @@ class Agent {
     return this.sayFilled(intent, slots, trace);
   }
 
-  // A skill whose skill.md declares a ## Request and no script: call it and answer with
-  // "done". With a day in its datetime slot and {date} in its ## Answer, one answer per day:
-  // "day" for one, "days" then a "line" per day for several (a weekend, next week…).
+  // A skill that declares a ## Request and has no script: call it, answer "done" with the
+  // values read back, or "not_found" when the place or a required field isn't there.
   runRequest(intent, sk, slots, trace) {
-    const dslot = Object.keys(sk.slots || {}).find(k => sk.slots[k].type === "datetime");
-    const days = this.daysOf(dslot && slots[dslot]);
     const words = Object.fromEntries(Object.entries(slots).filter(([k]) => !(sk.slots[k] && sk.slots[k].type === "secret")).map(([k, v]) => [k, this.spoken(v)]));
     return this.runScript(intent, sk, slots, trace, { run: ctx => ctx.later("checking", words, async () => {
       const res = await ctx.request(ctx.slots);
       if (res.place === null) return ctx.say("not_found", words);
-      const base = { ...words, ...(res.place ? { place: res.place.name } : {}), ...res.answer };
-      if (!days || !Object.values(sk.answer || {}).some(a => a.path.includes("{date}"))) return SV.fmt.cap(ctx.say("done", base));
-      const today = SV.fmt.day0(this.now());
-      const label = d => { const k = SV.fmt.daysApart(d, today); return k === 0 ? "today" : k === 1 ? "tomorrow" : SV.fmt.dayText(d, this.now()); };
-      const rows = days.map(d => { const a = SV.net.pick(sk, res.json, ctx, { ...ctx.slots, date: isoDay(d) }, true); return a && { ...base, ...a, when: label(d) }; }).filter(Boolean);
-      if (!rows.length) return ctx.say(sk.slots[dslot].too_far || "not_found", base);
-      if (rows.length === 1) return SV.fmt.cap(ctx.say("day", rows[0]));
-      return ctx.say("days", { ...base, when: slots[dslot].text }) + "\n" + rows.map(r => SV.fmt.cap(ctx.say("line", r))).join("\n");
+      return SV.fmt.cap(ctx.say("done", { ...words, ...(res.place ? { place: res.place.name } : {}), ...res.answer }));
     }) });
-  }
-  // the days a date value covers: one day, or a range (up to a week, from today on); null without one
-  daysOf(e) {
-    if (!e || typeof e !== "object" || !["date", "datetime", "range"].includes(e.type)) return null;
-    const f = SV.fmt, today = f.day0(this.now());
-    if (e.type !== "range") return [f.day0(f.fromIso(e.value))];
-    const out = [];
-    for (let d = f.fromIso(e.from); d <= f.fromIso(e.to) && out.length < 7; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1))
-      if (d >= today) out.push(f.day0(d));
-    return out.length ? out : [f.day0(f.fromIso(e.to))];
   }
 
   // action: say with its slots filled. A time with two readings ("at 8" in the morning: 20:00
@@ -348,12 +326,6 @@ class Agent {
       if (v && (slot.type === "datetime" || slot.type === "duration")) trace.push({ type: "entity", e: v });
       if (v && slot.type === "list" && !raw) trace.push({ type: "state", text: name + " found in the sentence ← " + v.key });
       if (!v && slot.default === "home") { const me = this.mem(); v = (me.place && me.place.name) || null; }
-      // a date window ("within: 15 days"): a day before today or past the window gets its reply
-      if (v && slot.within && v.type !== "recurrence") {
-        const days = this.daysOf(v), today = SV.fmt.day0(this.now()), last = SV.fmt.daysApart(days[days.length - 1], today);
-        if (last < 0) return { stop: slot.past };
-        if (days.some(d => SV.fmt.daysApart(d, today) > parseInt(slot.within, 10))) return { stop: slot.too_far };
-      }
       if (!v && slot.required) {
         const wrong = raw && slot.invalid;
         trace.push({ type: wrong ? "abstain" : "state", text: wrong ? name + " “" + raw + "” isn't a known " + (slot.list || slot.type) : "missing " + name });

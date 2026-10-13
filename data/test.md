@@ -139,6 +139,7 @@
 - can you code a website
 - move the photos to the archive
 - what's the meaning of life
+- show my calendar
 - close all windows
 - who made you
 - open the pod bay doors hal
@@ -186,6 +187,8 @@
 
 ## intent: out_of_scope
 - set an alarm for 6:30
+- what's on my agenda tomorrow
+- schedule a meeting with Eva on monday
 - how long is a marathon
 - when does the shop close
 - time to go home
@@ -247,28 +250,3 @@
 - can you show me [Bergen](place) on a map
 - locate [Tübingen](place)
 - show me the map
-
-## intent: get_route
-- how long from [Munich](from) to [Regensburg](to) by [bike](mode)
-- directions to [Ulm](to)
-- how far is it to [Ingolstadt](to) by [car](mode)
-- what's the best way to [the train station](to)
-- can I [walk](mode) to [Schwabing](to)
-- route from [Dachau](from) to [Erding](to)
-
-## intent: add_event
-- add [physio](title) to my calendar on wednesday at 8
-- schedule [a call with the printer](title) tomorrow at 11
-- put [Lea's birthday party](title) in my calendar on saturday at 3pm
-- create an appointment called [bank meeting](title) next tuesday at 10
-- book [the vet](title) on friday at 16:00
-- add an event to my calendar
-
-## intent: get_agenda
-- what's on my agenda tomorrow
-- what's on my calendar today
-- do I have any meetings on monday
-- am I free tomorrow afternoon
-- show me my agenda for next week
-- what does thursday look like
-- what's coming up today

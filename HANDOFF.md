@@ -42,8 +42,7 @@ GitHub Pages.
 - **APIs:** weather and world time via Open-Meteo (no key). Name and home place on the device.
 
 Run: `node train.js` (compiles the skills too), `python build_web.py`,
-`TZ=Europe/Berlin node test_entities.js`, `TZ=Europe/Berlin node test_dialogue.js`,
-`TZ=Europe/Berlin node tests/test_webhook.js`.
+`TZ=Europe/Berlin node test_entities.js`, `TZ=Europe/Berlin node test_dialogue.js`.
 
 ## Declarative requests (13 October, afternoon)
 
@@ -51,15 +50,11 @@ A skill can now pull data from an API or push data to one with nothing but its `
 - **`## Request`** takes any method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`), query lines,
   `body.x:` lines (a JSON body, dots nest) and `header.X:` lines. Only declared slots can be
   used; the compiler checks it.
-- **`## Answer`** paths can pick an array item by a value in another array:
-  `daily.temperature_2m_max[daily.time = {date}]`. `{date}` makes a per-day line, read for
-  each day of the datetime slot (one day → `day` reply, a range → `days` + `line` per day).
-- **`within: 15 days`** on a datetime slot, with `past:` and `too_far:` replies.
+- ~~`{date}` answer lines, `within: 15 days`, day/days/line replies~~: removed again at
+  15:00 (only weather needed them; its skill.js does it).
 - **`secret` slot type:** asked once, kept on the device (`ptilu.secrets.v1`), never in the
   model, shown as `•••` in the trace.
-- **get_weather has no skill.js any more** (40 lines gone); the 88 old conversations give the
-  same replies. Core +45 lines (`runRequest`, `daysOf`), services +40 (body, headers,
-  secrets, `pick`), compiler +25 (mostly checks).
+- ~~get_weather without skill.js~~: undone at 15:00, the script is back.
 - **action.md (13 October, later):** the technical half of a skill moved to its own file
   next to skill.md: `## Request`, `## Answer`, `## Secrets` (question asked once, value kept
   on the device), `## Values` lists the answer uses, and `uses:`. skill.md keeps what
@@ -70,39 +65,33 @@ A skill can now pull data from an API or push data to one with nothing but its `
 - **send_to_phone** (new): POST to ntfy.sh, message in a JSON body, topic as a secret. The
   model finds the message in 6 of its 8 test sentences; otherwise it asks for it.
 
-## The boundary, and five new skills (13 October, evening)
+## Back to light (13 October, 15:00)
 
-**Decided:** ptiLU understands, asks, confirms and hands over; it doesn't keep time, hold
-sign-ins or chain calls. Two ways to hand over: a command for the device's executor, or one
-HTTP call, either to a service directly (no key, or a key fine on the device, browser
-allowed) or to a webhook of the person's own (n8n, Activepieces, Node-RED, an endpoint) that
-answers `{"say": "…"}`. Skills stay self-contained folders; `skill.js` is the escape hatch.
+After the first phone test, the webhook skills were too heavy for what ptiLU promises: they
+need an account, a script or a server before they answer anything. They moved to the
+`webhooks` branch (get_route, add_event, get_agenda, tools/webhook.js and its test, the
+webhook section of the guide). Main keeps only what works with the phone alone.
 
-- **send_telegram** (direct): Bot API, token and chat id as secrets.
-- **show_map** (direct): place search → OpenStreetMap link; links are clickable in the PWA.
-- **get_route**, **add_event**, **get_agenda** (webhooks): the address is a secret per skill.
-  `tools/webhook.js` answers `/route` and `/agenda` (private iCal address, single events only).
-- **Core, small:** `required` on an Answer line → `not_found` when it's missing; secrets kept
-  per skill (`skill.name`, the old bare keys still read); a range goes out as
-  `2026-10-17/2026-10-18`; values filled from the first sentence (a date) are kept while the
-  agent asks for another one (the date was lost before).
-- **Model:** 433 KB, 28 skills. Held-out intent 97.2%, slot F1 0.93 (178 sentences; 36 new for
-  the five skills). Event titles are the weak spot (3 of 6 missed: the agent then asks).
-- **Not tested for real:** Telegram from the browser (CORS unknown), the routing servers, an
-  https tunnel to the webhook, an n8n flow for add_event.
-- **Known gap, older than today:** the tokenizer reads letters A–Z only, so “Kraków” or
-  “Tübingen” are cut. Matters for European place names; needs the same change in nlu/ (Python).
-- **First test on the phone (14:40) and fixes:** a map link shown as a bare host (now “open on
-  openstreetmap.org ↗”); an answer kept its “I start from”; “send me telegram messages” at
-  1.00 was swallowed as the answer to a pending question (a clearly different skill at ≥ 0.9
-  now drops the question); a sentence was accepted as a webhook address (a secret answer with
-  spaces now drops the question); “from home” with no home saved now says why it asks. The
-  reference webhook finds street addresses (Nominatim) instead of city names only. The
-  conversation is replayed in test_dialogue.js.
-- **Still true:** route and calendar skills need a running webhook; without one they can only
-  ask for its address. Real use starts once tools/webhook.js runs behind https.
-- **Next:** weather's day logic back into its skill.js (only weather needs it); a skill.js guide
-  built on three patterns; a tests.md per skill folder.
+**Rule from now on:** a skill ships on main only if it works for someone with just the phone
+(or the Pi). Everything specific to a skill lives in its folder: skill.md (what people say and
+hear), action.md (what it calls, what it reads back, its secrets), skill.js only when it
+needs logic of its own. The core keeps what every skill shares: dialogue, date parser, one
+HTTP call helper. One call generalises; multi-step jobs belong in a skill's skill.js or
+outside ptiLU.
+
+- **On main:** 25 skills, model 391 KB. Held-out intent 97.5%, slot F1 0.93 (162 sentences).
+  New today and kept: send_to_phone (ntfy), send_telegram (bot token), show_map (link).
+- **Weather:** its day logic is back in its own skill.js (the original script, unchanged);
+  the `{date}` answers, `within:` and the day/days/line replies are gone from the core. Its
+  replies are identical to this morning's.
+- **Core vs. this morning:** agent.js +20 lines, services.js +38, compiler +56 (action.md and
+  its checks). Kept: requests with any method, body and headers; secrets per skill, masked
+  in the trace; `required` Answer fields → not_found; clickable links; and the fixes from the
+  phone test (a clearly different skill drops a pending question; a sentence is never taken
+  as a key; answers lose their lead-in; values from the first sentence wait with a question).
+- **Not tested for real:** Telegram from the browser (CORS).
+- **Known gap, older than today:** the tokenizer reads A–Z only (“Kraków”, “Tübingen” are cut).
+- **Next:** a skill.js guide built on three patterns; a tests.md per skill folder.
 
 ## Decided on 13 October
 
@@ -145,12 +134,12 @@ answers `{"say": "…"}`. Skills stay self-contained folders; `skill.js` is the 
    in the list slot type and the date parser.
 
 **Next for actions (13 October)**
-- **Scheduled tasks:** a scheduler that calls the same declared actions without a dialogue
-  (every day, every Monday, at a date). ptiLU fills it ("every Monday at 8 send me the
-  weather"); it runs on the Pi (cron or systemd timers), not in the browser.
+- **Scheduled tasks:** not ptiLU's job. ptiLU understands "every Monday at 8" (the date
+  parser makes the repeat rule) and hands it to the Pi's systemd timers, as reminders do.
 - **A pull with a key:** a `header.Authorization: Bearer {key}` skill to try the header path
   for real.
 - **Forgetting secrets:** "forget everything about me" clears name and place, not secrets.
+- **Webhooks:** on the `webhooks` branch, if ever a server runs (see “Back to light”).
 
 **Also open (from 12 October)**
 - **Place disambiguation:** name the country, ask between places, remember the choice.

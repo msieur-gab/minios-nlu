@@ -117,18 +117,10 @@ const CONVERSATIONS = [
   ["show me Kyoto on the map"],
   ["where is Atlantis on the map"],
   ["show me the map"],
-  // handed over to webhooks of the person's own, which answer with a sentence
-  ["how long from Munich to Salzburg by bike", "https://hooks.test/route"],
-  ["directions to Salzburg"],
-  ["how far is it to Atlantis"],
-  ["add dentist on my calendar on friday at 9", "https://hooks.test/event"],
-  ["schedule a call with the bank", "tomorrow at 3pm"],
-  ["what's on my calendar tomorrow", "https://hooks.test/agenda"],
-  ["what do I have this weekend"],
-  // replayed from the phone, 13 October: home unknown, an address as the answer, another skill mid-question
-  ["forget where I live"],
-  ["I need an itinerary from home to Munich airport", "I start from Menzinger Straße 14a, Munich"],
-  ["I need the itinerary from home to the airport", "send me telegram messages", "the bus is late"],
+  // replayed from the phone, 13 October: another skill clearly asked for while a question waits,
+  // a sentence where a key is expected, an answer with a lead-in
+  ["send me a message", "send me telegram messages", "the bus is late"],
+  ["telegram me", "please send it to my phone instead", "the oven is hot"],
   ["where is kyoto"],
 ];
 const KEEP_MEMORY = true; // memory persists across these conversations on purpose (like the phone)

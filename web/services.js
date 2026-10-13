@@ -66,19 +66,8 @@ const NLUServices = (() => {
 
 
   // ---------- network: the place lookup and the requests declared in skill.md ----------
-  // a path into JSON: "current.temperature_2m", "list[0].name", or an item picked by a value
-  // in another array: "daily.temperature_2m_max[daily.time = 2026-10-13]"
-  function getPath(obj, path) {
-    let o = obj;
-    for (const t of path.match(/\[[^\]]*\]|[^.\[\]]+/g) || []) {
-      if (o == null) return undefined;
-      const k = t[0] === "[" ? t.slice(1, -1).trim() : t;
-      const eq = /^(.+?)\s*=\s*(.*)$/.exec(k);
-      if (eq) { const keys = getPath(obj, eq[1]); o = o[Array.isArray(keys) ? keys.map(String).indexOf(eq[2]) : -1]; }
-      else o = o[k];
-    }
-    return o;
-  }
+  // a path into JSON: "current.temperature_2m", "results[0].name"
+  const getPath = (obj, path) => path.replace(/\[(\d+)\]/g, ".$1").split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj);
   // a value as it goes into a request: a list entry's output, a date's ISO form, else the words
   // a range goes out as an ISO interval ("2026-10-17/2026-10-18")
   const plain = v => (v && typeof v === "object" ? v.out ?? v.value ?? (v.from && v.to ? v.from + "/" + v.to : null) ?? v.key ?? v.text ?? "" : v ?? "");
@@ -134,26 +123,21 @@ const NLUServices = (() => {
     if (!res.ok) throw Object.assign(new Error(new URL(url).host + " answered " + res.status), { status: res.status });
     let json = null;
     try { json = await res.json(); } catch { json = null; } // an empty or plain-text answer is fine for a push
-    const answer = pick(sk, json, ctx, vars, false);
+    const answer = pick(sk, json, ctx);
     // a field marked required that the answer doesn't have: the thing asked for wasn't found
-    const missing = Object.values(sk.answer || {}).some(a => a.required && !a.path.includes("{date}") && getPath(json, a.path) == null);
+    const missing = Object.values(sk.answer || {}).some(a => a.required && getPath(json, a.path) == null);
     return { place: missing ? null : place, answer, json };
   }
-  // "## Answer": the fields that become reply values. Lines with {date} are read once per day
-  // (dated = true, vars.date set); null when that day isn't in the answer at all.
-  function pick(sk, json, ctx, vars, dated) {
+  // "## Answer": the fields that become reply values
+  function pick(sk, json, ctx) {
     const out = {};
-    let found = !dated;
-    for (const [key, a] of Object.entries(sk.answer || {})) {
-      const name = a.name || key;
-      if (a.path.includes("{date}") !== dated) continue;
-      let v = getPath(json, a.path.replace(/\{([\w.]+)\}/g, (_, k) => plain(getPath(vars, k))));
-      if (v !== undefined) found = true;
+    for (const [name, a] of Object.entries(sk.answer || {})) {
+      let v = getPath(json, a.path);
       if (a.round && typeof v === "number") v = Math.round(v);
       if (a.via && v != null) v = ctx.lookup(a.via, v) ?? v;
       out[name] = v ?? "?";
     }
-    return found ? out : null;
+    return out;
   }
 
   // the place a sentence names: the tagged words, extended to the rest of a multi-word name
@@ -184,7 +168,7 @@ const NLUServices = (() => {
     set: (store, agent, m) => { agent._mem = m; try { if (store) store.setItem(ME_KEY, JSON.stringify(m)); } catch { /* kept in memory only */ } },
   };
 
-  return { net: { geocode, request, pick }, me, secrets, places: { placeIn }, fmt: { DAYS, MONTHS, pad2, cap, plural, day0, daysApart, fromIso, isoMinute, clock, dayText, whenText, durWords, ruleWords, onCalendar },
+  return { net: { geocode, request }, me, secrets, places: { placeIn }, fmt: { DAYS, MONTHS, pad2, cap, plural, day0, daysApart, fromIso, isoMinute, clock, dayText, whenText, durWords, ruleWords, onCalendar },
     files: { where, quote } };
 })();
 if (typeof module !== "undefined") module.exports = NLUServices;

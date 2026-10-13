@@ -5,8 +5,8 @@ uses: network            # nothing to answer without it
 
 Everything sent to the weather service is the request below. `{place.lat}` and
 `{place.lon}` come from the agent's place lookup, which turns a city name into
-coordinates. The answer is read from the fields under Answer: the current weather, or,
-when the sentence names a day, that day's row in the 16-day forecast (`{date}` picks it).
+coordinates. The fields under Answer are the current weather; skill.js reads the asked-for
+day(s) from the daily forecast that comes back with it.
 
 Privacy: the place name and its coordinates are sent to Open-Meteo. Nothing else is.
 
@@ -23,10 +23,6 @@ GET https://api.open-meteo.com/v1/forecast
 - temp: current.temperature_2m round
 - wind: current.wind_speed_10m round
 - sky: current.weather_code → sky
-- min: daily.temperature_2m_min[daily.time = {date}] round
-- max: daily.temperature_2m_max[daily.time = {date}] round
-- rain: daily.precipitation_probability_max[daily.time = {date}]
-- sky: daily.weather_code[daily.time = {date}] → sky
 
 ## Values: sky
 - 0 → clear sky

@@ -1,4 +1,4 @@
-// Recorded-style Open-Meteo, ntfy, Telegram and webhook responses so the API skills can be tested without a network.
+// Recorded-style Open-Meteo, ntfy and Telegram responses so the API skills can be tested without a network.
 // Shapes follow open-meteo.com (place search: results[]; forecast: current{} and daily{} arrays).
 const PLACES = {
   munich: { name: "Munich", latitude: 48.13743, longitude: 11.57549, country: "Germany", admin1: "Bavaria", timezone: "Europe/Berlin" },
@@ -6,7 +6,6 @@ const PLACES = {
   paris: { name: "Paris", latitude: 48.85341, longitude: 2.3488, country: "France", admin1: "Île-de-France", timezone: "Europe/Paris" },
   "new york": { name: "New York", latitude: 40.71427, longitude: -74.00597, country: "United States", admin1: "New York", timezone: "America/New_York" },
   kyoto: { name: "Kyoto", latitude: 35.02107, longitude: 135.75385, country: "Japan", admin1: "Kyoto", timezone: "Asia/Tokyo" },
-  salzburg: { name: "Salzburg", latitude: 47.79941, longitude: 13.04399, country: "Austria", admin1: "Salzburg", timezone: "Europe/Vienna" },
   lisbon: { name: "Lisbon", latitude: 38.71667, longitude: -9.13333, country: "Portugal", admin1: "Lisbon", timezone: "Europe/Lisbon" },
 };
 function forecast(start) {
@@ -27,13 +26,6 @@ function mockFetch(start, { offline = false, log = [] } = {}) {
       const m = JSON.parse(opts.body || "{}"), ok = u.pathname === "/bot123:ABC/sendMessage" && m.chat_id;
       return ok ? { ok: true, status: 200, json: async () => ({ ok: true, result: { message_id: 7, chat: { id: +m.chat_id }, text: m.text } }) }
         : { ok: false, status: 401, json: async () => ({ ok: false, error_code: 401, description: "Unauthorized" }) };
-    }
-    if (u.hostname === "hooks.test") { // webhooks of the person's own: they answer with a sentence
-      const m = JSON.parse(opts.body || "{}");
-      const body = u.pathname === "/route" ? (m.to === "Atlantis" ? {} : { say: `${m.from} to ${m.to}: 1 h 40 min by ${m.mode || "car"}, 142 km.` })
-        : u.pathname === "/agenda" ? { say: `For ${m.when || "today"}: dentist at 9:00, call with the bank at 14:00.` }
-        : u.pathname === "/event" ? { ok: true, id: "ev42" } : null;
-      return body ? { ok: true, status: 200, json: async () => body } : { ok: false, status: 404, json: async () => ({}) };
     }
     if (u.hostname === "ntfy.sh") { // ntfy publish: answers with the message it stored
       const m = JSON.parse(opts.body || "{}");

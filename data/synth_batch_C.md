@@ -363,6 +363,7 @@
 - play some music
 - open spotify and play rock
 - send an email to my boss
+- what is on my calendar for today
 - open netflix on the tv
 - call mom on speaker
 - read my new messages
@@ -386,6 +387,7 @@
 - translate hello to spanish
 - how many ounces in a cup
 - what is 15 percent of 80
+- directions to the nearest gas station
 - how long is the drive to work
 - book a flight to new york
 - find a good restaurant near me

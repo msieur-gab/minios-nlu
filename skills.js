@@ -53,15 +53,12 @@ function parseSkill(md, file) {
       else skill.request.query[m[1]] = m[2];
       continue;
     }
-    // ## Answer: "- name: path.in.json [round] [→ list]"; a path can pick an array item by a
-    // value from another array: "daily.temperature_2m_max[daily.time = {date}]"
+    // ## Answer: "- name: path.in.json [round] [→ list] [required]"
     if (section === "answer") {
-      const m = /^([a-z_]+)\s*:\s*(.+?)(\s+round)?(?:\s*(?:→|->)\s*([a-z_]+))?(\s+required)?$/.exec(item);
+      const m = /^([a-z_]+)\s*:\s*([A-Za-z0-9_.\[\]]+)(\s+round)?(?:\s*(?:→|->)\s*([a-z_]+))?(\s+required)?$/.exec(item);
       if (!m) throw new Error(`${file}: can't read answer line “${item}” (expected "- name: path")`);
-      // the same name may appear once for "now" and once per day ({date}): kept apart
-      const key = m[1] + (m[2].includes("{date}") ? "@date" : "");
-      if (skill.answer[key]) throw new Error(`${file}: ## Answer has “${m[1]}” twice`);
-      skill.answer[key] = { name: m[1], path: m[2], round: !!m[3], via: m[4] || null, required: !!m[5] };
+      if (skill.answer[m[1]]) throw new Error(`${file}: ## Answer has “${m[1]}” twice`);
+      skill.answer[m[1]] = { path: m[2], round: !!m[3], via: m[4] || null, required: !!m[5] };
       continue;
     }
     // ## Slots: "- name: type, required, ask: reply, invalid: reply, default: source"
@@ -72,7 +69,7 @@ function parseSkill(md, file) {
       const [kind, list] = type.split(/\s+/);  // "list app": a value from ## Values: app
       const slot = { type: kind, list: list || null, required: false, guess: false, ask: null, invalid: null, default: null, ignore: [] };
       for (const opt of rest) {
-        const o = /^(required|guess|ask|invalid|default|ignore|within|past|too_far)(?:\s*:\s*(.+))?$/.exec(opt);
+        const o = /^(required|guess|ask|invalid|default|ignore)(?:\s*:\s*(.+))?$/.exec(opt);
         const flag = o && (o[1] === "required" || o[1] === "guess");
         if (!o || flag === !!o[2]) throw new Error(`${file}: slot ${m[1]}: unknown option “${opt}”`);
         slot[o[1]] = flag ? true : o[1] === "ignore" ? o[2].toLowerCase().split(/\s+/) : o[2];
@@ -147,11 +144,6 @@ function validate(s) {
     if (slot.required && !slot.ask) err(`slot ${name} is required but has no ask: reply to ask for it`);
     for (const k of ["ask", "invalid"]) if (slot[k] && !s.replies[slot[k]]) err(`slot ${name}: ${k}: “${slot[k]}” is not in ## Replies`);
     if (slot.default && !DEFAULTS.includes(slot.default)) err(`slot ${name}: unknown default “${slot.default}” (known: ${DEFAULTS.join(", ")})`);
-    // a date window: "within: 15 days" (from today), with the reply for a day before it and after it
-    if ((slot.within || slot.past || slot.too_far) && slot.type !== "datetime") err(`slot ${name}: within, past and too_far are for datetime slots only`);
-    if (slot.within && !/^\d+ days?$/.test(slot.within)) err(`slot ${name}: within: “${slot.within}” should read like “15 days”`);
-    if (slot.within && !(slot.past && slot.too_far)) err(`slot ${name}: within: needs a past: and a too_far: reply`);
-    for (const k of ["past", "too_far"]) if (slot[k] && !s.replies[slot[k]]) err(`slot ${name}: ${k}: “${slot[k]}” is not in ## Replies`);
     if (slot.type === "secret" && !slot.required) err(`slot ${name}: a secret slot is required (asked once, then kept on the device)`);
   }
   // the request may only use declared values: {slot} or {slot.field}
@@ -159,18 +151,15 @@ function validate(s) {
   const all = q => [q.url, ...Object.values(q.query), ...Object.values(q.headers), ...Object.values(q.body || {})];
   if (r) for (const v of all(r))
     for (const m of v.matchAll(/\{(\w+)[.\w]*\}/g)) if (!slots[m[1]]) throw new Error(`${s.action_file || s.file}: ## Request uses {${m[1]}}, which is no slot in skill.md and no secret`);
-  // {date} in an answer path means one answer per day of the skill's datetime slot
-  const dated = Object.values(s.answer).some(a => a.path.includes("{date}"));
-  if (dated && !Object.values(slots).some(x => x.type === "datetime")) err("## Answer uses {date} but ## Slots has no datetime slot");
   // every {value} a reply uses is one the skill has: a slot, an answer field, or one the core adds
   if (r && !s.code && !p.script) {
-    const known = new Set([...Object.keys(slots), ...Object.values(s.answer).map(a => a.name), "when", "status"]);
+    const known = new Set([...Object.keys(slots), ...Object.keys(s.answer), "status"]);
     for (const [k, vs] of Object.entries(s.replies)) for (const v of vs) for (const m of v.matchAll(/\{(\w+)\}/g))
       if (!known.has(m[1])) err(`reply ${k} uses {${m[1]}}, which is no slot or ## Answer field`);
   }
   if (r && !s.code && !p.script) {
     const found = Object.values(s.answer).some(a => a.required) || (r && all(r).some(v => v.includes("{place.")));
-    const need = ["done", ...(found ? ["not_found"] : []), ...(dated ? ["day", "days", "line"] : [])];
+    const need = ["done", ...(found ? ["not_found"] : [])];
     for (const k of need) if (!s.replies[k]) err(`a skill with a ## Request and no script answers with the “${k}” reply, which ## Replies doesn't have`);
   }
   // every value the examples teach the model to pull out, or the command uses, must be declared
@@ -206,10 +195,10 @@ function compile(dir = "skills") {
     if (s.skill !== f) throw new Error(`${s.file}: skill name "${s.skill}" must match its folder "${f}"`);
     const action = path.join(dir, f, "action.md");
     if (fs.existsSync(action)) mergeAction(s, fs.readFileSync(action, "utf8"), action);
-    validate(s);
-    if (s.params.role && skills.some(o => o.params.role === s.params.role)) throw new Error(`${s.file}: another skill already has role: ${s.params.role}`);
     s.dir = path.join(dir, f);
     s.code = fs.existsSync(path.join(dir, f, "skill.js"));
+    validate(s);
+    if (s.params.role && skills.some(o => o.params.role === s.params.role)) throw new Error(`${s.file}: another skill already has role: ${s.params.role}`);
     skills.push(s);
   }
   let md = "<!-- generated by skills.js from skills/*.md — edit the skill files, not this file -->\n";

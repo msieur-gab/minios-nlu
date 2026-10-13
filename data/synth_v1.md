@@ -289,6 +289,7 @@
 - open youtube
 - play some music
 - check my email
+- add an event to my calendar
 - delete all files
 - search google for cats
 - copy budget to usb

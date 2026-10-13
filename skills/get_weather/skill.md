@@ -11,11 +11,12 @@ no key). Without a place it uses the place you told the agent you live in. The d
 from the date parser ("tomorrow", "on friday", "this weekend").
 
 This file is what people say and what the agent answers. What is sent to Open-Meteo, and
-what is read back, is in action.md next to it.
+what is read back for "now", is in action.md next to it. skill.js finds the asked-for day(s)
+in the 16-day forecast.
 
 ## Slots
 - place: place, required, ask: ask_place, default: home
-- day: datetime, within: 15 days, past: past, too_far: too_far
+- day: datetime
 
 ## Examples
 - what's the weather{ like|}{ today| now|}{?|}
@@ -90,10 +91,9 @@ what is read back, is in action.md next to it.
 - tomorrow morning
 
 ## Replies
-- done: {place} right now: {sky}, {temp}°C, wind {wind} km/h.
+- now: {place} right now: {sky}, {temp}°C, wind {wind} km/h.
 - day: {when} in {place}: {sky}, {min} to {max}°C, {rain}% chance of rain.
-- days: {place}, {when}:
-- line: {when}: {sky}, {min} to {max}°C, {rain}% rain
+- days: {place}, {phrase}:
 - ask_place: Which city? Tip: say “I live in …” and I'll remember it for next time.
 - not_found: I couldn't find a place called “{place}”.
 - too_far: I can only see 16 days ahead.
