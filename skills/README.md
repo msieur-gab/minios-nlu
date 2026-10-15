@@ -219,6 +219,14 @@ from the list can be used, so a sentence can't inject a command.
 | `lowercase: 0.35` | share of generated sentences also added in lowercase |
 | anything else | free parameters the script reads from `ctx.params` (commands, a start level…) |
 
+## Checking a skill's variety
+
+`node diversity.js` scores every skill's example lines, thinnest first: how many distinct words
+they use to ask (values not counted), which sentence shapes they cover (command, polite,
+question, statement, fragment), how many lines are still recognised when the model never saw
+them, and which other skill pulls them. `-v` lists the lines nothing else supports. Write the
+next lines where the table is thin: new words and new shapes, not more of the same.
+
 ## skill.js
 
 Only when the Markdown isn't enough. It exports one function that gets a toolbox:
