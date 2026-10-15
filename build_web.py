@@ -32,7 +32,7 @@ self.onmessage = e => {
   const taught = NLUTrainer.parseDataset(e.data.learned || "");
   const taughtSet = new Set(taught.map(x => norm0(x.text)));
   const ex = NLUTrainer.parseDataset(e.data.train).filter(x => !taughtSet.has(norm0(x.text))).concat(taught);
-  const model = NLUTrainer.train(ex, { log: m => self.postMessage({ log: m }) });
+  const model = NLUTrainer.train(ex, { lexicon: e.data.lexicon, log: m => self.postMessage({ log: m }) });
   // same rule as the build: only test sentences that are not also training sentences
   const norm = t => t.toLowerCase().replace(/\\?/g, "").split(/\\s+/).filter(Boolean).join(" ");
   const seen = new Set(ex.map(x => norm(x.text)));

@@ -40,10 +40,11 @@ class NLU:
         self.state = m["state"]
         self.trans = m["trans"]
         self.nf = len(m["vocab"])
+        self.lex = m.get("lexicon")
 
     def classify(self, text):
         counts = {}
-        for f in intent_features(text):
+        for f in intent_features(text, self.lex):
             j = self.vocab.get(f)
             if j is not None:
                 counts[j] = counts.get(j, 0) + 1

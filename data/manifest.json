@@ -8,5 +8,6 @@
     "data/synth_moved.md",
     "data/skills.md"
   ],
-  "test": "data/test.md"
+  "test": "data/test.md",
+  "boundary": "data/boundary.md"
 }

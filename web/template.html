@@ -206,7 +206,7 @@ input:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: 
 <script>
 const MODEL = JSON.parse(document.getElementById("model").textContent);
 const EVAL = /*EVAL*/;
-const nlu = new NLURuntime.NLU(MODEL);
+const nlu = new NLURuntime.NLU(MODEL, SKILLS_DATA.lexicon);
 const agent = new Agent(nlu, (() => { try { return window.localStorage; } catch { return null; } })());
 const $ = id => document.getElementById(id);
 const log = $("log");
@@ -247,7 +247,7 @@ shareAnswers();
 const saved = inbox.loadModel(MODEL.version);
 if (saved.model) {
   current = saved.model;
-  agent.nlu = new NLURuntime.NLU(saved.model);
+  agent.nlu = new NLURuntime.NLU(saved.model, SKILLS_DATA.lexicon);
   showModel(saved.model, saved.model.stats.ev, "(this device)");
 } else if (saved.outdated) {
   for (const i of inbox.decided()) i.trained = false;
@@ -269,7 +269,7 @@ function retrain(statusEl) {
     model.stats.train_seconds = secs;
     model.stats.ev = { accuracy: ev.accuracy.toFixed(1), slot_f1: ev.slotF1.toFixed(2), n: ev.n };
     current = model;
-    agent.nlu = new NLURuntime.NLU(model);
+    agent.nlu = new NLURuntime.NLU(model, SKILLS_DATA.lexicon);
     showModel(model, model.stats.ev, "(this device)");
     const kept = inbox.saveModel(model, MODEL.version);
     inbox.markTrained();
@@ -278,7 +278,7 @@ function retrain(statusEl) {
     renderInbox();
   };
   worker.onerror = err => { statusEl.textContent = "Training failed: " + err.message; worker = null; setTraining(false); renderInbox(); };
-  worker.postMessage({ train: DATA.train, test: DATA.test, learned: inbox.markdown() });
+  worker.postMessage({ train: DATA.train, test: DATA.test, learned: inbox.markdown(), lexicon: SKILLS_DATA.lexicon });
 }
 function setTraining(on) {
   $("retrain").disabled = on;

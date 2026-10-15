@@ -219,6 +219,14 @@ from the list can be used, so a sentence can't inject a command.
 | `lowercase: 0.35` | share of generated sentences also added in lowercase |
 | anything else | free parameters the script reads from `ctx.params` (commands, a start level…) |
 
+## lexicon.md: words that mean the same
+
+`skills/lexicon.md` is shared by every skill. Each line is a family (`- rain: drizzle, showers,
+downpour`): the model reads every word of it as the first one, so "any drizzle in Lyon" works
+because examples taught "rain". A new synonym is one edit here, with no new example and no
+retraining (the page reads the lexicon at runtime). Only words that mean the same in every skill
+go here, and only words the examples lack; the rules are at the top of the file.
+
 ## skill.js
 
 Only when the Markdown isn't enough. It exports one function that gets a toolbox:

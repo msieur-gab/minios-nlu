@@ -168,6 +168,27 @@ function validate(s) {
   for (const m of (p.command || "").matchAll(/\{(\w+)\}/g)) if (!slots[m[1]]) err(`command uses {${m[1]}} but ## Slots doesn't declare it`);
 }
 
+// skills/lexicon.md: "- family: word, word" under ## Families → { word: family } (the family's
+// own word included). A word in two families, or more than one word, stops the compile.
+function parseLexicon(md, file) {
+  const lex = {};
+  let on = false;
+  for (const raw of md.split("\n")) {
+    const line = raw.trim();
+    if (/^##\s/.test(line)) { on = /^##\s+families$/i.test(line); continue; }
+    if (!on || !line.startsWith("- ")) continue;
+    const m = /^-\s*([^:]+):\s*(.+)$/.exec(line);
+    if (!m) throw new Error(`${file}: can't read “${line}” (expected "- family: word, word")`);
+    const family = m[1].trim();
+    for (const w of [family, ...m[2].split(/\s*,\s*/)].map(w => w.trim()).filter(Boolean)) {
+      if (!/^[a-z]+$/.test(w)) throw new Error(`${file}: “${w}”: one lowercase word per entry`);
+      if (lex[w] && lex[w] !== family) throw new Error(`${file}: “${w}” is in two families (${lex[w]}, ${family}): a word means one thing`);
+      lex[w] = family;
+    }
+  }
+  return lex;
+}
+
 // Expand one template: {a|b|} picks an alternative, {list} picks a value from "## Values: list".
 function expand(tpl, skill, rand) {
   let t = tpl;
@@ -223,13 +244,16 @@ function compile(dir = "skills") {
       values: Object.fromEntries(Object.entries(values).filter(([k]) => !(params.train_only || "").split(/\s*,\s*/).includes(k))) };
   }
   fs.writeFileSync("data/skills.md", md);
-  fs.writeFileSync("web/skills.json", JSON.stringify({ skills: runtime }, null, 1));
-  return { skills: runtime, sentences: Object.values(runtime).reduce((a, s) => a + s.sentences, 0) };
+  const lexFile = path.join(dir, "lexicon.md");
+  const lexicon = fs.existsSync(lexFile) ? parseLexicon(fs.readFileSync(lexFile, "utf8"), lexFile) : {};
+  fs.writeFileSync("web/skills.json", JSON.stringify({ skills: runtime, lexicon }, null, 1));
+  return { skills: runtime, lexicon, sentences: Object.values(runtime).reduce((a, s) => a + s.sentences, 0) };
 }
 
 if (require.main === module) {
   const r = compile();
   for (const [k, s] of Object.entries(r.skills)) console.log(`  ${k.padEnd(14)} ${String(s.sentences).padStart(4)} sentences  ${s.code ? "skill.md + skill.js" : "skill.md only"}${s.request ? " · request " + (/^https?:/.test(s.request.url) ? new URL(s.request.url.replace(/\{\w+\}/g, "x")).host : "webhook " + s.request.url) : ""}`);
-  console.log(`data/skills.md: ${r.sentences} sentences · web/skills.json`);
+  const fams = new Set(Object.values(r.lexicon)).size;
+  console.log(`data/skills.md: ${r.sentences} sentences · web/skills.json · lexicon: ${fams} families, ${Object.keys(r.lexicon).length} words`);
 }
-module.exports = { compile, parseSkill, validate };
+module.exports = { compile, parseSkill, parseLexicon, validate };

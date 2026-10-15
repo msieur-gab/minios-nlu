@@ -14,8 +14,11 @@ def tokenize(text):
     return [(m.group(0), m.start(), m.end()) for m in TOKEN_RE.finditer(text)]
 
 
-def intent_features(text):
+def intent_features(text, lex=None):
+    """lex: word -> family (skills/lexicon.md); a family's word is read as the family's word."""
     toks = [t.lower() for t, _, _ in tokenize(text) if WORD_RE.match(t)]
+    if lex:
+        toks = [lex.get(t, t) for t in toks]
     feats = []
     prev = "<s>"
     for t in toks:
